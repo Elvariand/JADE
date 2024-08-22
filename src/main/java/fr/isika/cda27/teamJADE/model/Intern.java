@@ -2,18 +2,22 @@ package fr.isika.cda27.teamJADE.model;
 
 public class Intern {
 
+	private String familyName;
 	private String firstName;
 	private String county;
 	private String cursus;
 	private String yearIn;
 	
+	
 	/**
+	 * @param familyName Le nom de famille du Stagiaire
 	 * @param firstName Le prénom du Stagiaire
 	 * @param county Le numéro de département du Stagiaire
 	 * @param cursus Le nom de la formation du Stagiaire
 	 * @param yearIn L'année d'entrée en formation
 	 */
-	public Intern(String firstName, String county, String cursus, String yearIn) {
+	public Intern(String familyName, String firstName, String county, String cursus, String yearIn) {
+		this.familyName = familyName;
 		this.firstName = firstName;
 		this.county = county;
 		this.cursus = cursus;
@@ -22,6 +26,20 @@ public class Intern {
 
 	
 	
+	/**
+	 * @return the familyName
+	 */
+	public String getFamilyName() {
+		return familyName;
+	}
+
+	/**
+	 * @param familyName the familyName to set
+	 */
+	public void setFamilyName(String familyName) {
+		this.familyName = familyName;
+	}
+
 	/**
 	 * @return the firstName
 	 */
@@ -84,6 +102,11 @@ public class Intern {
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
 		builder.append("Intern [");
+		if (familyName != null) {
+			builder.append("familyName=");
+			builder.append(familyName);
+			builder.append(", ");
+		}
 		if (firstName != null) {
 			builder.append("firstName=");
 			builder.append(firstName);
@@ -106,6 +129,10 @@ public class Intern {
 		builder.append("]");
 		return builder.toString();
 	}
+
+
+
+
 	
 	
 }
