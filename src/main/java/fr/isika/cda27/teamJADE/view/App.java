@@ -2,6 +2,7 @@ package fr.isika.cda27.teamJADE.view;
 
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
+import fr.isika.cda27.teamJADE.model.InternDao;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -23,6 +24,9 @@ public class App extends Application {
         var scene = new Scene(new StackPane(label), 640, 480);
         stage.setScene(scene);
         stage.show();
+        
+        InternDao test = new InternDao();
+        test.addFromDon();
     }
     
     

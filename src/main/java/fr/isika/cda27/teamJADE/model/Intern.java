@@ -130,8 +130,5 @@ public class Intern {
 		return builder.toString();
 	}
 
-
-// On y croit !! 
-
 	
 }
