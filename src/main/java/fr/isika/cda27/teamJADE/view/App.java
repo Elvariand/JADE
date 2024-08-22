@@ -1,5 +1,7 @@
 package fr.isika.cda27.teamJADE.view;
 
+import fr.isika.cda27.teamJADE.model.Intern;
+import fr.isika.cda27.teamJADE.model.TreeNodeDao;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -22,9 +24,24 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
     }
+    
+    
 
     public static void main(String[] args) {
-        launch();
+        
+    	TreeNodeDao test = new TreeNodeDao(); 
+    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
+    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
+    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
+    	
+    	test.addIntern(intern1);
+    	test.addIntern(intern2);
+    	test.addIntern(intern3);
+    	
+    	test.sortView(test.getRoot());
+    	
+    	
+    	launch();
     }
 
 }
