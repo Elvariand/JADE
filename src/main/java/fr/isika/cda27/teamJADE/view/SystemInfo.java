@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.JADE;
+package fr.isika.cda27.teamJADE.view;
 
 public class SystemInfo {
 
