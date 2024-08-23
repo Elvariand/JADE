@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.LinkedList;
 import java.io.RandomAccessFile;
 
 public class TreeNodeDao {
@@ -42,6 +41,7 @@ public class TreeNodeDao {
 	public void addIntern(Intern intern) {
 		if (root == null) {
 			this.root = new TreeNode(intern);
+			this.writeInBinary(intern, this.getBinarySize());
 		} else {
 			this.root = insert(intern, root);
 		}
@@ -49,24 +49,44 @@ public class TreeNodeDao {
 	}
 
 	public TreeNode insert(Intern intern, TreeNode treeNode) {
+		return insert(intern, treeNode, 0);
+	}
+
+	public TreeNode insert(Intern intern, TreeNode treeNode, long cursorPosition) {
 		// Si le noeud courant est null
 		if (treeNode == null) {
+			this.writeInBinary(intern, cursorPosition);
 			return new TreeNode(intern);
 		}
 
 		// Si la valeur du noeud à insérer est + petite que le noeud courant
 		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
-			treeNode.setLeftChild(insert(intern, treeNode.getLeftChild()));
+			long newCursorPosition = readLeftChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			if (newCursorPosition < 0) {
+				this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
+						cursorPosition+Intern.getSizeIntern());
+			}
+			treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), newCursorPosition));
 		}
 
 		// Si la valeur du noeud à insérer est plus grand que le noeud courant
 		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
-			treeNode.setRightChild(insert(intern, treeNode.getRightChild()));
+			long newCursorPosition = readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			if (newCursorPosition < 0) {
+				this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
+						cursorPosition+Intern.getSizeIntern()+4);
+			}
+			treeNode.setRightChild(insert(intern, treeNode.getRightChild(), newCursorPosition));
 		}
 
 		// Si la valeur du noeud à insérer est égale
 		else {
 			treeNode.getTwins().add(intern);
+			while (cursorPosition > 0) {
+				cursorPosition = readTwinFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			}
+			this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
+					cursorPosition+Intern.getSizeIntern()+4+4);
 		}
 
 		return treeNode;
@@ -105,7 +125,7 @@ public class TreeNodeDao {
 			if (treeNode.getTwins().size() > 1) {
 				treeNode.getTwins().remove(intern); // on efface dans la list
 				return treeNode;
-			// Sinon
+				// Sinon
 			} else {
 				return deleteNode(treeNode);
 			}
@@ -118,22 +138,21 @@ public class TreeNodeDao {
 	private TreeNode deleteNode(TreeNode treeNode) {
 		// Si il n'y a pas d'enfants gauche
 		if (treeNode.getLeftChild() == null)
-            return treeNode.getRightChild();
-		
+			return treeNode.getRightChild();
+
 		// Si il n'y a pas d'enfants droit
-        if (treeNode.getRightChild() == null)
-            return treeNode.getLeftChild();
-        
-        // Si il y a deux enfants
-        TreeNode substitute = findSubstitute(treeNode.getRightChild());
-        treeNode.setFamilyName(substitute.getFamilyName()); 
-        treeNode.setTwins(substitute.getTwins()); 
-        
-        treeNode.setRightChild(delete(substitute.getTwins().get(0),treeNode.getRightChild() ));
-        
-        return treeNode;
+		if (treeNode.getRightChild() == null)
+			return treeNode.getLeftChild();
+
+		// Si il y a deux enfants
+		TreeNode substitute = findSubstitute(treeNode.getRightChild());
+		treeNode.setFamilyName(substitute.getFamilyName());
+		treeNode.setTwins(substitute.getTwins());
+
+		treeNode.setRightChild(delete(substitute.getTwins().get(0), treeNode.getRightChild()));
+
+		return treeNode;
 	}
-	
 
 	private TreeNode findSubstitute(TreeNode minNode) {
 		// On cherche la valeur minimale du sous arbre droit
@@ -151,7 +170,7 @@ public class TreeNodeDao {
 
 		sortView(node.getLeftChild());
 		for (Intern intern : node.getTwins()) {
-//			System.out.println(intern.getFamilyName());
+			System.out.println(intern.getFamilyName());
 		}
 		sortView(node.getRightChild());
 	}
@@ -207,7 +226,7 @@ public class TreeNodeDao {
 		FileWriter fw;
 
 		try {
-			fw = new FileWriter("/data/STAGIAIRES.DON", true);
+			fw = new FileWriter("src/main/resources/data/TEST_STAGIAIRES.DON", true);
 			fw.write(internToAdd.getFamilyName().toUpperCase() + "\n" + internToAdd.getFirstName() + "\n"
 					+ internToAdd.getCounty() + "\n" + internToAdd.getCursus() + "\n" + internToAdd.getYearIn()
 					+ "\n*\n");
@@ -218,37 +237,127 @@ public class TreeNodeDao {
 		}
 	}
 
-	public void addToBinary(Intern internToAdd) {
+	public long getBinarySize() {
+		long binSize = 0;
 		try {
-			RandomAccessFile raf = new RandomAccessFile("data/TEST_STAGIAIRES.bin", "rw");
-			long pos = raf.length();
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+
+			binSize = raf.length();
+
 			raf.close();
-			this.addToBinary(internToAdd, pos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return binSize;
+	}
+
+	public void writeInBinary(Intern internToAdd, long cursorPosition) {
+		writeInBinary(internToAdd, cursorPosition, -1, -1, -1);
+	}
+
+	public void writeInBinary(Intern internToAdd, long cursorPosition, int leftChildInt, int rightChildInt,
+			int twinInt) {
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+
+			raf.seek(cursorPosition);
+			raf.writeChars(internToAdd.getFamilyNameLong() + internToAdd.getFirstNameLong()
+					+ internToAdd.getCountyLong() + internToAdd.getCursusLong() + internToAdd.getYearIn());
+			raf.writeInt(leftChildInt);
+			raf.writeInt(rightChildInt);
+			raf.writeInt(twinInt);
+
+			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public long addToBinary(Intern internToAdd, long cursorPosition) {
-
-		long newCursorPosition = cursorPosition;
+	public void writeIntInBinary(int twinOrChild, long cursorPosition) {
 		try {
-			RandomAccessFile raf = new RandomAccessFile("data/TEST_STAGIAIRES.bin", "rw");
-			
-			raf.writeChars(internToAdd.getFamilyNameLong()
-					+ internToAdd.getFirstNameLong()
-					+ internToAdd.getCountyLong()
-					+ internToAdd.getCursus()
-					+ internToAdd.getYearIn() );
-			raf.writeInt(-1);
-			raf.writeInt(-1);
-			raf.writeInt(-1);
-			
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+
+			raf.seek(cursorPosition);
+			raf.writeInt(twinOrChild);
+
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
-		return newCursorPosition;
+	}
+
+	public Intern readInternFromBinary(long cursorPosition) {
+		String familyName = "";
+		String firstName = "";
+		String county = "";
+		String cursus = "";
+		String yearIn = "";
+
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+			raf.seek(cursorPosition);
+			for (int i = 0; i < Intern.getMaxCharNames(); i++) {
+				familyName += raf.readChar();
+			}
+			for (int i = 0; i < Intern.getMaxCharNames(); i++) {
+				firstName += raf.readChar();
+			}
+			for (int i = 0; i < Intern.getMaxCharCounty(); i++) {
+				county += raf.readChar();
+			}
+			for (int i = 0; i < Intern.getMaxCharCursus(); i++) {
+				cursus += raf.readChar();
+			}
+			for (int i = 0; i < Intern.getMaxCharYearIn(); i++) {
+				yearIn += raf.readChar();
+			}
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return new Intern(familyName.trim(), firstName.trim(), county.trim(), cursus.trim(), yearIn.trim());
+	}
+
+	public int readLeftChildFromBinary(long cursorPosition) {
+		cursorPosition += Intern.getSizeIntern();
+		int leftChildInt = -1;
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+			raf.seek(cursorPosition);
+			leftChildInt = raf.readInt();
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return leftChildInt;
+	}
+
+	public int readRightChildFromBinary(long cursorPosition) {
+		cursorPosition += Intern.getSizeIntern() + 4;
+		int rightChildInt = -1;
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+			raf.seek(cursorPosition);
+			rightChildInt = raf.readInt();
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return rightChildInt;
+	}
+
+	public int readTwinFromBinary(long cursorPosition) {
+		cursorPosition += Intern.getSizeIntern() + 4 + 4;
+		int TwinInt = -1;
+		try {
+			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
+			raf.seek(cursorPosition);
+			TwinInt = raf.readInt();
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return TwinInt;
 	}
 }

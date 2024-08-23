@@ -8,6 +8,7 @@ public class TreeNode {
 	private TreeNode rightChild;
 	private TreeNode leftChild;
 	private LinkedList<Intern> twins;
+	private static final int SIZE_NODE = Intern.getSizeIntern()+4 +4 +4;
 
 	/**
 	 * @param intern Le Stagiaire dont l'info sera dans ce noeud
@@ -90,6 +91,15 @@ public class TreeNode {
 	 */
 	public void setTwins(LinkedList<Intern> twins) {
 		this.twins = twins;
+	}
+
+
+
+	/**
+	 * @return the sizeNode
+	 */
+	public static int getSizeNode() {
+		return SIZE_NODE;
 	}
 
 

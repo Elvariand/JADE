@@ -7,8 +7,11 @@ public class Intern {
 	private String county; // 6 octets
 	private String cursus; // 20
 	private String yearIn; // 8 octets
-	private static final int TAILLE_NAMES = 31;
-	private static final int TAILLE_COUNTY = 3;
+	private static final int MAX_CHAR_NAMES = 31;
+	private static final int MAX_CHAR_COUNTY = 3;
+	private static final int MAX_CHAR_CURSUS = 10;
+	private static final int MAX_CHAR_YEARIN = 4;
+	private static final int SIZE_INTERN = (MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_COUNTY + MAX_CHAR_YEARIN)*2;
 	// + 12 octets
 	
 	
@@ -101,6 +104,55 @@ public class Intern {
 
 
 
+
+
+
+
+	/**
+	 * @return the maxCharNames
+	 */
+	public static int getMaxCharNames() {
+		return MAX_CHAR_NAMES;
+	}
+
+
+
+	/**
+	 * @return the maxCharCounty
+	 */
+	public static int getMaxCharCounty() {
+		return MAX_CHAR_COUNTY;
+	}
+
+
+
+	/**
+	 * @return the maxCharCursus
+	 */
+	public static int getMaxCharCursus() {
+		return MAX_CHAR_CURSUS;
+	}
+
+
+
+	/**
+	 * @return the maxCharYearin
+	 */
+	public static int getMaxCharYearIn() {
+		return MAX_CHAR_YEARIN;
+	}
+
+
+
+	/**
+	 * @return the sizeIntern
+	 */
+	public static int getSizeIntern() {
+		return SIZE_INTERN;
+	}
+
+
+
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -136,26 +188,26 @@ public class Intern {
 	
 	public String getFamilyNameLong() {
 		String familyNameLong = this.familyName;
-		if (familyNameLong.length() < TAILLE_NAMES) {
+		if (familyNameLong.length() < MAX_CHAR_NAMES) {
 
-			for (int i = this.familyName.length(); i < TAILLE_NAMES; i++) {
+			for (int i = this.familyName.length(); i < MAX_CHAR_NAMES; i++) {
 				familyNameLong += " ";
 			}
 		} else {
-			familyNameLong = familyNameLong.substring(0,TAILLE_NAMES);
+			familyNameLong = familyNameLong.substring(0,MAX_CHAR_NAMES);
 		}
 		return familyNameLong;
 	}
 	
 	public String getFirstNameLong() {
 		String firstNameLong = this.firstName;
-		if (firstNameLong.length() < TAILLE_NAMES) {
+		if (firstNameLong.length() < MAX_CHAR_NAMES) {
 			
-			for (int i = this.firstName.length(); i < TAILLE_NAMES; i++) {
+			for (int i = this.firstName.length(); i < MAX_CHAR_NAMES; i++) {
 				firstNameLong += " ";
 			}
 		} else {
-			firstNameLong = firstNameLong.substring(0,TAILLE_NAMES);
+			firstNameLong = firstNameLong.substring(0,MAX_CHAR_NAMES);
 		}
 		return firstNameLong;
 	}
@@ -163,15 +215,28 @@ public class Intern {
 	
 	public String getCountyLong() {
 		String countyLong = this.county;
-		if (countyLong.length() < TAILLE_COUNTY) {
+		if (countyLong.length() < MAX_CHAR_COUNTY) {
 			
-			for (int i = this.county.length(); i < TAILLE_COUNTY; i++) {
+			for (int i = this.county.length(); i < MAX_CHAR_COUNTY; i++) {
 				countyLong += " ";
 			}
 		} else {
-			countyLong = countyLong.substring(0,TAILLE_COUNTY);
+			countyLong = countyLong.substring(0,MAX_CHAR_COUNTY);
 		}
 		return countyLong;
+	}
+	
+	public String getCursusLong() {
+		String cursusLong = this.cursus;
+		if (cursusLong.length() < MAX_CHAR_CURSUS) {
+			
+			for (int i = this.cursus.length(); i < MAX_CHAR_CURSUS; i++) {
+				cursusLong += " ";
+			}
+		} else {
+			cursusLong = cursusLong.substring(0,MAX_CHAR_CURSUS);
+		}
+		return cursusLong;
 	}
 	
 }
