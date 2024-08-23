@@ -25,25 +25,27 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
         
-        InternDao test = new InternDao();
-        test.addFromDon();
+        InternDao test2 = new InternDao();
+        TreeNodeDao test = test2.addFromDon();
+//    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
+//    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
+//    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
+//    	
+//    	test.addIntern(intern1);
+//    	test.addIntern(intern2);
+//    	test.addIntern(intern3);
+        
+     
+        
+        test.sortView(test.getRoot());
+        
+//        test.getRoot().parcoursInfixe(test.getRoot());
     }
     
     
 
     public static void main(String[] args) {
         
-    	TreeNodeDao test = new TreeNodeDao(); 
-    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
-    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
-    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
-    	
-    	test.addIntern(intern1);
-    	test.addIntern(intern2);
-    	test.addIntern(intern3);
-    	
-    	test.sortView(test.getRoot());
-    	
     	
     	launch();
     }

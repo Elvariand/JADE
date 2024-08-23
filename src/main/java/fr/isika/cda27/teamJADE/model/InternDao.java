@@ -10,11 +10,15 @@ public class InternDao {
 
 	private ArrayList<Intern> listInterns;
 
+	
+	
 	public InternDao() {
 		super();
 		this.listInterns = new ArrayList<Intern>();
 	}
 
+	
+	
 	/**
 	 * @return the listInterns
 	 */
@@ -72,8 +76,9 @@ public class InternDao {
 		}
 	}
 	
-	public void addFromDon() {
+	public TreeNodeDao addFromDon() {
    
+		TreeNodeDao treeDao = new TreeNodeDao();
 		try {
 			FileReader fr = new FileReader("src/main/resources/data/STAGIAIRES.DON");
 			BufferedReader br = new BufferedReader(fr); // Prends forcément un flux entrant en argument
@@ -90,7 +95,7 @@ public class InternDao {
 				text = br.readLine();
 				switch(counter) {
 					case 1 :
-						familyName = text;
+						familyName = text.toUpperCase();
 						break;
 					case 2 :
 						firstName = text;
@@ -105,7 +110,7 @@ public class InternDao {
 						yearIn = text;
 						break;
 					default:
-						this.addIntern(new Intern(familyName, firstName, county, cursus, yearIn));
+						treeDao.addIntern(new Intern(familyName, firstName, county, cursus, yearIn));
 						counter = 0;
 						break;
 				}
@@ -117,10 +122,12 @@ public class InternDao {
 			e.printStackTrace();
 		}
 		
-		int counter =0;
-		for (Intern intern : listInterns) {
-			System.out.println(++counter + " : " + intern.getFamilyName() + " " + intern.getFirstName());
-		}
+//		int counter =0;
+//		for (Intern intern : listInterns) {
+//			System.out.println(++counter + " : " + intern.getFamilyName() + " " + intern.getFirstName());
+//		}
+		
+		return treeDao;
 	}
 
 	public void addToDon(Intern internToAdd) {
