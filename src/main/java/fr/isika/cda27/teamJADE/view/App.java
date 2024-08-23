@@ -26,8 +26,6 @@ public class App extends Application {
         stage.show();
         
 
-        TreeNodeDao test = new TreeNodeDao();
-        test.addFromDon();
 //    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
 //    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
 //    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
@@ -38,7 +36,6 @@ public class App extends Application {
         
      
         
-        test.sortView(test.getRoot());
         
 //        test.getRoot().parcoursInfixe(test.getRoot());
     }
@@ -46,6 +43,9 @@ public class App extends Application {
     
 
     public static void main(String[] args) {
+    	TreeNodeDao test = new TreeNodeDao();
+    	test.addFromDon();
+    	test.sortView(test.getRoot());
         
     	
     	launch();
