@@ -48,6 +48,7 @@ public class App extends Application {
 
     public static void main(String[] args) {
     	TreeNodeDao test = new TreeNodeDao();
+    	test.deleteBinary();
     	test.addFromDon();
 //    	test.sortView(test.getRoot());
         

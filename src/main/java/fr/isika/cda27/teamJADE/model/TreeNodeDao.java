@@ -1,6 +1,7 @@
 package fr.isika.cda27.teamJADE.model;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -52,45 +53,89 @@ public class TreeNodeDao {
 		return insert(intern, treeNode, 0);
 	}
 
+//	public TreeNode insert(Intern intern, TreeNode treeNode) {
+//		// Si le noeud courant est null
+//		if (treeNode == null) {
+//			this.writeInBinary(intern,0);
+//			return new TreeNode(intern);
+//		}
+//
+//		// Si la valeur du noeud à insérer est + petite que le noeud courant
+//		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
+//			
+//			treeNode.setLeftChild(insert(intern, treeNode.getLeftChild()));
+//		}
+//
+//		// Si la valeur du noeud à insérer est plus grand que le noeud courant
+//		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
+//			
+//			treeNode.setRightChild(insert(intern, treeNode.getRightChild()));
+//		}
+//
+//		// Si la valeur du noeud à insérer est égale
+//		else {
+//			treeNode.getTwins().add(intern);
+//		}
+//
+//		return treeNode;
+//
+//	}
 	public TreeNode insert(Intern intern, TreeNode treeNode, long cursorPosition) {
+		System.out.println(intern.toString());
+		System.out.println(cursorPosition);
+		System.out.println(cursorPosition/TreeNode.getSizeNode());
 		// Si le noeud courant est null
 		if (treeNode == null) {
 			this.writeInBinary(intern, cursorPosition);
 			return new TreeNode(intern);
 		}
-
+		
 		// Si la valeur du noeud à insérer est + petite que le noeud courant
 		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
 			if (newCursorPosition < 0) {
-				this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
+				this.writeIntInBinary((int) (this.getBinarySize() / (TreeNode.getSizeNode())),
 						cursorPosition+Intern.getSizeIntern());
+				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), this.getBinarySize()));
+			} else {
+				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), newCursorPosition));
 			}
-			treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), newCursorPosition));
 		}
-
+		
 		// Si la valeur du noeud à insérer est plus grand que le noeud courant
 		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
 			long newCursorPosition = readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
 			if (newCursorPosition < 0) {
-				this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
+				this.writeIntInBinary((int) (this.getBinarySize() / (TreeNode.getSizeNode())),
 						cursorPosition+Intern.getSizeIntern()+4);
+				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), this.getBinarySize()));
+			} else {
+				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), newCursorPosition));
 			}
-			treeNode.setRightChild(insert(intern, treeNode.getRightChild(), newCursorPosition));
 		}
-
+		
 		// Si la valeur du noeud à insérer est égale
 		else {
 			treeNode.getTwins().add(intern);
-			while (cursorPosition > 0) {
-				cursorPosition = readTwinFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			int read = 1;
+			int counter = 0;
+			while (read > 0 && counter<20) {
+				counter++;
+				System.out.println(counter);
+				read = readTwinFromBinary(cursorPosition);
+				if (read > 0) cursorPosition = read * TreeNode.getSizeNode();
+				System.out.println(this.readInternFromBinary(cursorPosition).toString());
 			}
-			this.writeIntInBinary((int) this.getBinarySize() / (TreeNode.getSizeNode()),
-					cursorPosition+Intern.getSizeIntern()+4+4);
+			int calc = (int) (this.getBinarySize() / TreeNode.getSizeNode() );
+			System.out.println("calc simple " + calc);
+			double calcDouble = (double) this.getBinarySize() / (double)TreeNode.getSizeNode();
+			System.out.println("calc double " + calcDouble );
+			this.writeIntInBinary(calc, cursorPosition+Intern.getSizeIntern()+4+4);
+			this.writeInBinary(intern, this.getBinarySize());
 		}
-
+		
 		return treeNode;
-
+		
 	}
 
 	public void removeIntern(Intern intern) {
@@ -261,8 +306,11 @@ public class TreeNodeDao {
 			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
 
 			raf.seek(cursorPosition);
-			raf.writeChars(internToAdd.getFamilyNameLong() + internToAdd.getFirstNameLong()
-					+ internToAdd.getCountyLong() + internToAdd.getCursusLong() + internToAdd.getYearIn());
+			raf.writeChars(internToAdd.getFamilyNameLong());
+			raf.writeChars(internToAdd.getFirstNameLong());
+			raf.writeChars(internToAdd.getCountyLong());
+			raf.writeChars(internToAdd.getCursusLong());
+			raf.writeChars(internToAdd.getYearIn());
 			raf.writeInt(leftChildInt);
 			raf.writeInt(rightChildInt);
 			raf.writeInt(twinInt);
@@ -326,6 +374,7 @@ public class TreeNodeDao {
 			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
 			raf.seek(cursorPosition);
 			leftChildInt = raf.readInt();
+			System.out.println("left child = " + leftChildInt);
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -340,6 +389,7 @@ public class TreeNodeDao {
 			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
 			raf.seek(cursorPosition);
 			rightChildInt = raf.readInt();
+			System.out.println("right child = " + rightChildInt);
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -359,5 +409,10 @@ public class TreeNodeDao {
 			e.printStackTrace();
 		}
 		return TwinInt;
+	}
+	
+	public void deleteBinary() {
+		File bin = new File("src/main/resources/data/TEST_STAGIAIRES.bin");
+		bin.delete();
 	}
 }
