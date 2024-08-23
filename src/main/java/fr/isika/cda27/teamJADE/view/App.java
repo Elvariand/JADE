@@ -25,8 +25,9 @@ public class App extends Application {
         stage.setScene(scene);
         stage.show();
         
-        InternDao test2 = new InternDao();
-        TreeNodeDao test = test2.addFromDon();
+
+        TreeNodeDao test = new TreeNodeDao();
+        test.addFromDon();
 //    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
 //    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
 //    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
