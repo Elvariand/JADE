@@ -2,11 +2,14 @@ package fr.isika.cda27.teamJADE.model;
 
 public class Intern {
 
-	private String familyName;
-	private String firstName;
-	private String county;
-	private String cursus;
-	private String yearIn;
+	private String familyName; // 62 octets
+	private String firstName; // 62
+	private String county; // 6 octets
+	private String cursus; // 20
+	private String yearIn; // 8 octets
+	private static final int TAILLE_NAMES = 31;
+	private static final int TAILLE_COUNTY = 3;
+	// + 12 octets
 	
 	
 	/**
@@ -130,5 +133,45 @@ public class Intern {
 		return builder.toString();
 	}
 
+	
+	public String getFamilyNameLong() {
+		String familyNameLong = this.familyName;
+		if (familyNameLong.length() < TAILLE_NAMES) {
+
+			for (int i = this.familyName.length(); i < TAILLE_NAMES; i++) {
+				familyNameLong += " ";
+			}
+		} else {
+			familyNameLong = familyNameLong.substring(0,TAILLE_NAMES);
+		}
+		return familyNameLong;
+	}
+	
+	public String getFirstNameLong() {
+		String firstNameLong = this.firstName;
+		if (firstNameLong.length() < TAILLE_NAMES) {
+			
+			for (int i = this.firstName.length(); i < TAILLE_NAMES; i++) {
+				firstNameLong += " ";
+			}
+		} else {
+			firstNameLong = firstNameLong.substring(0,TAILLE_NAMES);
+		}
+		return firstNameLong;
+	}
+	
+	
+	public String getCountyLong() {
+		String countyLong = this.county;
+		if (countyLong.length() < TAILLE_COUNTY) {
+			
+			for (int i = this.county.length(); i < TAILLE_COUNTY; i++) {
+				countyLong += " ";
+			}
+		} else {
+			countyLong = countyLong.substring(0,TAILLE_COUNTY);
+		}
+		return countyLong;
+	}
 	
 }

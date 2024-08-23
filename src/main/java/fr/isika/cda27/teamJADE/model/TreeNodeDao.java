@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
+import java.io.RandomAccessFile;
 
 public class TreeNodeDao {
 
@@ -142,7 +143,6 @@ public class TreeNodeDao {
 		return minNode;
 	}
 
-	
 	public void sortView(TreeNode node) {
 
 		if (node == null) {
@@ -151,7 +151,7 @@ public class TreeNodeDao {
 
 		sortView(node.getLeftChild());
 		for (Intern intern : node.getTwins()) {
-			System.out.println(intern.getFamilyName());
+//			System.out.println(intern.getFamilyName());
 		}
 		sortView(node.getRightChild());
 	}
@@ -216,5 +216,39 @@ public class TreeNodeDao {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void addToBinary(Intern internToAdd) {
+		try {
+			RandomAccessFile raf = new RandomAccessFile("data/TEST_STAGIAIRES.bin", "rw");
+			long pos = raf.length();
+			raf.close();
+			this.addToBinary(internToAdd, pos);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public long addToBinary(Intern internToAdd, long cursorPosition) {
+
+		long newCursorPosition = cursorPosition;
+		try {
+			RandomAccessFile raf = new RandomAccessFile("data/TEST_STAGIAIRES.bin", "rw");
+			
+			raf.writeChars(internToAdd.getFamilyNameLong()
+					+ internToAdd.getFirstNameLong()
+					+ internToAdd.getCountyLong()
+					+ internToAdd.getCursus()
+					+ internToAdd.getYearIn() );
+			raf.writeInt(-1);
+			raf.writeInt(-1);
+			raf.writeInt(-1);
+			
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return newCursorPosition;
 	}
 }
