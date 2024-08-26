@@ -1,5 +1,7 @@
 package fr.isika.cda27.teamJADE.model;
 
+import java.util.Objects;
+
 public class Intern {
 
 	private String familyName; // 62 octets
@@ -102,12 +104,6 @@ public class Intern {
 		this.yearIn = yearIn;
 	}
 
-
-
-
-
-
-
 	/**
 	 * @return the maxCharNames
 	 */
@@ -186,6 +182,27 @@ public class Intern {
 	}
 
 	
+	@Override
+	public int hashCode() {
+		return Objects.hash(county, cursus, familyName, firstName, yearIn);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Intern other = (Intern) obj;
+		return Objects.equals(county, other.county) && Objects.equals(cursus, other.cursus)
+				&& Objects.equals(familyName, other.familyName) && Objects.equals(firstName, other.firstName)
+				&& Objects.equals(yearIn, other.yearIn);
+	}
+
+
+
 	public String getFamilyNameLong() {
 		String familyNameLong = this.familyName;
 		if (familyNameLong.length() < MAX_CHAR_NAMES) {

@@ -1,6 +1,7 @@
 package fr.isika.cda27.teamJADE.model;
 
 import java.util.LinkedList;
+import java.util.Objects;
 
 public class TreeNode {
 

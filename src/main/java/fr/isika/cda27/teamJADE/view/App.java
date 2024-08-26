@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
-	
+
 	private final static String FICHIER_DON = "src/main/resources/data/TEST_STAGIAIRES.DON";
 	private final static String FICHIER_BIN = "src/main/resources/data/TEST_STAGIAIRES.bin";
 
@@ -56,6 +56,14 @@ public class App extends Application {
 		test.deleteBinary();
 		test.addFromDon();
 //    	test.sortView(test.getRoot());
+		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", "77", "AI 95", "2015");
+		test.addIntern(PY);
+		test.addIntern(PY);
+		test.addIntern(PY);
+		test.addIntern(PY);
+		test.readBinary();
+		test.removeIntern(PY);
+		System.out.println("======================");
 		test.readBinary();
 
 		launch();
