@@ -17,6 +17,23 @@ import javafx.stage.Stage;
  * JavaFX App
  */
 public class App extends Application {
+	
+	private final static String FICHIER_DON = "src/main/resources/data/TEST_STAGIAIRES.DON";
+	private final static String FICHIER_BIN = "src/main/resources/data/TEST_STAGIAIRES.bin";
+
+	/**
+	 * @return le fichier .don
+	 */
+	public static String getFichierDon() {
+		return FICHIER_DON;
+	}
+
+	/**
+	 * @return le fichier binaire
+	 */
+	public static String getFichierBin() {
+		return FICHIER_BIN;
+	}
 
 	@Override
 	public void start(Stage stage) {
@@ -41,15 +58,14 @@ public class App extends Application {
 //    	test.sortView(test.getRoot());
 
 		try {
-			RandomAccessFile raf = new RandomAccessFile("src/main/resources/data/TEST_STAGIAIRES.bin", "rw");
-			for (long cursor = 0; cursor < 12 * TreeNode.getSizeNode(); cursor++) {
+			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
+			for (long cursor = 0; cursor < test.getBinarySize(); cursor++) {
 				Intern intern = test.readInternFromBinary(cursor);
 				int indexLeft = test.readLeftChildFromBinary(cursor);
 				int indexRight = test.readRightChildFromBinary(cursor);
 				int indexTwin = test.readTwinFromBinary(cursor);
-				System.out.println(intern.getFamilyName() + " " + intern.getFirstName() + " " + intern.getCounty() + " "
-						+ intern.getCursus() + " " + intern.getYearIn() + " " + indexLeft + " " + indexRight + " "
-						+ indexTwin);
+				System.out.println(intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11) + "\t" + intern.getCounty() + "\t"
+						+ intern.getCursusLong() + "\t" + intern.getYearIn() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
 				cursor += TreeNode.getSizeNode() - 1;
 			}
 			raf.close();
