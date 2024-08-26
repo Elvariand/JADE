@@ -295,7 +295,7 @@ public class TreeNodeDao {
 
 			raf.seek(cursorPosition);
 			raf.writeInt(twinOrChild);
-
+			
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
