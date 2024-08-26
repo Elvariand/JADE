@@ -56,22 +56,7 @@ public class App extends Application {
 		test.deleteBinary();
 		test.addFromDon();
 //    	test.sortView(test.getRoot());
-
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			for (long cursor = 0; cursor < test.getBinarySize(); cursor++) {
-				Intern intern = test.readInternFromBinary(cursor);
-				int indexLeft = test.readLeftChildFromBinary(cursor);
-				int indexRight = test.readRightChildFromBinary(cursor);
-				int indexTwin = test.readTwinFromBinary(cursor);
-				System.out.println(intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11) + "\t" + intern.getCounty() + "\t"
-						+ intern.getCursusLong() + "\t" + intern.getYearIn() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
-				cursor += TreeNode.getSizeNode() - 1;
-			}
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		test.readBinary();
 
 		launch();
 	}

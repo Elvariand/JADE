@@ -52,30 +52,41 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 *  @param intern l'information sous forme d'objet de type Intern qui sera stockée dans le noeud à ajouter à l'arbre binaire.
-	 * @param treeNode l'objet de type TreeNode correspondant au noeud de l'arbre que nous voulons parcourir. Renseigner la Racine de l'arbre au départ.
-	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si aucun noeud suivant n'existe.
+	 * @param intern   l'information sous forme d'objet de type Intern qui sera
+	 *                 stockée dans le noeud à ajouter à l'arbre binaire.
+	 * @param treeNode l'objet de type TreeNode correspondant au noeud de l'arbre
+	 *                 que nous voulons parcourir. Renseigner la Racine de l'arbre
+	 *                 au départ.
+	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si
+	 *         aucun noeud suivant n'existe.
 	 * 
-	 * Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le parcourant de manière efficace ainsi que de l'écrire dans le fichier binaire.
-	 * La position du curseur est au début du fichier.
+	 *         Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le
+	 *         parcourant de manière efficace ainsi que de l'écrire dans le fichier
+	 *         binaire. La position du curseur est au début du fichier.
 	 */
 	public TreeNode insert(Intern intern, TreeNode treeNode) {
 		return insert(intern, treeNode, 0);
 	}
 
 	/**
-	 * @param intern l'information sous forme d'objet de type Intern qui sera stockée dans le noeud à ajouter à l'arbre binaire.
-	 * @param treeNode l'objet de type TreeNode correspondant au noeud de l'arbre que nous voulons parcourir. Renseigner la Racine de l'arbre au départ.
+	 * @param intern         l'information sous forme d'objet de type Intern qui
+	 *                       sera stockée dans le noeud à ajouter à l'arbre binaire.
+	 * @param treeNode       l'objet de type TreeNode correspondant au noeud de
+	 *                       l'arbre que nous voulons parcourir. Renseigner la
+	 *                       Racine de l'arbre au départ.
 	 * @param cursorPosition la position en Long du curseur dans le fichier binaire.
-	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si aucun noeud suivant n'existe.
+	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si
+	 *         aucun noeud suivant n'existe.
 	 * 
-	 * Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le parcourant de manière efficace ainsi que de l'écrire dans le fichier binaire.
+	 *         Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le
+	 *         parcourant de manière efficace ainsi que de l'écrire dans le fichier
+	 *         binaire.
 	 */
 	public TreeNode insert(Intern intern, TreeNode treeNode, long cursorPosition) {
 
 		// Si le noeud courant est null
 		if (treeNode == null) {
-			
+
 			// Alors nous écrivons le noeud à cet endroit dans le fichier binaire
 			this.writeInBinary(intern, cursorPosition);
 			return new TreeNode(intern);
@@ -83,24 +94,27 @@ public class TreeNodeDao {
 
 		// Si la valeur du noeud à insérer est plus petite que celle du noeud courant
 		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
-			
+
 			// On lit depuis le fichier binaire l'information du fils gauche du noeud actuel
 			// Afin de pouvoir y placer le curseur sur le fichier binaire
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
-			
-			// Si il n'y a pas de fils gauche, c'est donc que l'information sur le fichier binaire vaut -1
+
+			// Si il n'y a pas de fils gauche, c'est donc que l'information sur le fichier
+			// binaire vaut -1
 			if (newCursorPosition < 0) {
-				
-				 /*
-				  * Dans ce cas nous allons créer un fils gauche au noeud courant
-				  * et nous remplaçons dans le fichier binaire le -1 correspondant au fils gauche
-				  * par la valeur de la position du noeud que l'on va ajouter à la fin du fichier binaire
-				  */
+
+				/*
+				 * Dans ce cas nous allons créer un fils gauche au noeud courant et nous
+				 * remplaçons dans le fichier binaire le -1 correspondant au fils gauche par la
+				 * valeur de la position du noeud que l'on va ajouter à la fin du fichier
+				 * binaire
+				 */
 				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern());
 				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), this.getBinarySize()));
 			} else {
-				
-				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la position correspondante dans le fichier binaire
+
+				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
+				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
 				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), newCursorPosition));
 			}
@@ -108,23 +122,26 @@ public class TreeNodeDao {
 
 		// Si la valeur du noeud à insérer est plus grande que celle du noeud courant
 		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
-			
+
 			// On lit depuis le fichier binaire l'information du fils droit du noeud actuel
 			// Afin de pouvoir y placer le curseur sur le fichier binaire
 			long newCursorPosition = readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
-			
-			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier binaire vaut -1
+
+			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier
+			// binaire vaut -1
 			if (newCursorPosition < 0) {
-				
+
 				/*
-				 * Dans ce cas nous allons créer un fils droit au noeud courant
-				 * et nous remplaçons dans le fichier binaire le -1 correspondant au fils droit
-				 * par la valeur de la position du noeud que l'on va ajouter à la fin du fichier binaire
+				 * Dans ce cas nous allons créer un fils droit au noeud courant et nous
+				 * remplaçons dans le fichier binaire le -1 correspondant au fils droit par la
+				 * valeur de la position du noeud que l'on va ajouter à la fin du fichier
+				 * binaire
 				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(),cursorPosition + Intern.getSizeIntern() + 4);
+				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4);
 				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), this.getBinarySize()));
 			} else {
-				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la position correspondante dans le fichier binaire
+				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
+				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
 				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), newCursorPosition));
 			}
@@ -135,23 +152,25 @@ public class TreeNodeDao {
 			// Nous ajoutons l'objet de type Intern à la liste chaînée du noeud courant
 			treeNode.getTwins().add(intern);
 			int read = 1;
-			
+
 			/*
-			 * Pour le fichier binaire nous lisons la valeur de position du noeud suivant le noeud courant.
-			 * Tant que nous n'obtenons pas -1 c'est que nous ne sommes pas au bout de la liste chaînée
-			 * alors nous déplaçons notre curseur vers la position du noeud suivant
-			 * et nous recommençons à lire la valeur de position du noeud suivant
+			 * Pour le fichier binaire nous lisons la valeur de position du noeud suivant le
+			 * noeud courant. Tant que nous n'obtenons pas -1 c'est que nous ne sommes pas
+			 * au bout de la liste chaînée alors nous déplaçons notre curseur vers la
+			 * position du noeud suivant et nous recommençons à lire la valeur de position
+			 * du noeud suivant
 			 */
 			while (read > 0) {
 				read = readTwinFromBinary(cursorPosition);
 				if (read > 0)
 					cursorPosition = read * TreeNode.getSizeNode();
 			}
-			
+
 			/*
-			 * Une fois le bout de liste chaînée atteint, nous ajoutons le noeud en bout de liste
-			 * et nous remplaçons dans le fichier binaire le -1 correspondant suivant dans la liste chainée
-			 * par la valeur de la position du noeud que l'on va ajouter à la fin du fichier binaire
+			 * Une fois le bout de liste chaînée atteint, nous ajoutons le noeud en bout de
+			 * liste et nous remplaçons dans le fichier binaire le -1 correspondant suivant
+			 * dans la liste chainée par la valeur de la position du noeud que l'on va
+			 * ajouter à la fin du fichier binaire
 			 */
 			this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4 + 4);
 			this.writeInBinary(intern, this.getBinarySize());
@@ -244,15 +263,17 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * Lit le fichier .DON et ajoute tous les stagiaires s'y trouvant dans l'arbre binaire
+	 * Lit le fichier .DON et ajoute tous les stagiaires s'y trouvant dans l'arbre
+	 * binaire
 	 */
 	public void addFromDon() {
 
 		try {
 			// Le fichier .DON à lire
 			FileReader fr = new FileReader(App.getFichierDon());
-			
-			// Le buffered reader, l'objet qui permet de lire toute une ligne d'un coup dans un fichier texte (ici le .DON)
+
+			// Le buffered reader, l'objet qui permet de lire toute une ligne d'un coup dans
+			// un fichier texte (ici le .DON)
 			BufferedReader br = new BufferedReader(fr);
 			String text = "";
 			String familyName = "";
@@ -262,59 +283,70 @@ public class TreeNodeDao {
 			String yearIn = "";
 			int counter = 0;
 
-			// Tant qu'il y a une ligne à lire nous allons effectuer la série d'action suivante:
+			// Tant qu'il y a une ligne à lire nous allons effectuer la série d'action
+			// suivante:
 			while (br.ready()) {
-				
+
 				// Nous incrémentons le compteur pour savoir à quelle ligne nous sommes
 				counter++;
-				
-				// Nous stockons l'information de la ligne (qui est un String) dans une variable.
+
+				// Nous stockons l'information de la ligne (qui est un String) dans une
+				// variable.
 				text = br.readLine();
-				
-				// En fonction de la ligne à laquelle nous sommes nous allons faire une action différente
+
+				// En fonction de la ligne à laquelle nous sommes nous allons faire une action
+				// différente
 				switch (counter) {
-				
-					// Dans le cas où nous sommes sur la première ligne, il s'agit du Nom de famille du Stagiaire
-				    // alors nous stockons entièrement en majuscule cette ligne de texte dans une variable. 
-					case 1:
-						familyName = text.toUpperCase();
-						break;
-						
-					// Dans le cas où nous sommes sur la deuxième ligne, nous stockons cette ligne de texte dans une autre variable. 
-					case 2:
-						firstName = text;
-						break;
-						
-					// Idem pour les lignes 3, 4 et 5
-					case 3:
-						county = text;
-						break;
-					case 4:
-						cursus = text;
-						break;
-					case 5:
-						yearIn = text;
-						break;
-						
-					// Dans le cas où nous sommes sur la sixieme ligne, qui correspond à une ligne avec un astérisque
-					default:
-						
-						// Nous créons un objet de type Intern avec les variables dans lesquelles nous avons stocké les informations des 5 lignes précédentes 
-						// et nous ajoutons immédiatement cet objet de type Intern à l'arbre binaire
-						this.addIntern(new Intern(familyName, firstName, county, cursus, yearIn));
-						
-						// Et nous remettons le compteur à zéro afin de pouvoir repartir sur la création d'un nouveau stagiaire
-						counter = 0;
-						break;
-					}
+
+				// Dans le cas où nous sommes sur la première ligne, il s'agit du Nom de famille
+				// du Stagiaire
+				// alors nous stockons entièrement en majuscule cette ligne de texte dans une
+				// variable.
+				case 1:
+					familyName = text.toUpperCase();
+					break;
+
+				// Dans le cas où nous sommes sur la deuxième ligne, nous stockons cette ligne
+				// de texte dans une autre variable.
+				case 2:
+					firstName = text;
+					break;
+
+				// Idem pour les lignes 3, 4 et 5
+				case 3:
+					county = text;
+					break;
+				case 4:
+					cursus = text;
+					break;
+				case 5:
+					yearIn = text;
+					break;
+
+				// Dans le cas où nous sommes sur la sixieme ligne, qui correspond à une ligne
+				// avec un astérisque
+				default:
+
+					// Nous créons un objet de type Intern avec les variables dans lesquelles nous
+					// avons stocké les informations des 5 lignes précédentes
+					// et nous ajoutons immédiatement cet objet de type Intern à l'arbre binaire
+					this.addIntern(new Intern(familyName, firstName, county, cursus, yearIn));
+
+					// Et nous remettons le compteur à zéro afin de pouvoir repartir sur la création
+					// d'un nouveau stagiaire
+					counter = 0;
+					break;
 				}
+			}
 
 			// Une fois arrivés ici, nous avons parcouru tout le texte,
-			// nous n'avons donc plus besoin de lire le fichier alors nous coupons le flux d'échange de données.
+			// nous n'avons donc plus besoin de lire le fichier alors nous coupons le flux
+			// d'échange de données.
 			br.close();
 			fr.close();
 		} catch (IOException e) {
-			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de pouvoir la régler
+			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de
+			// pouvoir la régler
 			e.printStackTrace();
 		}
 
@@ -324,9 +356,9 @@ public class TreeNodeDao {
 	 * @param internToAdd L'objet de type Intern à ajouter à la fin du fichier .DON
 	 */
 	public void addToDon(Intern internToAdd) {
-		
+
 		FileWriter fw;
-		
+
 		try {
 			fw = new FileWriter(App.getFichierDon(), true);
 			fw.write(internToAdd.getFamilyName().toUpperCase() + "\n" + internToAdd.getFirstName() + "\n"
@@ -339,9 +371,9 @@ public class TreeNodeDao {
 		}
 	}
 
-	
 	/**
-	 * @return retourne un long correspondant à la taille du fichier binaire en octets
+	 * @return retourne un long correspondant à la taille du fichier binaire en
+	 *         octets
 	 */
 	public long getBinarySize() {
 		long binSize = 0;
@@ -359,27 +391,35 @@ public class TreeNodeDao {
 
 	/**
 	 * @param internToAdd L'objet type Intern à ajouter dans le fichier binaire
-	 * Ajoute le noeud à la fin du fichier binaire en tant que feuille: fils gauche vaut -1, fils droit vaut -1 et suivant liste chainée vaut -1 aussi.
+	 *                    Ajoute le noeud à la fin du fichier binaire en tant que
+	 *                    feuille: fils gauche vaut -1, fils droit vaut -1 et
+	 *                    suivant liste chainée vaut -1 aussi.
 	 */
 	public void writeInBinary(Intern internToAdd) {
 		writeInBinary(internToAdd, this.getBinarySize(), -1, -1, -1);
 	}
-	
+
 	/**
-	 * @param internToAdd L'objet type Intern à ajouter dans le fichier binaire
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * Ajoute le noeud en tant que feuille: fils gauche vaut -1, fils droit vaut -1 et suivant liste chainée vaut -1 aussi.
+	 * @param internToAdd    L'objet type Intern à ajouter dans le fichier binaire
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud. Ajoute le noeud en tant que feuille:
+	 *                       fils gauche vaut -1, fils droit vaut -1 et suivant
+	 *                       liste chainée vaut -1 aussi.
 	 */
 	public void writeInBinary(Intern internToAdd, long cursorPosition) {
 		writeInBinary(internToAdd, cursorPosition, -1, -1, -1);
 	}
 
 	/**
-	 * @param internToAdd L'objet type Intern à ajouter dans le fichier binaire
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * @param leftChildInt L'entier correspondant à la position du fils gauche dans le fichier binaire
-	 * @param rightChildInt L'entier correspondant à la position du fils droit dans le fichier binaire
-	 * @param twinInt L'entier correspondant à la position du noeud suivant dans la liste chainée dans le fichier binaire
+	 * @param internToAdd    L'objet type Intern à ajouter dans le fichier binaire
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @param leftChildInt   L'entier correspondant à la position du fils gauche
+	 *                       dans le fichier binaire
+	 * @param rightChildInt  L'entier correspondant à la position du fils droit dans
+	 *                       le fichier binaire
+	 * @param twinInt        L'entier correspondant à la position du noeud suivant
+	 *                       dans la liste chainée dans le fichier binaire
 	 */
 	public void writeInBinary(Intern internToAdd, long cursorPosition, int leftChildInt, int rightChildInt,
 			int twinInt) {
@@ -403,8 +443,10 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * @param twinOrChild L'entier à inscrire dans le fichier binaire.
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du fils gauche, droit ou du noeud suivant dans la liste chainée.
+	 * @param twinOrChild    L'entier à inscrire dans le fichier binaire.
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du fils gauche, droit ou du noeud suivant dans la
+	 *                       liste chainée.
 	 */
 	public void writeIntInBinary(int twinOrChild, long cursorPosition) {
 		try {
@@ -412,7 +454,7 @@ public class TreeNodeDao {
 
 			raf.seek(cursorPosition);
 			raf.writeInt(twinOrChild);
-			
+
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -421,8 +463,10 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * @return Retourne un objet de type Intern stocké à la position du curseur dans le fichier binaire.
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
+	 *         le fichier binaire.
 	 */
 	public Intern readInternFromBinary(long cursorPosition) {
 		String familyName = "";
@@ -433,44 +477,54 @@ public class TreeNodeDao {
 
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			
+
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
-			
-			// On lit tous les caractères du Nom de famille du Stagiaire incluant les espaces supplémentaires
+
+			// On lit tous les caractères du Nom de famille du Stagiaire incluant les
+			// espaces supplémentaires
 			for (int i = 0; i < Intern.getMaxCharNames(); i++) {
 				familyName += raf.readChar();
 			}
-			// On lit tous les caractères du Prénom du Stagiaire incluant les espaces supplémentaires
+			// On lit tous les caractères du Prénom du Stagiaire incluant les espaces
+			// supplémentaires
 			for (int i = 0; i < Intern.getMaxCharNames(); i++) {
 				firstName += raf.readChar();
 			}
-			// On lit tous les caractères du Département du Stagiaire incluant les espaces supplémentaires
+			// On lit tous les caractères du Département du Stagiaire incluant les espaces
+			// supplémentaires
 			for (int i = 0; i < Intern.getMaxCharCounty(); i++) {
 				county += raf.readChar();
 			}
-			// On lit tous les caractères de la Formation du Stagiaire incluant les espaces supplémentaires
+			// On lit tous les caractères de la Formation du Stagiaire incluant les espaces
+			// supplémentaires
 			for (int i = 0; i < Intern.getMaxCharCursus(); i++) {
 				cursus += raf.readChar();
 			}
-			// On lit tous les caractères du l'année du Stagiaire. Ici il n'y a pas d'espace supplémentaire.
+			// On lit tous les caractères du l'année du Stagiaire. Ici il n'y a pas d'espace
+			// supplémentaire.
 			for (int i = 0; i < Intern.getMaxCharYearIn(); i++) {
 				yearIn += raf.readChar();
 			}
-			
-			// On coupe le flux d'échanges de données entre l'application et le fichier afin de libérer de la mémoire pour l'ordinateur.
+
+			// On coupe le flux d'échanges de données entre l'application et le fichier afin
+			// de libérer de la mémoire pour l'ordinateur.
 			raf.close();
 		} catch (IOException e) {
-			
-			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de pouvoir la régler
+
+			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de
+			// pouvoir la régler
 			e.printStackTrace();
 		}
 		return new Intern(familyName.trim(), firstName.trim(), county.trim(), cursus.trim(), yearIn.trim());
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire du noeud fils gauche dans l'abre binaire. Retourne -1 s'il n'y a pas de noeud fils gauche.
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return Retourne un entier correspondant à la place dans le fichier binaire
+	 *         du noeud fils gauche dans l'abre binaire. Retourne -1 s'il n'y a pas
+	 *         de noeud fils gauche.
 	 */
 	public int readLeftChildFromBinary(long cursorPosition) {
 		cursorPosition += Intern.getSizeIntern();
@@ -487,8 +541,11 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire du noeud fils droit dans l'abre binaire. Retourne -1 s'il n'y a pas de noeud fils droit.
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return Retourne un entier correspondant à la place dans le fichier binaire
+	 *         du noeud fils droit dans l'abre binaire. Retourne -1 s'il n'y a pas
+	 *         de noeud fils droit.
 	 */
 	public int readRightChildFromBinary(long cursorPosition) {
 		cursorPosition += Intern.getSizeIntern() + 4;
@@ -505,8 +562,11 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire du noeud suivant dans la liste chainée. Retourne -1 s'il n'y a pas de noeud suivant dans cette liste.
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return Retourne un entier correspondant à la place dans le fichier binaire
+	 *         du noeud suivant dans la liste chainée. Retourne -1 s'il n'y a pas de
+	 *         noeud suivant dans cette liste.
 	 */
 	public int readTwinFromBinary(long cursorPosition) {
 		cursorPosition += Intern.getSizeIntern() + 4 + 4;
@@ -523,18 +583,45 @@ public class TreeNodeDao {
 	}
 
 	/**
-	 * @return Retourn un int correspondant au nombre de noeuds écrits dans le fichier binaire.
+	 * @return Retourn un int correspondant au nombre de noeuds écrits dans le
+	 *         fichier binaire.
 	 */
 	public int getNumberNodeInBinary() {
-		return (int) ( this.getBinarySize() / TreeNode.getSizeNode() );
+		return (int) (this.getBinarySize() / TreeNode.getSizeNode());
 	}
-	
-	
+
 	/**
 	 * Supprime le fichier binaire
 	 */
 	public void deleteBinary() {
 		File bin = new File(App.getFichierBin());
 		bin.delete();
+	}
+
+	/**
+	 * Lit le fichier binaire et l'affiche dans la console
+	 */
+	public void readBinary() {
+		try {
+			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
+			for (long cursor = 0; cursor < this.getBinarySize(); cursor++) {
+				Intern intern = this.readInternFromBinary(cursor);
+				int indexLeft = this.readLeftChildFromBinary(cursor);
+				int indexRight = this.readRightChildFromBinary(cursor);
+				int indexTwin = this.readTwinFromBinary(cursor);
+				System.out.println( intern.getFamilyNameLong().substring(0, 10) +"\t"
+									+ intern.getFirstNameLong().substring(0, 11) + "\t"
+									+ intern.getCounty() + "\t"
+									+ intern.getCursusLong() + "\t"
+									+ intern.getYearIn()+ "\t"
+									+ indexLeft + "\t"
+									+ indexRight + "\t"
+									+ indexTwin);
+				cursor += TreeNode.getSizeNode() - 1;
+			}
+			raf.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
