@@ -3,6 +3,7 @@ package fr.isika.cda27.teamJADE.view;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
+import fr.isika.cda27.teamJADE.view.CustomMainScene;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
 import fr.isika.cda27.teamJADE.model.InternDao;
@@ -37,12 +38,19 @@ public class App extends Application {
 
 	@Override
 	public void start(Stage stage) {
-		var javaVersion = SystemInfo.javaVersion();
-		var javafxVersion = SystemInfo.javafxVersion();
 
-		var label = new Label("Hello, JavaFX " + javafxVersion + ", running on Java " + javaVersion + ".");
-		var scene = new Scene(new StackPane(label), 640, 480);
+		// mainscene
+		CustomMainScene root = new CustomMainScene();
+
+		// scene
+		Scene scene = new Scene(root);
+
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+
+		stage.setResizable(false);
 		stage.setScene(scene);
+		stage.setTitle("Annuaire");
+		stage.show();
 //        stage.show();
 
 //    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
