@@ -73,6 +73,9 @@ public class App extends Application {
 		test.removeIntern(PY);
 		System.out.println("======================");
 		test.readBinary();
+		System.out.println("======================");
+		test.addIntern(PY);
+		test.readBinary();
 
 		launch();
 	}

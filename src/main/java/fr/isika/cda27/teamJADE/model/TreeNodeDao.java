@@ -149,33 +149,39 @@ public class TreeNodeDao {
 
 		// Si la valeur du noeud à insérer est égale à celle du noeud courant
 		else {
-			// Nous ajoutons l'objet de type Intern à la liste chaînée du noeud courant
-			treeNode.getTwins().add(intern);
-			int read = 1;
+			// Si le noeud est déjà présent
+			if (treeNode.getTwins().contains(intern)) {
+				System.out.println("Le stagiaire est déjà présent dans la base de données");
+			} else {
 
-			/*
-			 * Pour le fichier binaire nous lisons la valeur de position du noeud suivant le
-			 * noeud courant. Tant que nous n'obtenons pas -1 c'est que nous ne sommes pas
-			 * au bout de la liste chaînée alors nous déplaçons notre curseur vers la
-			 * position du noeud suivant et nous recommençons à lire la valeur de position
-			 * du noeud suivant
-			 */
-			while (read > 0) {
-				read = readTwinFromBinary(cursorPosition);
-				if (read > 0)
-					cursorPosition = read * TreeNode.getSizeNode();
+				// Sinon nous ajoutons l'objet de type Intern à la liste chaînée du noeud
+				// courant
+				treeNode.getTwins().add(intern);
+				int read = 1;
+
+				/*
+				 * Pour le fichier binaire nous lisons la valeur de position du noeud suivant le
+				 * noeud courant. Tant que nous n'obtenons pas -1 c'est que nous ne sommes pas
+				 * au bout de la liste chaînée alors nous déplaçons notre curseur vers la
+				 * position du noeud suivant et nous recommençons à lire la valeur de position
+				 * du noeud suivant
+				 */
+				while (read > 0) {
+					read = readTwinFromBinary(cursorPosition);
+					if (read > 0)
+						cursorPosition = read * TreeNode.getSizeNode();
+				}
+
+				/*
+				 * Une fois le bout de liste chaînée atteint, nous ajoutons le noeud en bout de
+				 * liste et nous remplaçons dans le fichier binaire le -1 correspondant suivant
+				 * dans la liste chainée par la valeur de la position du noeud que l'on va
+				 * ajouter à la fin du fichier binaire
+				 */
+				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4 + 4);
+				this.writeInBinary(intern, this.getBinarySize());
 			}
-
-			/*
-			 * Une fois le bout de liste chaînée atteint, nous ajoutons le noeud en bout de
-			 * liste et nous remplaçons dans le fichier binaire le -1 correspondant suivant
-			 * dans la liste chainée par la valeur de la position du noeud que l'on va
-			 * ajouter à la fin du fichier binaire
-			 */
-			this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4 + 4);
-			this.writeInBinary(intern, this.getBinarySize());
 		}
-
 		return treeNode;
 
 	}
@@ -187,42 +193,45 @@ public class TreeNodeDao {
 			root = delete(intern, root);
 		}
 	}
-	
+
 	public TreeNode delete(Intern intern, TreeNode treeNode) {
-		return this.delete(intern, treeNode,0,0,false);
+		return this.delete(intern, treeNode, 0, 0, false);
 	}
-	
-	public TreeNode delete(Intern intern, TreeNode treeNode, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
-		
+
+	public TreeNode delete(Intern intern, TreeNode treeNode, long parentCursorPosition, long childCursorPosition,
+			boolean isFromLeft) {
+
 		// Si le noeud courant est null
 		if (treeNode == null) {
 			return treeNode;
 		}
 		long buffer = childCursorPosition;
-		
+
 		// Si la valeur du noeud à supprimer est plus petite que celle du noeud courant
 		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
 			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * TreeNode.getSizeNode();
 			treeNode.setLeftChild(delete(intern, treeNode.getLeftChild(), buffer, childCursorPosition, true));
 		}
-		
+
 		// Si la valeur du noeud à supprimer est plus grande que celle du noeud courant
 		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
-			
+
 			childCursorPosition = readRightChildFromBinary(childCursorPosition) * TreeNode.getSizeNode();
-			treeNode.setRightChild(delete(intern, treeNode.getRightChild(), buffer, childCursorPosition, false));
-		}
-		
+			treeNode.setRightChild(delete(intern, treeNode.getRightChild(), buffer, childCursorPosition, false));		
+
 		// Si la valeur du noeud à supprimer est égale à celle du noeud courant
-		else {
+		} else {
 			// Si on a une LinkedList > 1 donc si on a plusieurs homonymes
 			if (treeNode.getTwins().size() > 1) {
 				int index = treeNode.getTwins().indexOf(intern);
 				for (int i = 0; i < index; i++) {
 					buffer = childCursorPosition;
 					childCursorPosition = readTwinFromBinary(childCursorPosition) * TreeNode.getSizeNode();
-					if (i == index -1) {
-						this.writeIntInBinary(index+1 >= treeNode.getTwins().size()-1 ? -1 : readTwinFromBinary(childCursorPosition) , buffer + Intern.getSizeIntern() + 4 + 4);
+					if (i == index - 1) {
+						this.writeIntInBinary(
+								index + 1 >= treeNode.getTwins().size() - 1 ?
+										-1 : readTwinFromBinary(childCursorPosition),
+								buffer + Intern.getSizeIntern() + 4 + 4);
 					}
 				}
 				this.eraseFromBinary(childCursorPosition);
@@ -230,31 +239,37 @@ public class TreeNodeDao {
 				return treeNode;
 				// Sinon
 			} else {
-				this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + Intern.getSizeIntern(): parentCursorPosition + Intern.getSizeIntern()+4);
+				TreeNode substitute = deleteNode(treeNode);
+				this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + Intern.getSizeIntern()
+						: parentCursorPosition + Intern.getSizeIntern() + 4);
 				this.eraseFromBinary(childCursorPosition);
-				return deleteNode(treeNode);
+				return substitute;
 			}
-			
+
 		}
 		return treeNode;
-		
+
 	}
 
 	private TreeNode deleteNode(TreeNode treeNode) {
 		// Si il n'y a pas d'enfants gauche
-		if (treeNode.getLeftChild() == null)
+		if (treeNode.getLeftChild() == null && treeNode.getLeftChild() != null) {
 			return treeNode.getRightChild();
 
 		// Si il n'y a pas d'enfants droit
-		if (treeNode.getRightChild() == null)
+		} else if (treeNode.getRightChild() == null && treeNode.getRightChild() != null) {
 			return treeNode.getLeftChild();
 
 		// Si il y a deux enfants
+		} else if (treeNode.getRightChild() != null && treeNode.getRightChild() != null) {
 		TreeNode substitute = findSubstitute(treeNode.getRightChild());
 		treeNode.setFamilyName(substitute.getFamilyName());
 		treeNode.setTwins(substitute.getTwins());
 
-		treeNode.setRightChild(delete(substitute.getTwins().get(0), treeNode.getRightChild()));
+		treeNode.setRightChild(delete(substitute.getTwins().getFirst(), treeNode.getRightChild()));
+		
+		}
+		// S'il n'y a ni d'enfant gauche ni d'enfant droit
 
 		return treeNode;
 	}
@@ -611,7 +626,7 @@ public class TreeNodeDao {
 	public void eraseFromBinary(long cursorPosition) {
 		try {
 			String white = "";
-			for (int i = 0; i < TreeNode.getSizeNode()/2; i++) {
+			for (int i = 0; i < TreeNode.getSizeNode() / 2; i++) {
 				white += " ";
 			}
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -622,7 +637,7 @@ public class TreeNodeDao {
 			e.printStackTrace();
 		}
 	}
-	
+
 	/**
 	 * Supprime le fichier binaire
 	 */
@@ -642,14 +657,10 @@ public class TreeNodeDao {
 				int indexLeft = this.readLeftChildFromBinary(cursor);
 				int indexRight = this.readRightChildFromBinary(cursor);
 				int indexTwin = this.readTwinFromBinary(cursor);
-				System.out.println( intern.getFamilyNameLong().substring(0, 10) +"\t"
-									+ intern.getFirstNameLong().substring(0, 11) + "\t"
-									+ intern.getCounty() + "\t"
-									+ intern.getCursusLong() + "\t"
-									+ intern.getYearIn()+ "\t"
-									+ indexLeft + "\t"
-									+ indexRight + "\t"
-									+ indexTwin);
+				System.out.println(
+						intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
+								+ "\t" + intern.getCounty() + "\t" + intern.getCursusLong() + "\t" + intern.getYearIn()
+								+ "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
 				cursor += TreeNode.getSizeNode() - 1;
 			}
 			raf.close();
