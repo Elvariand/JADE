@@ -9,6 +9,7 @@ import fr.isika.cda27.teamJADE.utilz.ButtonActions;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
 import javafx.beans.value.ChangeListener;
@@ -123,7 +124,7 @@ public class CustomMainScene extends AnchorPane {
 
 		// On crée la croix du haut
 		String pathTop = new String("M98 69.5002C98 23.8722 61 -7.5 0.5 0L0.5 97.0002L98 97.0002L98 69.5002Z");
-		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", pathTop, false, 30);
+		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png","fleche.png", pathTop, false, 30);
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
@@ -135,11 +136,12 @@ public class CustomMainScene extends AnchorPane {
 				"Modifier");
 		StackPaneMenubar printBtn = new StackPaneMenubar("imprimante_orange.png", "imprimante_grise.png", "Imprimer");
 		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_membre_orange.png", "voir_membre_gris.png",
-				"Voir les membres");
+				"Membres");
 
 		// On crée le bouton quitter
+
 		String pathBot = new String(
-				"M5.02681e-06 0L100 0L100 19.5L100 47.5C100 49 99.8383 52.4704 99 57.5C98 63.5 95 73 92 78C89 83 86.5 88 80 94.5C73.5 101 64.5 107 53.5 111C44.7 114.2 37 115 31 115L5.02681e-06 115L5.02681e-06 0Z");
+				"M5.02681e-06 0L300 4.58562e-07L300 19.5L300 47.5C300 49 299.838 52.4703 299 57.5C298 63.5 295 73 292 78C289 83 286.5 88 280 94.5C273.5 101 264.5 107 253.5 111C244.7 114.2 237 115 231 115L5.02681e-06 115L5.02681e-06 0Z");
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				pathBot);
 
@@ -199,8 +201,55 @@ public class CustomMainScene extends AnchorPane {
 		buttonActions.configureButtonAction(seeMemberBtn, seeMembersContentVbox, bgStackPane, closeBtn,
 				seeMemberBtnConfig);
 		buttonActions.configureButtonAction(quitBtn, quitContentVbox, bgStackPane, closeBtn, quitBtnBtnConfig);
+System.out.println(menuHbox.getTranslateX());
+		
 
+
+	// quand on clique sur le bouton fleche/croix
 		buttonActions.configureCloseBtn(menuHbox, allButtons);
+		closeBtn.getButton().setOnAction(event -> {
+			
+			RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), closeBtn.getBtnOrangeImageView());
+			
+			if((int)(menuHbox.getTranslateX())== -985) {
+			// si la menuHbox est à -985 on ouvre un peu
+			moveTransition.setDuration(Duration.millis(500));
+			moveTransition.setNode(menuHbox);
+			moveTransition.setToX(-800);
+			moveTransition.play();
+			// on fait pivoter l'image de 180°
+			rotateTransition.setByAngle(180);
+			rotateTransition.play();
+			
+			}else if((int)(menuHbox.getTranslateX())== -800) {
+			// sinon si la menuHbox est à -600 on referme
+			moveTransition.setDuration(Duration.millis(500));
+			moveTransition.setNode(menuHbox);
+			moveTransition.setToX(-985);
+			moveTransition.play();
+			// on fait pivoter l'image de 180°
+			rotateTransition.setByAngle(180);
+			rotateTransition.play();
+			
+			}else {
+			// sinon on ferme
+			moveTransition.setDuration(Duration.millis(500));
+			moveTransition.setNode(menuHbox);
+			moveTransition.setToX(-985);
+			moveTransition.play();
+
+			closeBtn.getBtnGreyImageView().setVisible(false);
+			closeBtn.getBtnOrangeImageView().setVisible(true);
+
+			changeToOrange(scopeBtn);
+			changeToOrange(addBtn);
+			changeToOrange(removeBtn);
+			changeToOrange(updateBtn);
+			changeToOrange(printBtn);
+			changeToOrange(seeMemberBtn);
+			changeToOrange(quitBtn);
+			}
+		});
 
 		buttonActions.configureRefreshBtn(scopeContentVbox);
 
@@ -243,4 +292,42 @@ public class CustomMainScene extends AnchorPane {
 
 	/* ---------------------------------------------------------------- */
 
+	private void changeToOrange(StackPaneMenubar button) {
+		applyColorTransition(button.getSvgPath(), "#DD734C");
+		button.getSvgPath().setFill(Color.web("#DD734C"));
+		button.getBtnOrangeImageView().setVisible(false);
+		button.getBtnGreyImageView().setVisible(true);
+	}
+
+	private void changeToGrey(StackPaneMenubar button) {
+		applyColorTransition(button.getSvgPath(), "#272727");
+		button.getSvgPath().setFill(Color.web("#272727"));
+		button.getBtnOrangeImageView().setVisible(true);
+		button.getBtnGreyImageView().setVisible(false);
+	}
+	
+	private void applyColorTransition(SVGPath svgPath, String newColor) {
+		Color initialColor = Color.web(getCurrentColor(svgPath));
+		Color finalColor = Color.web(newColor);
+
+		// transition de couleur
+		Timeline timeline = new Timeline(
+				new KeyFrame(Duration.ZERO, new KeyValue(svgPath.fillProperty(), initialColor)),
+				new KeyFrame(Duration.millis(500), new KeyValue(svgPath.fillProperty(), finalColor)));
+		timeline.play();
+	}
+	
+	private String getCurrentColor(SVGPath svgPath) {
+		// couleur actuelle de remplissage de l'SVGPath
+		Paint fill = svgPath.getFill();
+
+		if (fill instanceof Color) {
+			Color color = (Color) fill;
+			return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
+					(int) (color.getBlue() * 255));
+		}
+
+		// Si la couleur n'est pas du type Color, retourne une valeur par défaut
+		return "#000000";
+	}
 }

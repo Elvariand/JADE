@@ -40,11 +40,12 @@ public class App extends Application {
 	public void start(Stage stage) {
 
 		// mainscene
-		CustomLoginScene root = new CustomLoginScene();
+//		CustomLoginScene root = new CustomLoginScene();
+		CustomMainScene root = new CustomMainScene();
 
 		// scene
 		Scene scene = new Scene(root);
-
+		scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 		
 
 		stage.setResizable(false);

@@ -75,7 +75,8 @@ public class ButtonActions {
 			moveTransition.play();
 
 			closeBtn.getBtnGreyImageView().setVisible(true);
-
+			closeBtn.getBtnOrangeImageView().setVisible(false);
+			
 			changeToGrey(otherButtons.get(0));
 			changeToGrey(otherButtons.get(1));
 			changeToGrey(otherButtons.get(2));
