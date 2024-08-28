@@ -695,7 +695,7 @@ public class TreeNodeDao {
 	 *         de noeud fils droit.
 	 */
 	public int readRightChildFromBinary(long cursorPosition) {
-		cursorPosition += Intern.getSizeIntern() + 4;
+		cursorPosition += Intern.getSizeIntern() + TreeNode.getSizeIndex();
 		int rightChildInt = -1;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -716,7 +716,7 @@ public class TreeNodeDao {
 	 *         noeud suivant dans cette liste.
 	 */
 	public int readTwinFromBinary(long cursorPosition) {
-		cursorPosition += Intern.getSizeIntern() + 4 + 4;
+		cursorPosition += Intern.getSizeIntern() + TreeNode.getSizeIndex() + TreeNode.getSizeIndex();
 		int TwinInt = -1;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
