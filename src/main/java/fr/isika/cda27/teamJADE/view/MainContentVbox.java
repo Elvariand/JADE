@@ -2,6 +2,7 @@ package fr.isika.cda27.teamJADE.view;
 
 import java.util.ArrayList;
 
+import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -16,9 +17,10 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
+
 public class MainContentVbox extends VBox {
 
-	private InnerShadow innerShadow;
 	private VBox mainContentVbox;
 	private HBox buttonBox;
 	private Button leftButton;
@@ -27,21 +29,12 @@ public class MainContentVbox extends VBox {
 	private VBox scopeScene;
 	private ArrayList<String> gridPaneLabelsList;
 
-	/**
-	 * @param innerShadow
-	 */
+	
 	public MainContentVbox() {
-		this.innerShadow = new InnerShadow();
-		innerShadow.setRadius(10);
-		innerShadow.setOffsetX(5.0);
-		innerShadow.setOffsetY(5.0);
-		innerShadow.setColor(Color.web("#ffffff", 0.16));
-
 		this.mainContentVbox = new VBox();
 		mainContentVbox.setPrefSize(690, 720);
 		mainContentVbox.setAlignment(Pos.CENTER);
-		mainContentVbox.setTranslateX(100);
-		VBox.setMargin(mainContentVbox, new Insets(0, 0, 0, 100));
+		mainContentVbox.setTranslateX(200);
 
 		this.titleLabel = new Label();
 		titleLabel.setPrefSize(680, 100);
@@ -53,19 +46,9 @@ public class MainContentVbox extends VBox {
 		buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
 		buttonBox.setPrefSize(680, 192);
 
-		this.leftButton = new Button();
-		leftButton.setPrefSize(190, 40);
-		leftButton.setStyle("-fx-background-color: #272727; -fx-background-radius: 13;");
-		leftButton.setTextFill(Color.web("#DD734C"));
-		leftButton.setFont(Font.font("Krona One", 18));
-		leftButton.setEffect(innerShadow);
+		this.leftButton = new CustomButton("");
 
-		this.rightButton = new Button();
-		rightButton.setPrefSize(190, 40);
-		rightButton.setStyle("-fx-background-color: #272727; -fx-background-radius: 13;");
-		rightButton.setTextFill(Color.web("#DD734C"));
-		rightButton.setFont(Font.font("Krona One", 18));
-		rightButton.setEffect(innerShadow);
+		this.rightButton = new CustomButton("");
 
 		this.gridPaneLabelsList = new ArrayList();
 		
@@ -85,20 +68,7 @@ public class MainContentVbox extends VBox {
 		this.gridPaneLabelsList = gridPaneLabelsList;
 	}
 
-	/**
-	 * @return the innerShadow
-	 */
-	public InnerShadow getInnerShadow() {
-		return innerShadow;
-	}
-
-	/**
-	 * @param innerShadow the innerShadow to set
-	 */
-	public void setInnerShadow(InnerShadow innerShadow) {
-		this.innerShadow = innerShadow;
-	}
-
+	
 	/**
 	 * @return the mainContentVbox
 	 */
@@ -169,60 +139,22 @@ public class MainContentVbox extends VBox {
 		this.titleLabel.setText(titleLabel);
 	}
 
-	public VBox createScopeVbox() {
-
-		// Label
-		this.setTitleLabel("Recherche avancée");
-
-		// GridPane
-		GridPane gridPane = createFormGridPane();
-
-		// button
-		this.getLeftButton().setText("Réinitialiser");
-		this.getRightButton().setText("Rechercher");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, gridPane, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public VBox createAddVbox() {
-
-		// Label
-		this.setTitleLabel("Ajout d'un stagiaire");
-
-		// GridPane
-		GridPane gridPane = createFormGridPane();
-
-		// button
-		this.getLeftButton().setText("Annuler");
-		this.getRightButton().setText("Ajouter");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, gridPane, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public VBox createRemoveVbox() {
-
-		// Label
-		this.setTitleLabel("Etes vous sûr de vouloir supprimer\nle stagiaire suivant ?");
-
-		// GridPane
-		GridPane gridPane = createFormGridPane();
-
-		// button
-		this.getLeftButton().setText("Non");
-		this.getRightButton().setText("Oui");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, gridPane, buttonBox);
-
-		return mainContentVbox;
-	}
-
+	
+	
+	
+	
+	
+	/*
+	 * 
+	 * 
+	 * LES FONCTIONS QU'IL RESTE A CHANGER EN CLASSES
+	 * 
+	 * 
+	 * */
+	
+	
+	
+	
 	public VBox createUpdateVbox() {
 
 		// Label
@@ -340,24 +272,4 @@ public class MainContentVbox extends VBox {
 		return gridPane;
 	}
 
-	private String getLabelText(int index) {
-		switch (index) {
-		case 0:
-			return "Nom";
-		case 1:
-			return "Prénom";
-		case 2:
-			return "Département";
-		case 3:
-			return "Formation";
-		case 4:
-			return "Année d'entrée";
-		default:
-			return "";
-		}
-	}
-
-	public VBox getScopeScene() {
-		return scopeScene;
-	}
 }

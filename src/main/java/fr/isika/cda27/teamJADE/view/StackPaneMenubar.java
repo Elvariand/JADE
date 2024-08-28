@@ -18,9 +18,9 @@ import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 public class StackPaneMenubar extends StackPane {
-	private StackPane stackPane;
 	private StackPane btnStackPane;
-	private SVGPath svgPath;
+	private SVGPath smallSvgPath;
+	private SVGPath largeSvgPath;
 	private Button button;
 	private ImageView btnOrangeImageView;
 	private ImageView btnGreyImageView;
@@ -32,6 +32,8 @@ public class StackPaneMenubar extends StackPane {
 	private boolean visibility = true;
 	private Tooltip tooltip;
 	private String text;
+	private GridPane gridPane;
+	private Label label;
 
 	/**
 	 * @param stackPane
@@ -56,12 +58,15 @@ public class StackPaneMenubar extends StackPane {
 		this.orangeFile = orangeFile;
 		this.greyFile = greyFile;
 
-		this.stackPane = new StackPane();
 
-		this.svgPath = new SVGPath();
-		svgPath.setContent("M0,0 H300 V87 H0 Z");
-		svgPath.setFill(Color.web("#DD734C"));
-//    	svgPath.setTranslateX(-80);
+		this.largeSvgPath = new SVGPath();
+		largeSvgPath.setContent("M0,0 H300 V87 H0 Z");
+		largeSvgPath.setFill(Color.web("#DD734C"));
+		
+		this.smallSvgPath = new SVGPath();
+		smallSvgPath.setContent("M0,0 H100 V87 H0 Z");
+		smallSvgPath.setFill(Color.web("#DD734C"));
+		smallSvgPath.setVisible(false);
 
 		this.button = new Button();
 		button.setPrefSize(btnWidth, btnHeight);
@@ -84,19 +89,20 @@ public class StackPaneMenubar extends StackPane {
 
 		btnStackPane.getChildren().addAll(btnOrangeImageView, btnGreyImageView);
 
-		GridPane gridPane = createMenuGridPane();
+		this.gridPane = createMenuGridPane();
 		
-		Label label = new Label("     " + text);
+		this.label = new Label("     " + text);
 		label.setFont(Font.font("Krona One", 18));
 		gridPane.add(label, 0, 0);
 		gridPane.add(btnStackPane, 1, 0);
 		
 		// on translate
-		svgPath.setTranslateX(-100);
+		largeSvgPath.setTranslateX(-100);
 		gridPane.setTranslateX(-100);
 		button.setTranslateX(-100);
-
-		stackPane.getChildren().addAll(svgPath, gridPane, button);
+		this.setTranslateX(-100);
+		
+		this.getChildren().addAll(largeSvgPath, smallSvgPath, gridPane, button);
 
 	}
 
@@ -111,11 +117,11 @@ public class StackPaneMenubar extends StackPane {
 
 		this.greyFile = greyFile;
 
-		this.stackPane = new StackPane();
 
-		this.svgPath = new SVGPath();
-		svgPath.setContent(path);
-		svgPath.setFill(Color.web("#DD734C"));
+
+		this.smallSvgPath = new SVGPath();
+		smallSvgPath.setContent(path);
+		smallSvgPath.setFill(Color.web("#DD734C"));
 
 		this.button = new Button();
 		button.setPrefSize(btnWidth, btnHeight);
@@ -133,12 +139,13 @@ public class StackPaneMenubar extends StackPane {
 		btnGreyImageView.setFitHeight(imgSize);
 		btnGreyImageView.setVisible(visibility);
 
-		btnStackPane.getChildren().addAll(svgPath, btnOrangeImageView, btnGreyImageView);
-		stackPane.getChildren().addAll(btnStackPane, button);
+		btnStackPane.getChildren().addAll(smallSvgPath, btnOrangeImageView, btnGreyImageView);
+		this.setTranslateX(-100);
+		this.getChildren().addAll(btnStackPane, button);
 	}
 
 	// Pour le bouton déconnexion
-	public StackPaneMenubar(String orangeFile, String greyFile, String text, String path) {
+	public StackPaneMenubar(String orangeFile, String greyFile, String text, String largePath, String smallPath) {
 		this.text = text;
 
 		this.btnWidth = 300;
@@ -148,12 +155,15 @@ public class StackPaneMenubar extends StackPane {
 		this.orangeFile = orangeFile;
 		this.greyFile = greyFile;
 
-		this.stackPane = new StackPane();
 
-		this.svgPath = new SVGPath();
-		svgPath.setContent(path);
-		svgPath.setFill(Color.web("#DD734C"));
-
+		this.largeSvgPath = new SVGPath();
+		largeSvgPath.setContent(largePath);
+		largeSvgPath.setFill(Color.web("#DD734C"));
+		
+		this.smallSvgPath = new SVGPath();
+		smallSvgPath.setContent(smallPath);
+		smallSvgPath.setFill(Color.web("#DD734C"));
+		smallSvgPath.setVisible(false);
 		
 		this.button = new Button();
 		button.setPrefSize(btnWidth, btnHeight);
@@ -176,19 +186,20 @@ public class StackPaneMenubar extends StackPane {
 
 		btnStackPane.getChildren().addAll(btnOrangeImageView, btnGreyImageView);
 		
-		GridPane gridPane = createMenuGridPane();
+		this.gridPane = createMenuGridPane();
 		
-		Label label = new Label("     " + text);
+		this.label = new Label("     " + text);
 		label.setFont(Font.font("Krona One", 18));
 		gridPane.add(label, 0, 0);
 		gridPane.add(btnStackPane, 1, 0);
 		
 		// on translate
-		svgPath.setTranslateX(-100);
+		largeSvgPath.setTranslateX(-100);
 		gridPane.setTranslateX(-100);
 		button.setTranslateX(-100);
 
-		stackPane.getChildren().addAll(svgPath, gridPane, button);
+		this.setTranslateX(-100);
+		this.getChildren().addAll(largeSvgPath, smallSvgPath, gridPane, button);
 	}
 
 	/**
@@ -219,19 +230,6 @@ public class StackPaneMenubar extends StackPane {
 		this.text = text;
 	}
 
-	/**
-	 * @return the stackPane
-	 */
-	public StackPane getStackPane() {
-		return stackPane;
-	}
-
-	/**
-	 * @param stackPane the stackPane to set
-	 */
-	public void setStackPane(StackPane stackPane) {
-		this.stackPane = stackPane;
-	}
 
 	/**
 	 * @return the btnStackPane
@@ -250,15 +248,29 @@ public class StackPaneMenubar extends StackPane {
 	/**
 	 * @return the svgPath
 	 */
-	public SVGPath getSvgPath() {
-		return svgPath;
+	public SVGPath getLargeSvgPath() {
+		return largeSvgPath;
 	}
 
 	/**
 	 * @param svgPath the svgPath to set
 	 */
-	public void setSvgPath(SVGPath svgPath) {
-		this.svgPath = svgPath;
+	public void setLargeSvgPath(SVGPath largeSvgPath) {
+		this.largeSvgPath = largeSvgPath;
+	}
+	
+	/**
+	 * @return the svgPath
+	 */
+	public SVGPath getSmallSvgPath() {
+		return smallSvgPath;
+	}
+	
+	/**
+	 * @param svgPath the svgPath to set
+	 */
+	public void setSmallSvgPath(SVGPath smallSvgPath) {
+		this.smallSvgPath = smallSvgPath;
 	}
 
 	/**
@@ -386,6 +398,26 @@ public class StackPaneMenubar extends StackPane {
 	public void setVisibility(boolean visibility) {
 		this.visibility = visibility;
 	}
+
+	
+	
+	
+	
+	/**
+	 * @return the label
+	 */
+	public Label getLabel() {
+		return label;
+	}
+
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(Label label) {
+		this.label = label;
+	}
+
 
 	private GridPane createMenuGridPane() {
 		

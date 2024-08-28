@@ -1,35 +1,29 @@
 package fr.isika.cda27.teamJADE.utilz;
 
-import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomTextFieldValues.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW;
+
 public class CustomTextField extends TextField {
 
 	private TextField textField;
 	private InnerShadow innerShadow;
-//	private PasswordField passwordField; 
 
 	/**
 	 * @param textField
 	 * @param innerShadow
 	 */
 	public CustomTextField() {
-//		this.setPasswordField(new PasswordField()); 
-		this.setPrefHeight(35);
+		this.setPrefHeight(TF_HEIGHT);
 		this.setStyle("-fx-background-color : #DD734C; " + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent;");
 		this.setFont(Font.font("Krona One", 18)); 
 
-
-		this.innerShadow = new InnerShadow();
-		innerShadow.setRadius(23.93);
-		innerShadow.setOffsetX(2.0);
-		innerShadow.setOffsetY(2.0);
-		innerShadow.setColor(Color.web("#000000", 0.1));
-		this.setEffect(innerShadow);
+		this.setEffect(INNER_SHADOW);
 
 	}
 	
@@ -65,16 +59,5 @@ public class CustomTextField extends TextField {
 	}
 
 
-
-//	public PasswordField getPasswordField() {
-//		return passwordField;
-//	}
-//
-//
-//
-//	public void setPasswordField(PasswordField passwordField) {
-//		this.passwordField = passwordField;
-//	}
-	
 
 }

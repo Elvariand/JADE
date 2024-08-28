@@ -1,13 +1,14 @@
 package fr.isika.cda27.teamJADE.utilz;
 
 import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
 import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
+
 public class CustomButton extends Button {
-	private InnerShadow innerShadow;
 	private Button button;
 	private String text;
 	
@@ -18,17 +19,11 @@ public class CustomButton extends Button {
 	public CustomButton(String text) {
 		this.text = text;
 		
-		this.innerShadow =  new InnerShadow();
-		innerShadow.setRadius(10);
-		innerShadow.setOffsetX(5.0);
-		innerShadow.setOffsetY(5.0);
-		innerShadow.setColor(Color.web("#ffffff", 0.16));
-		
-		this.setPrefSize(190, 40);
+		this.setPrefSize(BTN_WIDTH, BTN_HEIGHT);
 		this.setStyle("-fx-background-color: #272727; -fx-background-radius: 13;");
 		this.setTextFill(Color.web("#DD734C"));
 		this.setFont(Font.font("Krona One", 18));
-		this.setEffect(innerShadow);
+		this.setEffect(INNER_SHADOW);
 		this.setText(text);
 		
 		this.setOnMouseEntered(event -> {
@@ -42,18 +37,7 @@ public class CustomButton extends Button {
 		});
 		
 	}
-	/**
-	 * @return the innerShadow
-	 */
-	public InnerShadow getInnerShadow() {
-		return innerShadow;
-	}
-	/**
-	 * @param innerShadow the innerShadow to set
-	 */
-	public void setInnerShadow(InnerShadow innerShadow) {
-		this.innerShadow = innerShadow;
-	}
+
 	/**
 	 * @return the button
 	 */

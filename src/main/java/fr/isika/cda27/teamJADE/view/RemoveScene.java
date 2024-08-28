@@ -16,8 +16,9 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
+
 public class RemoveScene extends VBox {
-	private InnerShadow innerShadow;
 	private HBox buttonBox;
 	private Button leftButton;
 	private Button rightButton;
@@ -26,39 +27,30 @@ public class RemoveScene extends VBox {
 	private String[] gridPaneLabelsList;
 	private GridPane gridPane;
 
-	/**
-	 * @param innerShadow
-	 */
 	public RemoveScene() {
-		this.innerShadow = new InnerShadow();
-		innerShadow.setRadius(10);
-		innerShadow.setOffsetX(5.0);
-		innerShadow.setOffsetY(5.0);
-		innerShadow.setColor(Color.web("#ffffff", 0.16));
 
-		this.setPrefSize(690, 720);
+		this.setPrefSize(VBOX_WIDTH, VBOX_HEIGHT);
 		this.setAlignment(Pos.CENTER);
-		this.setTranslateX(100);
-		VBox.setMargin(this, new Insets(0, 0, 0, 100));
+		this.setTranslateX(TOX_VBOX);
 
-		this.titleLabel = new Label("Etes vous sûr de vouloir supprimer\nle stagiaire suivant ?");
-		titleLabel.setPrefSize(680, 100);
+		this.titleLabel = new Label("Etes vous sûr de vouloir \nsupprimer le stagiaire suivant ?");
+		titleLabel.setPrefSize(TITLE_WIDTH, TITLE_HEIGHT);
 		titleLabel.setFont(Font.font("Krona One", 25));
 		titleLabel.setStyle("-fx-alignment: center;");
 		titleLabel.setTextFill(Color.web("#272727"));
 
 		this.gridPaneLabelsList = new String[5];
-		gridPaneLabelsList[0] = "test1";
-		gridPaneLabelsList[1] = "test2";
-		gridPaneLabelsList[2] = "test3";
-		gridPaneLabelsList[3] = "test4";
-		gridPaneLabelsList[4] = "test5";
+		gridPaneLabelsList[0] = "";
+		gridPaneLabelsList[1] = "";
+		gridPaneLabelsList[2] = "";
+		gridPaneLabelsList[3] = "";
+		gridPaneLabelsList[4] = "";
+		
 		this.gridPane = createFormGridPane(gridPaneLabelsList);
 
-		this.buttonBox = new HBox(100);
+		this.buttonBox = new HBox(SPACE_BETWEEN_BTNS);
 		buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
-		buttonBox.setPrefSize(680, 50);
-
+		buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 		this.leftButton = new CustomButton("Non");
 
 		this.rightButton = new CustomButton("Oui");
@@ -66,27 +58,13 @@ public class RemoveScene extends VBox {
 		buttonBox.getChildren().addAll(leftButton, rightButton);
 
 		this.labelError = new Label("Veuilez sélectionner un stagiaire à supprimer");
-		labelError.setPrefSize(680, 100);
+		labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		labelError.setFont(Font.font("Krona One", 14));
 		labelError.setStyle("-fx-alignment: center;");
 		labelError.setTextFill(Color.web("#272727"));
 		labelError.setVisible(false);
 		
 		this.getChildren().addAll(titleLabel, gridPane, labelError, buttonBox);
-	}
-
-	/**
-	 * @return the innerShadow
-	 */
-	public InnerShadow getInnerShadow() {
-		return innerShadow;
-	}
-
-	/**
-	 * @param innerShadow the innerShadow to set
-	 */
-	public void setInnerShadow(InnerShadow innerShadow) {
-		this.innerShadow = innerShadow;
 	}
 
 	/**
@@ -184,49 +162,42 @@ public class RemoveScene extends VBox {
 
 	public GridPane createFormGridPane(String[] gridPaneLabelsList) {
 
-		String[] labelTexts = { "Nom de famille", "Prénom", "Région", "Formation suivie", "Année" };
-
 		// GridPane
 		GridPane gridPane = new GridPane();
-		gridPane.setPrefSize(680, 340);
+		gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
 		gridPane.setVgap(15);
 		gridPane.setHgap(10);
 
 		// marges pour le GridPane
-		VBox.setMargin(gridPane, new Insets(0, 20, 0, 20));
+//		VBox.setMargin(gridPane, new Insets(0, 20, 0, 0));
 
 		// première colonne
 		ColumnConstraints col1Constraints = new ColumnConstraints();
-		col1Constraints.setPrefWidth(270);
+		col1Constraints.setPrefWidth(COL1_WIDTH + 65);
 		gridPane.getColumnConstraints().add(col1Constraints);
 
 		// deuxième colonne
 		ColumnConstraints col2Constraints = new ColumnConstraints();
-		col2Constraints.setPrefWidth(408);
+		col2Constraints.setPrefWidth(COL2_WIDTH - 65);
 		gridPane.getColumnConstraints().add(col2Constraints);
 
 		// lignes du GridPane
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < NBR_OF_LINES; i++) {
 			RowConstraints rowConstraints = new RowConstraints();
 			rowConstraints.setPrefHeight(50);
 			gridPane.getRowConstraints().add(rowConstraints);
 
 			// label
-			Label label = new Label(labelTexts[i]);
+			Label label = new Label("             " + LABEL_TEXTS[i]);
 			label.setFont(Font.font("Krona One", 16));
 			label.setTextFill(Color.web("#272727"));
 			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
 
 			// texte de droite
-			Label label2 = new Label(gridPaneLabelsList[i]);
-			System.out.println(gridPaneLabelsList[i]);
+			Label label2 = new Label(":       " + gridPaneLabelsList[i]);
 			label2.setFont(Font.font("Krona One", 16));
 			label2.setTextFill(Color.web("#272727"));
 
-//			label2.setPrefHeight(35);
-//			label2.setStyle("-fx-background-color: #DD734C; " + "-fx-background-radius: 13; "
-//					+ "-fx-border-radius: 13; " + "-fx-border-color: transparent transparent #704739 transparent;");
-//			label2.setEffect(new InnerShadow(23.93, 2.0, 2.0, Color.web("#000000", 0.1)));
 			GridPane.setMargin(label2, new Insets(0, 40, 0, 0));
 
 			// ajouter tout au GridPane

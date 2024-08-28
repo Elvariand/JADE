@@ -3,12 +3,10 @@ package fr.isika.cda27.teamJADE.view;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import fr.isika.cda27.teamJADE.model.Intern;
-import fr.isika.cda27.teamJADE.utilz.ButtonActions;
-import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
+import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
@@ -23,8 +21,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.effect.DropShadow;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -35,32 +31,17 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.util.Duration;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.DROP_SHADOW;
+
 public class CustomMainScene extends AnchorPane {
 
-	/**
-	 * 
-	 */
 	public CustomMainScene() {
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
 		// police
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
-
-		// InnerShadow
-		InnerShadow innerShadow = new InnerShadow();
-		innerShadow.setRadius(10);
-		innerShadow.setOffsetX(5.0);
-		innerShadow.setOffsetY(5.0);
-		innerShadow.setColor(Color.web("#ffffff", 0.16));
-
-		// DropShadow
-		DropShadow dropShadow = new DropShadow();
-		dropShadow.setRadius(37);
-		dropShadow.setWidth(73);
-		dropShadow.setHeight(73);
-		dropShadow.setOffsetX(10.0);
-		dropShadow.setColor(Color.web("#000000", 0.7));
 
 		// StackPane qui va contenir la TableView et menuHbox
 		StackPane bgStackPane = new StackPane();
@@ -86,16 +67,15 @@ public class CustomMainScene extends AnchorPane {
 
 		// HBox du menu
 		HBox menuHbox = new HBox();
-		menuHbox.setMaxWidth(890);
+		menuHbox.setMaxWidth(990);
 		menuHbox.setMaxHeight(720);
 		menuHbox.setStyle("-fx-background-color: #DD734C; -fx-background-radius: 70;");
-		menuHbox.setEffect(dropShadow);
-//				menuHbox.setTranslateX(-300);
-		menuHbox.setTranslateX(-985);
+		menuHbox.setEffect(DROP_SHADOW);
+		menuHbox.setTranslateX(TOX_SMALL_MENU);
 
 		// VBox avec les contenu pringipaux à gauche du menu
 		ScopeScene scopeContentVbox = new ScopeScene();
-		VBox addContentVbox = new MainContentVbox().createAddVbox();
+		VBox addContentVbox = new AddScene();
 		RemoveScene removeContentVbox = new RemoveScene();
 		VBox updateContentVbox = new MainContentVbox().createUpdateVbox();
 		VBox printContentVbox = new MainContentVbox().createPrintVbox();
@@ -119,12 +99,12 @@ public class CustomMainScene extends AnchorPane {
 
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
-		menubarVBox.setPrefSize(100, 720);
-		menubarVBox.setTranslateX(100);
+		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
+		menubarVBox.setTranslateX(TOX_MENUBAR);
 
 		// On crée la croix du haut
-		String pathTop = new String("M98 69.5002C98 23.8722 61 -7.5 0.5 0L0.5 97.0002L98 97.0002L98 69.5002Z");
-		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png","fleche.png", pathTop, false, 30);
+
+		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, false, 30);
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
@@ -140,18 +120,15 @@ public class CustomMainScene extends AnchorPane {
 
 		// On crée le bouton quitter
 
-		String pathBot = new String(
-				"M5.02681e-06 0L300 4.58562e-07L300 19.5L300 47.5C300 49 299.838 52.4703 299 57.5C298 63.5 295 73 292 78C289 83 286.5 88 280 94.5C273.5 101 264.5 107 253.5 111C244.7 114.2 237 115 231 115L5.02681e-06 115L5.02681e-06 0Z");
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
-				pathBot);
+				LARGE_PATH_BOT, SMALL_PATH_BOT);
 
 		// On ajoute la croix (invisible pour le moment)
-		menubarVBox.getChildren().add(closeBtn.getStackPane());
+		menubarVBox.getChildren().add(closeBtn);
 		// On ajoute tous les boutons dans le VBox
-		menubarVBox.getChildren().addAll(scopeBtn.getStackPane(), addBtn.getStackPane(), removeBtn.getStackPane(),
-				updateBtn.getStackPane(), printBtn.getStackPane(), seeMemberBtn.getStackPane());
+		menubarVBox.getChildren().addAll(scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn);
 		// On ajoute le bouton quitter
-		menubarVBox.getChildren().add(quitBtn.getStackPane());
+		menubarVBox.getChildren().add(quitBtn);
 
 		// On ajoute le contenu de gauche et de droite a la HBox du menu
 		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
@@ -167,94 +144,309 @@ public class CustomMainScene extends AnchorPane {
 		/* BOUTONS ACCTIONS */
 
 		TranslateTransition moveTransition = new TranslateTransition();
-		ButtonActions buttonActions = new ButtonActions();
 
-		List<StackPaneMenubar> allButtons = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,quitBtn);
+		/*
+		 * On configure les listes de boutons (qui sont des StackPaneMenubar) dans
+		 * chaque cas de figure Ex : si le bouton cliqué est scopeBtn, alors
+		 * scopeBtnConfig sera tous les autres boutons de la VBox. Et on fait ça pour
+		 * chaque bouton afin de mettre tous les autres boutons en gris et le bouton
+		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
+		 * fleche.
+		 */
+		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn, removeBtn, updateBtn, printBtn,
+				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(addBtn,removeBtn ,updateBtn, printBtn, seeMemberBtn,	quitBtn);
+		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn, removeBtn, updateBtn, printBtn,
+				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> addBtnConfig = Arrays.asList(scopeBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
-				quitBtn);
+		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
+				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(scopeBtn, addBtn, updateBtn, printBtn, seeMemberBtn,
-				quitBtn);
+		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> printBtnConfig = Arrays.asList(scopeBtn, addBtn, removeBtn, updateBtn, seeMemberBtn,
-				quitBtn);
+		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
+				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(scopeBtn, addBtn, removeBtn, printBtn, seeMemberBtn,
-				quitBtn);
+		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+				printBtn, quitBtn);
 
-		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(scopeBtn, addBtn, removeBtn, updateBtn, printBtn,
-				quitBtn);
+		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+				printBtn, seeMemberBtn);
 
-		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(scopeBtn, addBtn, removeBtn, updateBtn, printBtn,
-				seeMemberBtn);
+		/*
+		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
+		 * bouton cliqué 2) le contenu à afficher 3) la HBox du menu 4)
+		 */
 
-		// On configure les actions pour chaque bouton
-		
-		buttonActions.configureButtonAction(scopeBtn, scopeContentVbox, bgStackPane, closeBtn, scopeBtnConfig);
-		buttonActions.configureButtonAction(addBtn, addContentVbox, bgStackPane, closeBtn, addBtnConfig);
-		buttonActions.configureButtonAction(removeBtn, removeContentVbox, bgStackPane, closeBtn, removeBtnConfig);
-		buttonActions.configureButtonAction(updateBtn, updateContentVbox, bgStackPane, closeBtn, updateBtnConfig);
-		buttonActions.configureButtonAction(printBtn, printContentVbox, bgStackPane, closeBtn, printBtnConfig);
-		buttonActions.configureButtonAction(seeMemberBtn, seeMembersContentVbox, bgStackPane, closeBtn,
-				seeMemberBtnConfig);
-		buttonActions.configureButtonAction(quitBtn, quitContentVbox, bgStackPane, closeBtn, quitBtnBtnConfig);
-System.out.println(menuHbox.getTranslateX());
-		
+		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig);
+		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig);
+		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
+		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
+		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
 
-
-	// quand on clique sur le bouton fleche/croix
-		buttonActions.configureCloseBtn(menuHbox, allButtons);
+		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
-			
-			RotateTransition rotateTransition = new RotateTransition(Duration.millis(500), closeBtn.getBtnOrangeImageView());
-			
-			if((int)(menuHbox.getTranslateX())== -985) {
-			// si la menuHbox est à -985 on ouvre un peu
-			moveTransition.setDuration(Duration.millis(500));
+
+			RotateTransition rotateTransition = new RotateTransition(Duration.millis(500),
+					closeBtn.getBtnOrangeImageView());
+
+			if ((int) (menuHbox.getTranslateX()) == TOX_SMALL_MENU) {
+				// si la menuHbox est à -985 on ouvre un peu
+				moveTransition.setDuration(DURATION_TIME);
+				moveTransition.setNode(menuHbox);
+				moveTransition.setToX(TOX_MEDIUM_MENU);
+				moveTransition.play();
+				// on fait pivoter l'image de 180°
+				rotateTransition.setByAngle(180);
+				rotateTransition.play();
+
+			} else if ((int) (menuHbox.getTranslateX()) == TOX_MEDIUM_MENU) {
+				// sinon si la menuHbox est à -600 on referme
+				moveTransition.setDuration(DURATION_TIME);
+				moveTransition.setNode(menuHbox);
+				moveTransition.setToX(TOX_SMALL_MENU);
+				moveTransition.play();
+				// on fait pivoter l'image de 180°
+				rotateTransition.setByAngle(180);
+				rotateTransition.play();
+
+			} else {
+				// sinon on ferme
+				moveTransition.setDuration(DURATION_TIME);
+				moveTransition.setNode(menuHbox);
+				moveTransition.setToX(TOX_SMALL_MENU);
+				moveTransition.play();
+
+				closeBtn.getBtnGreyImageView().setVisible(false);
+				closeBtn.getBtnOrangeImageView().setVisible(true);
+
+				changeToOrange(scopeBtn);
+				changeToOrange(addBtn);
+				changeToOrange(removeBtn);
+				changeToOrange(updateBtn);
+				changeToOrange(printBtn);
+				changeToOrange(seeMemberBtn);
+				changeToOrange(quitBtn);
+
+				// on agrandi tous les boutons
+				setLarger(scopeBtn);
+				setLarger(addBtn);
+				setLarger(removeBtn);
+				setLarger(updateBtn);
+				setLarger(printBtn);
+				setLarger(seeMemberBtn);
+				setLarger(quitBtn);
+			}
+		});
+
+		/* SCOPE CONTENT : configuration des boutons search et refresh */
+
+		// Searsh button
+		Button searshBtn = scopeContentVbox.getRightButton();
+		searshBtn.setOnAction(event -> {
+			// on récupère tous les textfield
+			String familyNameFilter = scopeContentVbox.getGridPaneFamilyName().getText();
+			String firstNameFilter = scopeContentVbox.getGridPaneFirstName().getText();
+			String countyFilter = scopeContentVbox.getGridPaneCounty().getText();
+			String cursusFilter = scopeContentVbox.getGridPaneCursus().getText();
+			String yearInFilter = scopeContentVbox.getGridPaneYearIn().getText();
+
+			// on filtre la liste de la TableView en fonction
+			filteredInterns.setPredicate(intern -> {
+				// pour chaque textfield on doit vérifier si il n'est pas null
+				// si il ne l'est pas, on ajoute la condition au prédicat
+
+				// on return true si aucun champ n'est rempli
+				boolean filters = true;
+
+				// sinon on ajoute à chaque fois le filtre au return
+
+				if (familyNameFilter != null) {
+					filters = filters && intern.getFamilyName().toUpperCase().contains(familyNameFilter.toUpperCase());
+				}
+
+				if (firstNameFilter != null) {
+					filters = filters && intern.getFirstName().toUpperCase().contains(firstNameFilter.toUpperCase());
+				}
+
+				if (countyFilter != null) {
+					filters = filters && intern.getCounty().toUpperCase().contains(countyFilter.toUpperCase());
+				}
+
+				if (cursusFilter != null) {
+					filters = filters && intern.getCursus().toUpperCase().contains(cursusFilter.toUpperCase());
+				}
+
+				if (yearInFilter != null) {
+					filters = filters && intern.getYearIn().toUpperCase().contains(yearInFilter.toUpperCase());
+				}
+
+				return filters;
+			});
+
+			moveTransition.setDuration(DURATION_TIME);
 			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(-800);
-			moveTransition.play();
-			// on fait pivoter l'image de 180°
-			rotateTransition.setByAngle(180);
-			rotateTransition.play();
-			
-			}else if((int)(menuHbox.getTranslateX())== -800) {
-			// sinon si la menuHbox est à -600 on referme
-			moveTransition.setDuration(Duration.millis(500));
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(-985);
-			moveTransition.play();
-			// on fait pivoter l'image de 180°
-			rotateTransition.setByAngle(180);
-			rotateTransition.play();
-			
-			}else {
-			// sinon on ferme
-			moveTransition.setDuration(Duration.millis(500));
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(-985);
+			moveTransition.setToX(TOX_SMALL_MENU);
 			moveTransition.play();
 
 			closeBtn.getBtnGreyImageView().setVisible(false);
 			closeBtn.getBtnOrangeImageView().setVisible(true);
 
-			changeToOrange(scopeBtn);
 			changeToOrange(addBtn);
 			changeToOrange(removeBtn);
 			changeToOrange(updateBtn);
 			changeToOrange(printBtn);
 			changeToOrange(seeMemberBtn);
 			changeToOrange(quitBtn);
+
+			// on agrandi tous les boutons
+			setLarger(scopeBtn);
+			setLarger(addBtn);
+			setLarger(removeBtn);
+			setLarger(updateBtn);
+			setLarger(printBtn);
+			setLarger(seeMemberBtn);
+			setLarger(quitBtn);
+
+		});
+
+		// Refresh button
+		Button refreshBtn = scopeContentVbox.getLeftButton();
+		refreshBtn.setOnAction(event -> {
+			refresh(scopeContentVbox.getGridPaneFamilyName());
+			refresh(scopeContentVbox.getGridPaneFirstName());
+			refresh(scopeContentVbox.getGridPaneCounty());
+			refresh(scopeContentVbox.getGridPaneCursus());
+			refresh(scopeContentVbox.getGridPaneYearIn());
+		});
+
+	}
+
+	private void refresh(TextField textField) {
+		textField.setText("");
+	}
+
+	public void configureButtonAction(StackPaneMenubar buttonClicked, VBox mainContentToShow, HBox menuHbox,
+			List<StackPaneMenubar> otherButtons) {
+
+		buttonClicked.getButton().setOnAction(event -> {
+
+			// On remplace le contenu de la HBox
+			menuHbox.getChildren().set(0, mainContentToShow);
+
+			TranslateTransition moveTransition = new TranslateTransition(Duration.millis(500), menuHbox);
+			moveTransition.setToX(TOX_LARGE_MENU);
+			moveTransition.play();
+
+			// on fait apparaitre la croix et disparaitre la fleche
+			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
+			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
+
+			// on passe tous les boutons à gris
+			changeToGrey(otherButtons.get(1));
+			changeToGrey(otherButtons.get(2));
+			changeToGrey(otherButtons.get(3));
+			changeToGrey(otherButtons.get(4));
+			changeToGrey(otherButtons.get(5));
+			changeToGrey(otherButtons.get(6));
+
+			// on met à jour la couleur du bouton cliqué en orange
+			changeToOrange(buttonClicked);
+
+			// on diminue tous les boutons
+			setSmaller(buttonClicked);
+			setSmaller(otherButtons.get(1));
+			setSmaller(otherButtons.get(2));
+			setSmaller(otherButtons.get(3));
+			setSmaller(otherButtons.get(4));
+			setSmaller(otherButtons.get(5));
+			setSmaller(otherButtons.get(6));
+
+		});
+
+		addHoverEffect(buttonClicked);
+
+	}
+
+	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
+		// on change la taille du bouton à 100
+		stackPaneMenubar.getButton().setPrefSize(BTN_SMALL_WIDTH, BTN_HEIGHT);
+		stackPaneMenubar.getButton().setTranslateX(TOX_SMALL_BTN);
+
+		// on fait disparaitre largeSvg et apparaitre smallSvg
+		stackPaneMenubar.getSmallSvgPath().setVisible(true);
+		stackPaneMenubar.getLargeSvgPath().setVisible(false);
+
+		// on fait disparaitre le label
+		stackPaneMenubar.getLabel().setVisible(false);
+	}
+
+	private void setLarger(StackPaneMenubar stackPaneMenubar) {
+		// pause de 1 sec
+		PauseTransition pause = new PauseTransition(DURATION_TIME);
+
+		// après la pause :
+		pause.setOnFinished(event -> {
+			stackPaneMenubar.getButton().setPrefSize(BTN_LARGE_WIDTH, BTN_HEIGHT);
+			stackPaneMenubar.getButton().setTranslateX(TOX_LARGE_BTN);
+			// on fait disparaitre smallSvg et apparaitre LargeSvg
+			stackPaneMenubar.getSmallSvgPath().setVisible(false);
+			stackPaneMenubar.getLargeSvgPath().setVisible(true);
+
+			// on fait apparaitre le label
+			stackPaneMenubar.getLabel().setVisible(true);
+		});
+
+		// on démarre
+		pause.play();
+	}
+
+	private void addHoverEffect(StackPaneMenubar buttonSP) {
+
+		// Variables pour stocker les couleurs
+		String[] initialColorHex = new String[2];
+
+		// Appliquer l'effet de survol
+		buttonSP.getButton().setOnMouseEntered(event -> {
+
+			// On récup et stocke la couleur initiale au survol de la souris
+			initialColorHex[0] = getCurrentColor(buttonSP.getLargeSvgPath());
+
+			if (initialColorHex[0] != null) {
+				Color currentColor = Color.web(initialColorHex[0]);
+
+				if (currentColor.equals(ORANGE_COLOR)) {
+					buttonSP.getLargeSvgPath().setFill(HOVER_ORANGE_COLOR);
+					buttonSP.getSmallSvgPath().setFill(HOVER_ORANGE_COLOR);
+				} else {
+					buttonSP.getLargeSvgPath().setFill(HOVER_GREY_COLOR);
+					buttonSP.getSmallSvgPath().setFill(HOVER_GREY_COLOR);
+				}
 			}
 		});
 
-		buttonActions.configureRefreshBtn(scopeContentVbox);
+		// On restaure la couleur initiale à la sortie de la souris
+		buttonSP.getButton().setOnMouseExited(event -> {
 
-		buttonActions.configureSearchBtn(menuHbox, scopeContentVbox, closeBtn, allButtons, filteredInterns);
+			initialColorHex[1] = getCurrentColor(buttonSP.getLargeSvgPath());
 
+			if (initialColorHex[1].equals(STRING_ORANGE_COLOR)) { // le bouton a été cliqué
+				buttonSP.getLargeSvgPath().setFill(ORANGE_COLOR);
+				buttonSP.getSmallSvgPath().setFill(ORANGE_COLOR);
+			} else {
+
+				if (initialColorHex[0].equals(STRING_ORANGE_COLOR)) {
+					buttonSP.getLargeSvgPath().setFill(ORANGE_COLOR);
+					buttonSP.getSmallSvgPath().setFill(ORANGE_COLOR);
+				} else {
+					buttonSP.getLargeSvgPath().setFill(GREY_COLOR);
+					buttonSP.getSmallSvgPath().setFill(GREY_COLOR);
+				}
+			}
+		});
 	}
 
 	private TableView createTableView(FilteredList<Intern> filteredInterns) {
@@ -293,22 +485,30 @@ System.out.println(menuHbox.getTranslateX());
 	/* ---------------------------------------------------------------- */
 
 	private void changeToOrange(StackPaneMenubar button) {
-		applyColorTransition(button.getSvgPath(), "#DD734C");
-		button.getSvgPath().setFill(Color.web("#DD734C"));
+		applyColorTransition(button.getLargeSvgPath(), ORANGE_COLOR);
+		button.getLargeSvgPath().setFill(ORANGE_COLOR);
+
+		applyColorTransition(button.getSmallSvgPath(), ORANGE_COLOR);
+		button.getSmallSvgPath().setFill(ORANGE_COLOR);
+
 		button.getBtnOrangeImageView().setVisible(false);
 		button.getBtnGreyImageView().setVisible(true);
 	}
 
 	private void changeToGrey(StackPaneMenubar button) {
-		applyColorTransition(button.getSvgPath(), "#272727");
-		button.getSvgPath().setFill(Color.web("#272727"));
+		applyColorTransition(button.getLargeSvgPath(), GREY_COLOR);
+		button.getLargeSvgPath().setFill(GREY_COLOR);
+
+		applyColorTransition(button.getSmallSvgPath(), GREY_COLOR);
+		button.getSmallSvgPath().setFill(GREY_COLOR);
+
 		button.getBtnOrangeImageView().setVisible(true);
 		button.getBtnGreyImageView().setVisible(false);
 	}
-	
-	private void applyColorTransition(SVGPath svgPath, String newColor) {
+
+	private void applyColorTransition(SVGPath svgPath, Color newColor) {
 		Color initialColor = Color.web(getCurrentColor(svgPath));
-		Color finalColor = Color.web(newColor);
+		Color finalColor = newColor;
 
 		// transition de couleur
 		Timeline timeline = new Timeline(
@@ -316,18 +516,14 @@ System.out.println(menuHbox.getTranslateX());
 				new KeyFrame(Duration.millis(500), new KeyValue(svgPath.fillProperty(), finalColor)));
 		timeline.play();
 	}
-	
+
 	private String getCurrentColor(SVGPath svgPath) {
 		// couleur actuelle de remplissage de l'SVGPath
 		Paint fill = svgPath.getFill();
 
-		if (fill instanceof Color) {
-			Color color = (Color) fill;
-			return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
-					(int) (color.getBlue() * 255));
-		}
+		Color color = (Color) fill;
+		return String.format("#%02X%02X%02X", (int) (color.getRed() * 255), (int) (color.getGreen() * 255),
+				(int) (color.getBlue() * 255));
 
-		// Si la couleur n'est pas du type Color, retourne une valeur par défaut
-		return "#000000";
 	}
 }
