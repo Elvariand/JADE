@@ -1,6 +1,6 @@
 package fr.isika.cda27.teamJADE.view;
 
-import fr.isika.cda27.teamJADE.model.Members;
+import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import javafx.geometry.Insets;
@@ -21,7 +21,7 @@ import javafx.stage.Stage;
 
 public class CustomLoginScene extends AnchorPane{
 	
-	private Members member = new Members("user", "pass");
+	private Member member = new Member("user", "pass");
 
 
 	public CustomLoginScene() {

@@ -1,6 +1,7 @@
 package fr.isika.cda27.teamJADE.view;
 
 import fr.isika.cda27.teamJADE.model.Intern;
+import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -52,15 +53,15 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		TreeNodeDao test = new TreeNodeDao();
+		InternDao test = new InternDao();
 		test.deleteBinary();
 		test.addFromDon();
     	test.sortView(0);
 		System.out.println("======================");
-		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", "77", "AI 95", "2015");
+		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
 		test.insert(PY);
 		test.readBinary();
-		test.delete(new Intern("CHAVENEAU", "Kim Anh", "92", "ATOD 22", "2014"));
+		test.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
 		System.out.println("======================");
 		test.readBinary();
 

@@ -52,15 +52,15 @@ public class CustomMainScene extends AnchorPane {
 		// TableView
 		// données d'exemple
 		ArrayList<Intern> list = new ArrayList<Intern>();
-		list.add(new Intern("LACROIX", "Pascale", "91", "BOBI 5", "2008"));
-		list.add(new Intern("LACROIX", "Pascale", "91", "BOBI 5", "2009"));
-		list.add(new Intern("CHAVENEAU", "Kim Anh", "92", "ATOD 22", "2014"));
-		list.add(new Intern("GARIJO", "Rosie", "75", "AI 79", "2011"));
-		list.add(new Intern("POTIN", "Thomas", "75", "ATOD 21", "2014"));
-		list.add(new Intern("AUGEREAU", "Kévin", "76", "AI 78", "2010"));
-		list.add(new Intern("UNG", "Jet-Ming", "75", "ATOD 16 CP", "2012"));
-		list.add(new Intern("ROIGNANT", "Pierre-Yves", "75", "Al", "2015"));
-		list.add(new Intern("CHONE", "Martin", "92", "ATOD 24 CP", "2015"));
+		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2008));
+		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2009));
+		list.add(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
+		list.add(new Intern("GARIJO", "Rosie", 75, "AI 79", 2011));
+		list.add(new Intern("POTIN", "Thomas", 75, "ATOD 21", 2014));
+		list.add(new Intern("AUGEREAU", "Kévin", 76, "AI 78", 2010));
+		list.add(new Intern("UNG", "Jet-Ming", 75, "ATOD 16 CP", 2012));
+		list.add(new Intern("ROIGNANT", "Pierre-Yves", 75, "Al", 2015));
+		list.add(new Intern("CHONE", "Martin", 92, "ATOD 24 CP", 2015));
 
 		ObservableList<Intern> observableInterns = FXCollections.observableArrayList(list);
 		FilteredList<Intern> filteredInterns = new FilteredList<>(observableInterns, p -> true);
@@ -90,9 +90,9 @@ public class CustomMainScene extends AnchorPane {
 
 				gridPaneLabelsList[0] = newValue.getFamilyName();
 				gridPaneLabelsList[1] = newValue.getFirstName();
-				gridPaneLabelsList[2] = newValue.getCounty();
+				gridPaneLabelsList[2] = newValue.getCountyString();
 				gridPaneLabelsList[3] = newValue.getCursus();
-				gridPaneLabelsList[4] = newValue.getYearIn();
+				gridPaneLabelsList[4] = newValue.getYearInString();
 
 				removeContentVbox.setGridPane(gridPaneLabelsList);
 			}
@@ -274,7 +274,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (countyFilter != null) {
-					filters = filters && intern.getCounty().toUpperCase().contains(countyFilter.toUpperCase());
+					filters = filters && intern.getCountyString().toUpperCase().contains(countyFilter.toUpperCase());
 				}
 
 				if (cursusFilter != null) {
@@ -282,7 +282,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (yearInFilter != null) {
-					filters = filters && intern.getYearIn().toUpperCase().contains(yearInFilter.toUpperCase());
+					filters = filters && intern.getYearInString().toUpperCase().contains(yearInFilter.toUpperCase());
 				}
 
 				return filters;

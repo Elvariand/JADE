@@ -1,16 +1,17 @@
 package fr.isika.cda27.teamJADE.model;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import fr.isika.cda27.teamJADE.view.App;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
-
-public class TreeNodeDao {
+public class InternDao {
 
 	/**
 	 * @param intern L'information sous forme d'objet de type Intern qui sera
@@ -423,9 +424,9 @@ public class TreeNodeDao {
 			String text = "";
 			String familyName = "";
 			String firstName = "";
-			int county = 0;
+			String county = "";
 			String cursus = "";
-			int yearIn = 0;
+			String yearIn = "";
 			int counter = 0;
 
 			// Tant qu'il y a une ligne à lire nous allons effectuer la série d'action
@@ -438,7 +439,6 @@ public class TreeNodeDao {
 				// Nous stockons l'information de la ligne (qui est un String) dans une
 				// variable.
 				text = br.readLine();
-				int textTransformedInInt = Integer.parseInt(text);
 
 				// En fonction de la ligne à laquelle nous sommes nous allons faire une action
 				// différente
@@ -460,13 +460,13 @@ public class TreeNodeDao {
 
 				// Idem pour les lignes 3, 4 et 5
 				case 3:
-					county = textTransformedInInt;
+					county = text;
 					break;
 				case 4:
 					cursus = text;
 					break;
 				case 5:
-					yearIn = textTransformedInInt;
+					yearIn = text;
 					break;
 
 				// Dans le cas où nous sommes sur la sixieme ligne, qui correspond à une ligne
@@ -476,7 +476,7 @@ public class TreeNodeDao {
 					// Nous créons un objet de type Intern avec les variables dans lesquelles nous
 					// avons stocké les informations des 5 lignes précédentes
 					// et nous ajoutons immédiatement cet objet de type Intern à l'arbre binaire
-					this.insert(new Intern(familyName, firstName, county, cursus, yearIn));
+					this.insert(new Intern(familyName, firstName, Integer.parseInt(county), cursus, Integer.parseInt(yearIn)));
 
 					// Et nous remettons le compteur à zéro afin de pouvoir repartir sur la création
 					// d'un nouveau stagiaire
@@ -594,12 +594,12 @@ public class TreeNodeDao {
 	 *                       début du fils gauche, droit ou du noeud suivant dans la
 	 *                       liste chainée.
 	 */
-	public void writeIntInBinary(int twinOrChild, long cursorPosition) {
+	public void writeIntInBinary(int intToWrite, long cursorPosition) {
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
 
 			raf.seek(cursorPosition);
-			raf.writeInt(twinOrChild);
+			raf.writeInt(intToWrite);
 
 			raf.close();
 		} catch (IOException e) {
@@ -639,9 +639,8 @@ public class TreeNodeDao {
 			}
 			// On lit tous les caractères du Département du Stagiaire incluant les espaces
 			// supplémentaires
-			for (int i = 0; i < OCTETS_TOOK_BY_COUNTY; i++) {
-				county += raf.readChar();
-			}
+			county = raf.readInt();
+			
 			// On lit tous les caractères de la Formation du Stagiaire incluant les espaces
 			// supplémentaires
 			for (int i = 0; i < MAX_CHAR_CURSUS; i++) {
@@ -649,9 +648,7 @@ public class TreeNodeDao {
 			}
 			// On lit tous les caractères du l'année du Stagiaire. Ici il n'y a pas d'espace
 			// supplémentaire.
-			for (int i = 0; i < OCTETS_TOOK_BY_YEARIN; i++) {
-				yearIn += raf.readChar();
-			}
+			yearIn = raf.readInt();
 
 			// On coupe le flux d'échanges de données entre l'application et le fichier afin
 			// de libérer de la mémoire pour l'ordinateur.
@@ -821,5 +818,4 @@ public class TreeNodeDao {
 		}
 	}
 }
-
 

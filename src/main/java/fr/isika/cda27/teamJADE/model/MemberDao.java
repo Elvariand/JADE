@@ -1,16 +1,17 @@
 package fr.isika.cda27.teamJADE.model;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+
 import fr.isika.cda27.teamJADE.view.App;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
-
-public class TreeNodeDao {
+public class MemberDao {
 
 	/**
 	 * @param intern L'information sous forme d'objet de type Intern qui sera
@@ -20,8 +21,8 @@ public class TreeNodeDao {
 	 *               fichier binaire en le parcourant de manière efficace. La
 	 *               position du curseur est au début du fichier.
 	 */
-	public void insert(Intern intern) {
-		insert(intern, 0);
+	public void insert(Member member) {
+		insert(member, 0);
 	}
 
 	/**
@@ -33,22 +34,22 @@ public class TreeNodeDao {
 	 *                       dans le fichier binaire en le parcourant de manière
 	 *                       efficace.
 	 */
-	public void insert(Intern intern, long cursorPosition) {
+	public void insert(Member member, long cursorPosition) {
 
 		long binarySize = this.getBinarySize();
 
 		// Si le fichier binaire est vide
 		if (binarySize == 0) {
 			// Alors nous écrivons le noeud au début
-			this.writeInBinary(intern, 0);
+			this.writeInBinary(member, 0);
 			return;
 		}
 
-		String nodeFamilyName = this.readFamilyNameFromBinary(cursorPosition);
+		String nodeAlias = this.readAliasFromBinary(cursorPosition);
 
 		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
 		// celle du nom de famille du Stagiaire courant lu dans le fichier binaire.
-		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
+		if (member.getAlias().compareTo(nodeAlias) < 0) {
 
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
 
@@ -61,15 +62,15 @@ public class TreeNodeDao {
 				 * fils gauche par la valeur de la position du Stagiaire que l'on va écrire à la
 				 * fin du fichier binaire
 				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + INTERN_SIZE);
-				this.writeInBinary(intern);
+				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + MEMBER_SIZE);
+				this.writeInBinary(member);
 				return;
 
 				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
 				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
 			} else {
-				this.insert(intern, newCursorPosition * INTERN_NODE_SIZE);
+				this.insert(member, newCursorPosition * MEMBER_NODE_SIZE);
 				return;
 			}
 		}
@@ -77,7 +78,7 @@ public class TreeNodeDao {
 		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
 		// celle
 		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
-		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
+		else if (member.getAlias().compareTo(nodeAlias) > 0) {
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
@@ -91,15 +92,15 @@ public class TreeNodeDao {
 				 * fin du fichier binaire
 				 */
 				this.writeIntInBinary(this.getNumberNodeInBinary(),
-						cursorPosition + INTERN_SIZE + INDEX_SIZE);
-				this.writeInBinary(intern);
+						cursorPosition + MEMBER_SIZE + INDEX_SIZE);
+				this.writeInBinary(member);
 				return;
 
 				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
 				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
 			} else {
-				this.insert(intern, newCursorPosition * INTERN_NODE_SIZE);
+				this.insert(member, newCursorPosition * MEMBER_NODE_SIZE);
 				return;
 			}
 		}
@@ -119,13 +120,13 @@ public class TreeNodeDao {
 			 */
 			while (read > 0) {
 				// Si le Stagiaire est déjà présent
-				if (intern.equals(this.readInternFromBinary(cursorPosition))) {
+				if (member.equals(this.readMemberFromBinary(cursorPosition))) {
 					System.out.println("Le stagiaire est déjà présent dans la base de données");
 					return;
 				}
 				read = readTwinFromBinary(cursorPosition);
 				if (read > 0)
-					cursorPosition = read * INTERN_NODE_SIZE;
+					cursorPosition = read * MEMBER_NODE_SIZE;
 			}
 
 			/*
@@ -134,8 +135,8 @@ public class TreeNodeDao {
 			 * position du Stagiaire que l'on va ajouter à la fin du fichier binaire
 			 */
 			this.writeIntInBinary(this.getNumberNodeInBinary(),
-					cursorPosition + INTERN_SIZE + INDEX_SIZE + INDEX_SIZE);
-			this.writeInBinary(intern, binarySize);
+					cursorPosition + MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE);
+			this.writeInBinary(member, binarySize);
 		}
 		return;
 
@@ -174,13 +175,13 @@ public class TreeNodeDao {
 	 */
 	public void delete(Intern intern, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
 
-		String nodeFamilyName = this.readFamilyNameFromBinary(childCursorPosition);
+		String nodeFamilyName = this.readAliasFromBinary(childCursorPosition);
 
 		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
 		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
 		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
 
-			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
+			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * MEMBER_NODE_SIZE;
 
 			// Si l'on doit aller vers le fils gauche pour trouver le Stagiaire que l'on
 			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
@@ -190,7 +191,7 @@ public class TreeNodeDao {
 				System.err.println(
 						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant gauche inexistant. On veut supprimer\n"
 								+ intern + "/net nous sommes en train de lire\n"
-								+ this.readInternFromBinary(parentCursorPosition)
+								+ this.readMemberFromBinary(parentCursorPosition)
 								+ "\n*******************************************");
 				return;
 			}
@@ -205,7 +206,7 @@ public class TreeNodeDao {
 		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
 		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
 
-			childCursorPosition = readRightChildFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
+			childCursorPosition = readRightChildFromBinary(childCursorPosition) * MEMBER_NODE_SIZE;
 
 			// Si l'on doit aller vers le fils droit pour trouver le Stagiaire que l'on
 			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
@@ -215,7 +216,7 @@ public class TreeNodeDao {
 				System.err.println(
 						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant droit inexistant. On veut supprimer\n"
 								+ intern + "/net nous sommes en train de lire\n"
-								+ this.readInternFromBinary(parentCursorPosition)
+								+ this.readMemberFromBinary(parentCursorPosition)
 								+ "\n*******************************************");
 				return;
 			}
@@ -235,9 +236,9 @@ public class TreeNodeDao {
 
 				// On parcourt la suite de doublons jusqu'à trouver celui qui correspond au
 				// Stagiaire que l'on veut supprimer
-				while (!intern.equals(this.readInternFromBinary(childCursorPosition)) && childCursorPosition > 0) {
+				while (!intern.equals(this.readMemberFromBinary(childCursorPosition)) && childCursorPosition > 0) {
 					parentCursorPosition = childCursorPosition;
-					childCursorPosition = readTwinFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
+					childCursorPosition = readTwinFromBinary(childCursorPosition) * MEMBER_NODE_SIZE;
 
 					// Si nous atteignons le bout de la liste c'est que nous n'avons pas trouver le
 					// stagiaire à supprimer et donc qu'il y a une erreur et on l'affiche.
@@ -245,7 +246,7 @@ public class TreeNodeDao {
 						System.err.println(
 								"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Doublon inexistant. On veut supprimer\n"
 										+ intern + "/net nous sommes en train de lire\n"
-										+ this.readInternFromBinary(parentCursorPosition)
+										+ this.readMemberFromBinary(parentCursorPosition)
 										+ "\n*******************************************");
 						return;
 					}
@@ -268,8 +269,8 @@ public class TreeNodeDao {
 
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par -1
-					this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + INTERN_SIZE
-							: parentCursorPosition + INTERN_SIZE + INDEX_SIZE);
+					this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + MEMBER_SIZE
+							: parentCursorPosition + MEMBER_SIZE + INDEX_SIZE);
 
 					// On efface le Stagiaire voulu dans le fichier binaire
 					this.eraseFromBinary(childCursorPosition);
@@ -285,20 +286,20 @@ public class TreeNodeDao {
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par la valeur de position du substitut
 					// que l'on a trouvé
-					this.writeIntInBinary((int) substitute / INTERN_NODE_SIZE,
-							isFromLeft ? parentCursorPosition + INTERN_SIZE
-									: parentCursorPosition + INTERN_SIZE + INDEX_SIZE);
+					this.writeIntInBinary((int) substitute / MEMBER_NODE_SIZE,
+							isFromLeft ? parentCursorPosition + MEMBER_SIZE
+									: parentCursorPosition + MEMBER_SIZE + INDEX_SIZE);
 
 					// Alors nous remplaçons la valeur de l'enfant gauche du parent du substitut par
 					// -1
-					this.writeIntInBinary(-1, parentSubstituteCursor + INTERN_SIZE);
+					this.writeIntInBinary(-1, parentSubstituteCursor + MEMBER_SIZE);
 
 					// On transmet au substitut les valeurs des enfants du Stagiaire que l'on
 					// supprime
 					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition),
-							substitute + INTERN_SIZE);
+							substitute + MEMBER_SIZE);
 					this.writeIntInBinary(this.readRightChildFromBinary(childCursorPosition),
-							substitute + INTERN_SIZE + INDEX_SIZE);
+							substitute + MEMBER_SIZE + INDEX_SIZE);
 
 					// On efface le stagiaire
 					this.eraseFromBinary(childCursorPosition);
@@ -326,21 +327,21 @@ public class TreeNodeDao {
 		// Si il n'y a pas d'enfant gauche
 		long[] tabCursorPosition = new long[2];
 		if (leftChild == -1 && rightChild != -1) {
-			tabCursorPosition[0] = rightChild * INTERN_NODE_SIZE;
+			tabCursorPosition[0] = rightChild * MEMBER_NODE_SIZE;
 			tabCursorPosition[1] = cursorPosition;
 
 			// Si il n'y a pas d'enfant droit
 		} else if (rightChild == -1 && leftChild != -1) {
-			tabCursorPosition[0] = leftChild * INTERN_NODE_SIZE;
+			tabCursorPosition[0] = leftChild * MEMBER_NODE_SIZE;
 			tabCursorPosition[1] = cursorPosition;
 
 			// Si il y a deux enfants
 		} else if (rightChild != -1 && leftChild != -1) {
-			tabCursorPosition = findTwoChildSubstitute(rightChild * INTERN_NODE_SIZE);
+			tabCursorPosition = findTwoChildSubstitute(rightChild * MEMBER_NODE_SIZE);
 		} else {
 			System.err.println(
 					"*****************\nLe Stagiaire recherché n'a pas d'enfant.\nLe stagiaire recherché est :\n"
-							+ this.readInternFromBinary(cursorPosition) + "\n************************************");
+							+ this.readMemberFromBinary(cursorPosition) + "\n************************************");
 		}
 		return tabCursorPosition;
 	}
@@ -361,7 +362,7 @@ public class TreeNodeDao {
 		while (cursorPosition > 0) {
 			parent = substitute;
 			substitute = cursorPosition;
-			cursorPosition = this.readLeftChildFromBinary(cursorPosition) * INTERN_NODE_SIZE;
+			cursorPosition = this.readLeftChildFromBinary(cursorPosition) * MEMBER_NODE_SIZE;
 		}
 		long[] result = { substitute, parent };
 		return result;
@@ -390,21 +391,21 @@ public class TreeNodeDao {
 		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
 		// alors on lit celui-ci en priorité
 		if (leftChild != -1)
-			sortView(leftChild * INTERN_NODE_SIZE);
+			sortView(leftChild * MEMBER_NODE_SIZE);
 
 		// On affiche le Stagiaire lu
-		System.out.println(this.readInternFromBinary(cursorPosition));
+		System.out.println(this.readMemberFromBinary(cursorPosition));
 
 		// S'il y a des homonymes, on les affiche tous
-		long twinPosition = this.readTwinFromBinary(cursorPosition) * INTERN_NODE_SIZE;
+		long twinPosition = this.readTwinFromBinary(cursorPosition) * MEMBER_NODE_SIZE;
 		while (twinPosition > 0) {
-			System.out.println(this.readInternFromBinary(twinPosition));
-			twinPosition = this.readTwinFromBinary(twinPosition) * INTERN_NODE_SIZE;
+			System.out.println(this.readMemberFromBinary(twinPosition));
+			twinPosition = this.readTwinFromBinary(twinPosition) * MEMBER_NODE_SIZE;
 		}
 
 		// Puis on s'intéresse au fils droit du Stagiaire lu
 		if (rightChild != -1)
-			sortView(this.readRightChildFromBinary(cursorPosition) * INTERN_NODE_SIZE);
+			sortView(this.readRightChildFromBinary(cursorPosition) * MEMBER_NODE_SIZE);
 	}
 
 	/**
@@ -421,11 +422,9 @@ public class TreeNodeDao {
 			// un fichier texte (ici le .DON)
 			BufferedReader br = new BufferedReader(fr);
 			String text = "";
-			String familyName = "";
-			String firstName = "";
-			int county = 0;
-			String cursus = "";
-			int yearIn = 0;
+			String alias = "";
+			String password = "";
+			String admin = "";
 			int counter = 0;
 
 			// Tant qu'il y a une ligne à lire nous allons effectuer la série d'action
@@ -438,7 +437,6 @@ public class TreeNodeDao {
 				// Nous stockons l'information de la ligne (qui est un String) dans une
 				// variable.
 				text = br.readLine();
-				int textTransformedInInt = Integer.parseInt(text);
 
 				// En fonction de la ligne à laquelle nous sommes nous allons faire une action
 				// différente
@@ -449,26 +447,20 @@ public class TreeNodeDao {
 				// alors nous stockons entièrement en majuscule cette ligne de texte dans une
 				// variable.
 				case 1:
-					familyName = text.toUpperCase();
+					alias = text;
 					break;
 
 				// Dans le cas où nous sommes sur la deuxième ligne, nous stockons cette ligne
 				// de texte dans une autre variable.
 				case 2:
-					firstName = text;
+					password = text;
 					break;
 
 				// Idem pour les lignes 3, 4 et 5
 				case 3:
-					county = textTransformedInInt;
+					admin = text;
 					break;
-				case 4:
-					cursus = text;
-					break;
-				case 5:
-					yearIn = textTransformedInInt;
-					break;
-
+				
 				// Dans le cas où nous sommes sur la sixieme ligne, qui correspond à une ligne
 				// avec un astérisque
 				default:
@@ -476,7 +468,7 @@ public class TreeNodeDao {
 					// Nous créons un objet de type Intern avec les variables dans lesquelles nous
 					// avons stocké les informations des 5 lignes précédentes
 					// et nous ajoutons immédiatement cet objet de type Intern à l'arbre binaire
-					this.insert(new Intern(familyName, firstName, county, cursus, yearIn));
+					this.insert(new Member(alias, password, Boolean.parseBoolean(admin)));
 
 					// Et nous remettons le compteur à zéro afin de pouvoir repartir sur la création
 					// d'un nouveau stagiaire
@@ -541,8 +533,8 @@ public class TreeNodeDao {
 	 *                    feuille: fils gauche vaut -1, fils droit vaut -1 et
 	 *                    suivant liste chainée vaut -1 aussi.
 	 */
-	public void writeInBinary(Intern internToAdd) {
-		writeInBinary(internToAdd, this.getBinarySize(), -1, -1, -1);
+	public void writeInBinary(Member memberToAdd) {
+		writeInBinary(memberToAdd, this.getBinarySize(), -1, -1, -1);
 	}
 
 	/**
@@ -552,8 +544,8 @@ public class TreeNodeDao {
 	 *                       fils gauche vaut -1, fils droit vaut -1 et suivant
 	 *                       liste chainée vaut -1 aussi.
 	 */
-	public void writeInBinary(Intern internToAdd, long cursorPosition) {
-		writeInBinary(internToAdd, cursorPosition, -1, -1, -1);
+	public void writeInBinary(Member memberToAdd, long cursorPosition) {
+		writeInBinary(memberToAdd, cursorPosition, -1, -1, -1);
 	}
 
 	/**
@@ -567,17 +559,15 @@ public class TreeNodeDao {
 	 * @param twinInt        L'entier correspondant à la position du noeud suivant
 	 *                       dans la liste chainée dans le fichier binaire
 	 */
-	public void writeInBinary(Intern internToAdd, long cursorPosition, int leftChildInt, int rightChildInt,
+	public void writeInBinary(Member memberToAdd, long cursorPosition, int leftChildInt, int rightChildInt,
 			int twinInt) {
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
 
 			raf.seek(cursorPosition);
-			raf.writeChars(internToAdd.getFamilyNameLong());
-			raf.writeChars(internToAdd.getFirstNameLong());
-			raf.writeInt(internToAdd.getCounty());
-			raf.writeChars(internToAdd.getCursusLong());
-			raf.writeInt(internToAdd.getYearIn());
+			raf.writeChars(memberToAdd.getAlias());
+			raf.writeChars(memberToAdd.getPassword());
+			raf.writeChars(memberToAdd.getAdmin());
 			raf.writeInt(leftChildInt);
 			raf.writeInt(rightChildInt);
 			raf.writeInt(twinInt);
@@ -614,12 +604,10 @@ public class TreeNodeDao {
 	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
 	 *         le fichier binaire.
 	 */
-	public Intern readInternFromBinary(long cursorPosition) {
-		String familyName = "";
-		String firstName = "";
-		int county = 0;
-		String cursus = "";
-		int yearIn = 0;
+	public Member readMemberFromBinary(long cursorPosition) {
+		String alias = "";
+		String password = "";
+		String admin = "";
 
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -627,30 +615,20 @@ public class TreeNodeDao {
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
 
-			// On lit tous les caractères du Nom de famille du Stagiaire incluant les
+			// On lit tous les caractères du pseudo du Membre incluant les
 			// espaces supplémentaires
-			for (int i = 0; i < MAX_CHAR_NAMES; i++) {
-				familyName += raf.readChar();
+			for (int i = 0; i < MAX_CHAR_ALIAS; i++) {
+				alias += raf.readChar();
 			}
-			// On lit tous les caractères du Prénom du Stagiaire incluant les espaces
+			// On lit tous les caractères du mot de passe du Membre incluant les espaces
 			// supplémentaires
-			for (int i = 0; i < MAX_CHAR_NAMES; i++) {
-				firstName += raf.readChar();
+			for (int i = 0; i < MAX_CHAR_PASSWORD; i++) {
+				password += raf.readChar();
 			}
-			// On lit tous les caractères du Département du Stagiaire incluant les espaces
+			// On lit tous les caractères d'Admin du Membre incluant les espaces
 			// supplémentaires
-			for (int i = 0; i < OCTETS_TOOK_BY_COUNTY; i++) {
-				county += raf.readChar();
-			}
-			// On lit tous les caractères de la Formation du Stagiaire incluant les espaces
-			// supplémentaires
-			for (int i = 0; i < MAX_CHAR_CURSUS; i++) {
-				cursus += raf.readChar();
-			}
-			// On lit tous les caractères du l'année du Stagiaire. Ici il n'y a pas d'espace
-			// supplémentaire.
-			for (int i = 0; i < OCTETS_TOOK_BY_YEARIN; i++) {
-				yearIn += raf.readChar();
+			for (int i = 0; i < MAX_CHAR_ADMIN; i++) {
+				admin += raf.readChar();
 			}
 
 			// On coupe le flux d'échanges de données entre l'application et le fichier afin
@@ -662,7 +640,7 @@ public class TreeNodeDao {
 			// pouvoir la régler
 			e.printStackTrace();
 		}
-		return new Intern(familyName.trim(), firstName.trim(), county, cursus.trim(), yearIn);
+		return new Member(alias.trim(), password.trim(), Boolean.parseBoolean(admin.trim()));
 	}
 
 	/**
@@ -673,7 +651,7 @@ public class TreeNodeDao {
 	 *         de noeud fils gauche.
 	 */
 	public int readLeftChildFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE;
+		cursorPosition += MEMBER_SIZE;
 		int leftChildInt = -1;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -694,7 +672,7 @@ public class TreeNodeDao {
 	 *         de noeud fils droit.
 	 */
 	public int readRightChildFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE + INDEX_SIZE;
+		cursorPosition += MEMBER_SIZE + INDEX_SIZE;
 		int rightChildInt = -1;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -715,7 +693,7 @@ public class TreeNodeDao {
 	 *         noeud suivant dans cette liste.
 	 */
 	public int readTwinFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE + INDEX_SIZE + INDEX_SIZE;
+		cursorPosition += MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE;
 		int TwinInt = -1;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -733,7 +711,7 @@ public class TreeNodeDao {
 	 *                       début du noeud.
 	 * @return
 	 */
-	public String readFamilyNameFromBinary(long cursorPosition) {
+	public String readAliasFromBinary(long cursorPosition) {
 		String familyName = "";
 
 		try {
@@ -765,7 +743,7 @@ public class TreeNodeDao {
 	 *         fichier binaire.
 	 */
 	public int getNumberNodeInBinary() {
-		return (int) (this.getBinarySize() / INTERN_NODE_SIZE);
+		return (int) (this.getBinarySize() / MEMBER_NODE_SIZE);
 	}
 
 	/**
@@ -778,7 +756,7 @@ public class TreeNodeDao {
 	public void eraseFromBinary(long cursorPosition) {
 		try {
 			String white = "";
-			for (int i = 0; i < INTERN_NODE_SIZE / 2; i++) {
+			for (int i = 0; i < MEMBER_NODE_SIZE / 2; i++) {
 				white += " ";
 			}
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
@@ -805,15 +783,14 @@ public class TreeNodeDao {
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
 			for (long cursor = 0; cursor < this.getBinarySize(); cursor++) {
-				Intern intern = this.readInternFromBinary(cursor);
+				Member member = this.readMemberFromBinary(cursor);
 				int indexLeft = this.readLeftChildFromBinary(cursor);
 				int indexRight = this.readRightChildFromBinary(cursor);
 				int indexTwin = this.readTwinFromBinary(cursor);
 				System.out.println(
-						intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
-								+ "\t" + intern.getCounty() + "\t" + intern.getCursusLong() + "\t" + intern.getYearIn()
-								+ "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
-				cursor += INTERN_NODE_SIZE - 1;
+						member.getAlias().substring(0, 10) + "\t" + member.getPassword().substring(0, 11)
+								+ "\t" + member.getAdmin() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
+				cursor += MEMBER_NODE_SIZE - 1;
 			}
 			raf.close();
 		} catch (IOException e) {
@@ -821,5 +798,4 @@ public class TreeNodeDao {
 		}
 	}
 }
-
 

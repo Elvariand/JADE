@@ -6,15 +6,16 @@ public class Intern {
 
 	private String familyName; // 62 octets
 	private String firstName; // 62
-	private String county; // 6 octets
+	private int county; // 4 octets
 	private String cursus; // 20
-	private String yearIn; // 8 octets
+	private int yearIn; // 4 octets
+	private static final int OCTETS_TOOK_BY_CHAR = 2;
 	private static final int MAX_CHAR_NAMES = 31;
 	private static final int MAX_CHAR_COUNTY = 3;
 	private static final int MAX_CHAR_CURSUS = 10;
 	private static final int MAX_CHAR_YEARIN = 4;
 	private static final int SIZE_INDEX = 4;
-	private static final int SIZE_INTERN = (MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_COUNTY + MAX_CHAR_CURSUS + MAX_CHAR_YEARIN)*2;
+	private static final int SIZE_INTERN = (MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_COUNTY + MAX_CHAR_CURSUS + MAX_CHAR_YEARIN) * OCTETS_TOOK_BY_CHAR;
 	private static final int SIZE_NODE = SIZE_INTERN + SIZE_INDEX + SIZE_INDEX + SIZE_INDEX;
 	
 	
@@ -25,7 +26,7 @@ public class Intern {
 	 * @param cursus Le nom de la formation du Stagiaire
 	 * @param yearIn L'année d'entrée en formation
 	 */
-	public Intern(String familyName, String firstName, String county, String cursus, String yearIn) {
+	public Intern(String familyName, String firstName, int county, String cursus, int yearIn) {
 		this.familyName = familyName;
 		this.firstName = firstName;
 		this.county = county;
@@ -66,14 +67,21 @@ public class Intern {
 	/**
 	 * @return the county
 	 */
-	public String getCounty() {
+	public int getCounty() {
 		return county;
 	}
 
 	/**
+	 * @return the county in String
+	 */
+	public String getCountyString() {
+		return Integer.toString(county);
+	}
+	
+	/**
 	 * @param county the county to set
 	 */
-	public void setCounty(String county) {
+	public void setCounty(int county) {
 		this.county = county;
 	}
 
@@ -94,76 +102,24 @@ public class Intern {
 	/**
 	 * @return the yearIn
 	 */
-	public String getYearIn() {
+	public int getYearIn() {
 		return yearIn;
 	}
 
 	/**
+	 * @return the yearIn in String
+	 */
+	public String getYearInString() {
+		return Integer.toString(yearIn);
+	}
+	
+	
+	/**
 	 * @param yearIn the yearIn to set
 	 */
-	public void setYearIn(String yearIn) {
+	public void setYearIn(int yearIn) {
 		this.yearIn = yearIn;
 	}
-
-	/**
-	 * @return the maxCharNames
-	 */
-	public static int getMaxCharNames() {
-		return MAX_CHAR_NAMES;
-	}
-
-
-
-	/**
-	 * @return the maxCharCounty
-	 */
-	public static int getMaxCharCounty() {
-		return MAX_CHAR_COUNTY;
-	}
-
-
-
-	/**
-	 * @return the maxCharCursus
-	 */
-	public static int getMaxCharCursus() {
-		return MAX_CHAR_CURSUS;
-	}
-
-
-
-	/**
-	 * @return the maxCharYearin
-	 */
-	public static int getMaxCharYearIn() {
-		return MAX_CHAR_YEARIN;
-	}
-
-
-	/**
-	 * @return the sizeIndex
-	 */
-	public static int getSizeIndex() {
-		return SIZE_INDEX;
-	}
-
-
-
-	/**
-	 * @return the sizeNode
-	 */
-	public static int getSizeNode() {
-		return SIZE_NODE;
-	}
-
-
-	/**
-	 * @return the sizeIntern
-	 */
-	public static int getSizeIntern() {
-		return SIZE_INTERN;
-	}
-
 
 
 	@Override
@@ -180,7 +136,7 @@ public class Intern {
 			builder.append(firstName);
 			builder.append(", ");
 		}
-		if (county != null) {
+		if (county != 0) {
 			builder.append("county=");
 			builder.append(county);
 			builder.append(", ");
@@ -190,7 +146,7 @@ public class Intern {
 			builder.append(cursus);
 			builder.append(", ");
 		}
-		if (yearIn != null) {
+		if (yearIn != 0) {
 			builder.append("yearIn=");
 			builder.append(yearIn);
 		}
@@ -247,18 +203,18 @@ public class Intern {
 	}
 	
 	
-	public String getCountyLong() {
-		String countyLong = this.county;
-		if (countyLong.length() < MAX_CHAR_COUNTY) {
-			
-			for (int i = this.county.length(); i < MAX_CHAR_COUNTY; i++) {
-				countyLong += " ";
-			}
-		} else {
-			countyLong = countyLong.substring(0,MAX_CHAR_COUNTY);
-		}
-		return countyLong;
-	}
+//	public String getCountyLong() {
+//		String countyLong = this.county;
+//		if (countyLong.length() < MAX_CHAR_COUNTY) {
+//			
+//			for (int i = this.county.length(); i < MAX_CHAR_COUNTY; i++) {
+//				countyLong += " ";
+//			}
+//		} else {
+//			countyLong = countyLong.substring(0,MAX_CHAR_COUNTY);
+//		}
+//		return countyLong;
+//	}
 	
 	public String getCursusLong() {
 		String cursusLong = this.cursus;

@@ -5,6 +5,8 @@ import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
+
+
 public class UtilStaticValues {
 
 	public static class Colors {
@@ -112,4 +114,26 @@ public class UtilStaticValues {
 		DROP_SHADOW = dropShadow;
 		}
 	}
+	
+	public static class TreeNodeValues {
+		// values for both
+		public static final int INDEX_SIZE = 4;
+		public static final int OCTETS_TOOK_BY_CHAR = 2;
+		
+		// Intern
+		public static final int MAX_CHAR_NAMES = 31;
+		public static final int OCTETS_TOOK_BY_COUNTY = 4;
+		public static final int MAX_CHAR_CURSUS = 10;
+		public static final int OCTETS_TOOK_BY_YEARIN = 4;
+		public static final int INTERN_SIZE = ((MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_CURSUS) * OCTETS_TOOK_BY_CHAR ) + OCTETS_TOOK_BY_COUNTY + OCTETS_TOOK_BY_YEARIN;
+		public static final int INTERN_NODE_SIZE = INTERN_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
+		
+		// Member
+		public static final int MAX_CHAR_ALIAS = 30;
+		public static final int MAX_CHAR_PASSWORD = 30;
+		public static final int MAX_CHAR_ADMIN = 5;
+		public static final int MEMBER_SIZE = (MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD + MAX_CHAR_ADMIN) * OCTETS_TOOK_BY_CHAR;	
+		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
+	}
+	
 }
