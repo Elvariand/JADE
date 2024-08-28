@@ -16,26 +16,15 @@ import javafx.scene.text.Font;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class RemoveScene extends VBox {
-	private HBox buttonBox;
-	private Button leftButton;
-	private Button rightButton;
-	private Label titleLabel;
+public class RemoveScene extends RepetitiveScene {
+	
 	private Label labelError;
 	private String[] gridPaneLabelsList;
-	private GridPane gridPane;
+
 
 	public RemoveScene() {
 
-		this.setPrefSize(VBOX_WIDTH, VBOX_HEIGHT);
-		this.setAlignment(Pos.CENTER);
-		this.setTranslateX(TOX_VBOX);
-
-		this.titleLabel = new Label("Etes vous sûr de vouloir \nsupprimer le stagiaire suivant ?");
-		titleLabel.setPrefSize(TITLE_WIDTH, TITLE_HEIGHT);
-		titleLabel.setFont(Font.font("Krona One", 25));
-		titleLabel.setStyle("-fx-alignment: center;");
-		titleLabel.setTextFill(GREY_COLOR);
+		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");
 
 		this.gridPaneLabelsList = new String[5];
 		gridPaneLabelsList[0] = "";
@@ -46,14 +35,12 @@ public class RemoveScene extends VBox {
 		
 		this.gridPane = createFormGridPane(gridPaneLabelsList);
 
-		this.buttonBox = new HBox(SPACE_BETWEEN_BTNS);
-		buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
-		buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
-		this.leftButton = new CustomButton("Non");
+		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
+		
+		this.leftButton.setText("Non");
 
-		this.rightButton = new CustomButton("Oui");
+		this.rightButton.setText("Oui");
 
-		buttonBox.getChildren().addAll(leftButton, rightButton);
 
 		this.labelError = new Label("Veuilez sélectionner un stagiaire à supprimer");
 		labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
@@ -62,63 +49,7 @@ public class RemoveScene extends VBox {
 		labelError.setTextFill(GREY_COLOR);
 		labelError.setVisible(false);
 		
-		this.getChildren().addAll(titleLabel, gridPane, labelError, buttonBox);
-	}
-
-	/**
-	 * @return the buttonBox
-	 */
-	public HBox getButtonBox() {
-		return buttonBox;
-	}
-
-	/**
-	 * @param buttonBox the buttonBox to set
-	 */
-	public void setButtonBox(HBox buttonBox) {
-		this.buttonBox = buttonBox;
-	}
-
-	/**
-	 * @return the leftButton
-	 */
-	public Button getLeftButton() {
-		return leftButton;
-	}
-
-	/**
-	 * @param leftButton the leftButton to set
-	 */
-	public void setLeftButton(Button leftButton) {
-		this.leftButton = leftButton;
-	}
-
-	/**
-	 * @return the rightButton
-	 */
-	public Button getRightButton() {
-		return rightButton;
-	}
-
-	/**
-	 * @param rightButton the rightButton to set
-	 */
-	public void setRightButton(Button rightButton) {
-		this.rightButton = rightButton;
-	}
-
-	/**
-	 * @return the titleLabel
-	 */
-	public Label getTitleLabel() {
-		return titleLabel;
-	}
-
-	/**
-	 * @param titleLabel the titleLabel to set
-	 */
-	public void setTitleLabel(Label titleLabel) {
-		this.titleLabel = titleLabel;
+		this.getChildren().add(labelError);
 	}
 
 	/**
@@ -133,13 +64,6 @@ public class RemoveScene extends VBox {
 	 */
 	public void setGridPaneLabelsList(String[] gridPaneLabelsList) {
 		this.gridPaneLabelsList = gridPaneLabelsList;
-	}
-
-	/**
-	 * @return the gridPane
-	 */
-	public GridPane getGridPane() {
-		return gridPane;
 	}
 
 	/**

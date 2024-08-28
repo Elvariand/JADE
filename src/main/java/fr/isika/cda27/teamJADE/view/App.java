@@ -44,7 +44,7 @@ public class App extends Application {
 		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.setTitle("Annuaire");
-//		stage.show();
+		stage.show();
 
 //    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
 //    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
@@ -53,17 +53,19 @@ public class App extends Application {
 	}
 
 	public static void main(String[] args) {
-		InternDao test = new InternDao();
-		test.deleteBinary();
-		test.addFromDon();
-    	test.sortView(0);
-		System.out.println("======================");
-		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
-		test.insert(PY);
-		test.readBinary();
-		test.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
-		System.out.println("======================");
-		test.readBinary();
+
+//		TreeNodeDao test = new TreeNodeDao();
+//		test.deleteBinary();
+//		test.addFromDon();
+//    	test.sortView(0);
+//		System.out.println("======================");
+//		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", "77", "AI 95", "2015");
+//		test.insert(PY);
+//		test.readBinary();
+//		test.delete(new Intern("CHAVENEAU", "Kim Anh", "92", "ATOD 22", "2014"));
+//		System.out.println("======================");
+//		test.readBinary();
+
 
 		launch();
 	}

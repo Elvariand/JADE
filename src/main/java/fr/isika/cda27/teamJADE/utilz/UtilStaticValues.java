@@ -1,8 +1,26 @@
 package fr.isika.cda27.teamJADE.utilz;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.SET_BG_ORANGE_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.COL1_WIDTH;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.COL2_WIDTH;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.GRIDPANE_HEIGHT;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.GRIDPANE_WIDTH;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_TEXTS;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.NBR_OF_LINES;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.ROW_HEIGHT;
+
+import javafx.geometry.Insets;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
 
@@ -43,6 +61,7 @@ public class UtilStaticValues {
 		public static final String SMALL_PATH_BOT = "M5.02681e-06 0L100 0L100 19.5L100 47.5C100 49 99.8383 52.4704 99 57.5C98 63.5 95 73 92 78C89 83 86.5 88 80 94.5C73.5 101 64.5 107 53.5 111C44.7 114.2 37 115 31 115L5.02681e-06 115L5.02681e-06 0Z";
 		
 		public static final Duration DURATION_TIME = Duration.millis(500);
+		
 	}
 
 	public static class MenuVboxValues {
@@ -70,6 +89,51 @@ public class UtilStaticValues {
 		
 		public static final int LABEL_ERROR_WIDTH = 680;
 		public static final int LABEL_ERROR_HEIGHT = 50;
+		
+		public static GridPane createFormGridPane() {
+			// GridPane
+			GridPane gridPane = new GridPane();
+			gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
+			gridPane.setVgap(15);
+			gridPane.setHgap(10);
+
+			// marges pour le GridPane
+			VBox.setMargin(gridPane, new Insets(0, 20, 0, 20));
+
+			// première colonne
+			ColumnConstraints col1Constraints = new ColumnConstraints();
+			col1Constraints.setPrefWidth(COL1_WIDTH);
+			gridPane.getColumnConstraints().add(col1Constraints);
+
+			// deuxième colonne
+			ColumnConstraints col2Constraints = new ColumnConstraints();
+			col2Constraints.setPrefWidth(COL2_WIDTH);
+			gridPane.getColumnConstraints().add(col2Constraints);
+
+			// lignes du GridPane
+			for (int i = 0; i < NBR_OF_LINES; i++) {
+				RowConstraints rowConstraints = new RowConstraints();
+				rowConstraints.setPrefHeight(ROW_HEIGHT);
+				gridPane.getRowConstraints().add(rowConstraints);
+
+				// label
+				Label label = new Label(LABEL_TEXTS[i]);
+				label.setFont(Font.font("Krona One", 16));
+				label.setTextFill(GREY_COLOR);
+				GridPane.setMargin(label, new Insets(0, 30, 0, 40));
+
+				// texte de droite
+				CustomTextField textField = new CustomTextField();
+				
+				GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
+
+				// ajouter tout au GridPane
+				gridPane.add(label, 0, i);
+				gridPane.add(textField, 1, i);
+			}
+
+			return gridPane;
+		}
 	}
 
 	public static class CustomButtonValues {

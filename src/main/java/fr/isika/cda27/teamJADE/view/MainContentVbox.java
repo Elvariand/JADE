@@ -3,6 +3,7 @@ package fr.isika.cda27.teamJADE.view;
 import java.util.ArrayList;
 
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
+import fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -50,7 +51,7 @@ public class MainContentVbox extends VBox {
 
 		this.rightButton = new CustomButton("");
 
-		this.gridPaneLabelsList = new ArrayList();
+		this.gridPaneLabelsList = new ArrayList<>();
 		
 		}
 
@@ -139,137 +140,6 @@ public class MainContentVbox extends VBox {
 		this.titleLabel.setText(titleLabel);
 	}
 
-	
-	
-	
-	
-	
-	/*
-	 * 
-	 * 
-	 * LES FONCTIONS QU'IL RESTE A CHANGER EN CLASSES
-	 * 
-	 * 
-	 * */
-	
-	
-	
-	
-	public VBox createUpdateVbox() {
 
-		// Label
-		this.setTitleLabel("Modification du stagiaire");
-
-		// GridPane
-		GridPane gridPane = createFormGridPane();
-
-		// button
-		this.getLeftButton().setText("Annuler");
-		this.getRightButton().setText("Modifier");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, gridPane, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public VBox createPrintVbox() {
-
-		// Label
-		this.setTitleLabel("Souhaitez vous imprimer\nl'annuaire au format PDF ?");
-
-		// button
-		this.getLeftButton().setText("Non");
-		this.getRightButton().setText("Oui");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public VBox createSeeMembersVbox() {
-
-		// Label
-		this.setTitleLabel("Recherche avancée");
-
-		// GridPane
-		GridPane gridPane = createFormGridPane();
-
-		// button
-		this.getLeftButton().setText("Réinitialiser");
-		this.getRightButton().setText("Rechercher");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, gridPane, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public VBox createQuitVbox() {
-
-		// Label
-		this.setTitleLabel("Vous êtres sur le point de vous\ndéconnecter, souhaitez vous\npoursuivre ?");
-
-		// button
-		this.getLeftButton().setText("Non");
-		this.getRightButton().setText("Oui");
-
-		buttonBox.getChildren().addAll(leftButton, rightButton);
-		mainContentVbox.getChildren().addAll(titleLabel, buttonBox);
-
-		return mainContentVbox;
-	}
-
-	public GridPane createFormGridPane() {
-
-		String[] labelTexts = { "Nom", "Prénom", "Adresse", "Ville", "Code postal" };
-
-		// GridPane
-		GridPane gridPane = new GridPane();
-		gridPane.setPrefSize(680, 340);
-		gridPane.setVgap(15);
-		gridPane.setHgap(10);
-
-		// marges pour le GridPane
-		VBox.setMargin(gridPane, new Insets(0, 20, 0, 20));
-
-		// première colonne
-		ColumnConstraints col1Constraints = new ColumnConstraints();
-		col1Constraints.setPrefWidth(270);
-		gridPane.getColumnConstraints().add(col1Constraints);
-
-		// deuxième colonne
-		ColumnConstraints col2Constraints = new ColumnConstraints();
-		col2Constraints.setPrefWidth(408);
-		gridPane.getColumnConstraints().add(col2Constraints);
-
-		// lignes du GridPane
-		for (int i = 0; i < 5; i++) {
-			RowConstraints rowConstraints = new RowConstraints();
-			rowConstraints.setPrefHeight(50);
-			gridPane.getRowConstraints().add(rowConstraints);
-
-			// label
-			Label label = new Label(labelTexts[i]);
-			label.setFont(Font.font("Krona One", 16));
-			label.setTextFill(GREY_COLOR);
-			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
-
-			// texte de droite
-			TextField textField = new TextField();
-			textField.setPrefHeight(35);
-			textField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; "
-					+ "-fx-border-radius: 13; " + "-fx-border-color: transparent transparent #704739 transparent;");
-			textField.setEffect(new InnerShadow(23.93, 2.0, 2.0, Color.web("#000000", 0.1)));
-			GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
-
-			// ajouter tout au GridPane
-			gridPane.add(label, 0, i);
-			gridPane.add(textField, 1, i);
-		}
-
-		return gridPane;
-	}
 
 }

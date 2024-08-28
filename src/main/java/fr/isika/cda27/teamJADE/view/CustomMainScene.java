@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import fr.isika.cda27.teamJADE.model.Intern;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.PauseTransition;
@@ -16,12 +17,16 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -64,7 +69,7 @@ public class CustomMainScene extends AnchorPane {
 
 		ObservableList<Intern> observableInterns = FXCollections.observableArrayList(list);
 		FilteredList<Intern> filteredInterns = new FilteredList<>(observableInterns, p -> true);
-		TableView tableView = createTableView(filteredInterns);
+		TableView<Intern> tableView = createTableView(filteredInterns);
 
 		// HBox du menu
 		HBox menuHbox = new HBox();
@@ -78,10 +83,10 @@ public class CustomMainScene extends AnchorPane {
 		ScopeScene scopeContentVbox = new ScopeScene();
 		VBox addContentVbox = new AddScene();
 		RemoveScene removeContentVbox = new RemoveScene();
-		VBox updateContentVbox = new MainContentVbox().createUpdateVbox();
-		VBox printContentVbox = new MainContentVbox().createPrintVbox();
-		VBox seeMembersContentVbox = new MainContentVbox().createSeeMembersVbox();
-		VBox quitContentVbox = new MainContentVbox().createQuitVbox();
+		VBox updateContentVbox = new UpdateScene();
+		VBox printContentVbox = new PrintScene();
+		VBox seeMembersContentVbox = new SeeMembersScene();
+		VBox quitContentVbox = new QuitScene();
 
 		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Intern>() {
 			@Override
@@ -102,10 +107,12 @@ public class CustomMainScene extends AnchorPane {
 		VBox menubarVBox = new VBox();
 		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
 		menubarVBox.setTranslateX(TOX_MENUBAR);
+//		menubarVBox.setLayoutX(-200);
+		menubarVBox.setStyle("-fx-background-color: transparent; -fx-border-color: green; -fx-border-width: 5;");
 
 		// On crée la croix du haut
 
-		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, false, 30);
+		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
@@ -120,7 +127,6 @@ public class CustomMainScene extends AnchorPane {
 				"Membres");
 
 		// On crée le bouton quitter
-
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				LARGE_PATH_BOT, SMALL_PATH_BOT);
 
@@ -130,6 +136,9 @@ public class CustomMainScene extends AnchorPane {
 		menubarVBox.getChildren().addAll(scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn);
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
+
+		StackPaneMenubar[] menuChildren = { closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
+				quitBtn };
 
 		// On ajoute le contenu de gauche et de droite a la HBox du menu
 		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
@@ -145,6 +154,7 @@ public class CustomMainScene extends AnchorPane {
 		/* BOUTONS ACCTIONS */
 
 		TranslateTransition moveTransition = new TranslateTransition();
+		FadeTransition fadeTransition = new FadeTransition();
 
 		/*
 		 * On configure les listes de boutons (qui sont des StackPaneMenubar) dans
@@ -200,6 +210,19 @@ public class CustomMainScene extends AnchorPane {
 				moveTransition.setNode(menuHbox);
 				moveTransition.setToX(TOX_MEDIUM_MENU);
 				moveTransition.play();
+				menubarVBox.setMaxWidth(300);
+				for (int i = 0; i < menuChildren.length; i++) {
+					if (menuChildren[i].getLabel() != null) {
+						menuChildren[i].getLabel().setManaged(true);
+						if (menuChildren[i].getHbox() != null) {
+							menuChildren[i].getHbox().setMaxWidth(300.0);
+						}
+						menuChildren[i].getLabel().setVisible(true);
+//						child.getHbox().setAlignment(Pos.CENTER);
+						System.out.println(menuChildren[i].getHbox().getWidth());
+					}
+				}
+
 				// on fait pivoter l'image de 180°
 				rotateTransition.setByAngle(180);
 				rotateTransition.play();
@@ -210,6 +233,22 @@ public class CustomMainScene extends AnchorPane {
 				moveTransition.setNode(menuHbox);
 				moveTransition.setToX(TOX_SMALL_MENU);
 				moveTransition.play();
+
+				menubarVBox.setMaxWidth(100);
+				for (int i = 0; i < menuChildren.length; i++) {
+
+					if (menuChildren[i].getLabel() != null) {
+
+						if (menuChildren[i].getHbox() != null) {
+							menuChildren[i].getHbox().setMaxWidth(100.0);
+						}
+
+						menuChildren[i].getLabel().setVisible(false);
+						menuChildren[i].getLabel().setManaged(false);
+//						child.getHbox().setAlignment(Pos.CENTER_RIGHT);
+						System.out.println(menuChildren[i].getHbox().getWidth());
+					}
+				}
 				// on fait pivoter l'image de 180°
 				rotateTransition.setByAngle(180);
 				rotateTransition.play();
@@ -450,7 +489,7 @@ public class CustomMainScene extends AnchorPane {
 		});
 	}
 
-	private TableView createTableView(FilteredList<Intern> filteredInterns) {
+	private TableView<Intern> createTableView(FilteredList<Intern> filteredInterns) {
 
 		TableView<Intern> tableView = new TableView<>(filteredInterns);
 
