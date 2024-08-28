@@ -1,13 +1,10 @@
 package fr.isika.cda27.teamJADE.view;
 
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -17,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class RemoveScene extends VBox {
 	private HBox buttonBox;
@@ -37,7 +35,7 @@ public class RemoveScene extends VBox {
 		titleLabel.setPrefSize(TITLE_WIDTH, TITLE_HEIGHT);
 		titleLabel.setFont(Font.font("Krona One", 25));
 		titleLabel.setStyle("-fx-alignment: center;");
-		titleLabel.setTextFill(Color.web("#272727"));
+		titleLabel.setTextFill(GREY_COLOR);
 
 		this.gridPaneLabelsList = new String[5];
 		gridPaneLabelsList[0] = "";
@@ -61,7 +59,7 @@ public class RemoveScene extends VBox {
 		labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		labelError.setFont(Font.font("Krona One", 14));
 		labelError.setStyle("-fx-alignment: center;");
-		labelError.setTextFill(Color.web("#272727"));
+		labelError.setTextFill(GREY_COLOR);
 		labelError.setVisible(false);
 		
 		this.getChildren().addAll(titleLabel, gridPane, labelError, buttonBox);
@@ -168,9 +166,6 @@ public class RemoveScene extends VBox {
 		gridPane.setVgap(15);
 		gridPane.setHgap(10);
 
-		// marges pour le GridPane
-//		VBox.setMargin(gridPane, new Insets(0, 20, 0, 0));
-
 		// première colonne
 		ColumnConstraints col1Constraints = new ColumnConstraints();
 		col1Constraints.setPrefWidth(COL1_WIDTH + 65);
@@ -190,13 +185,13 @@ public class RemoveScene extends VBox {
 			// label
 			Label label = new Label("             " + LABEL_TEXTS[i]);
 			label.setFont(Font.font("Krona One", 16));
-			label.setTextFill(Color.web("#272727"));
+			label.setTextFill(GREY_COLOR);
 			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
 
 			// texte de droite
 			Label label2 = new Label(":       " + gridPaneLabelsList[i]);
 			label2.setFont(Font.font("Krona One", 16));
-			label2.setTextFill(Color.web("#272727"));
+			label2.setTextFill(GREY_COLOR);
 
 			GridPane.setMargin(label2, new Insets(0, 40, 0, 0));
 

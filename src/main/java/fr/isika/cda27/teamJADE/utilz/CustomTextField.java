@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomTextFieldValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomTextField extends TextField {
 
@@ -19,7 +20,7 @@ public class CustomTextField extends TextField {
 	 */
 	public CustomTextField() {
 		this.setPrefHeight(TF_HEIGHT);
-		this.setStyle("-fx-background-color : #DD734C; " + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+		this.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent;");
 		this.setFont(Font.font("Krona One", 18)); 
 

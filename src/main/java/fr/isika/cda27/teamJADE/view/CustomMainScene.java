@@ -33,6 +33,7 @@ import javafx.util.Duration;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.DROP_SHADOW;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomMainScene extends AnchorPane {
 

@@ -17,7 +17,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class MainContentVbox extends VBox {
 
@@ -40,7 +40,7 @@ public class MainContentVbox extends VBox {
 		titleLabel.setPrefSize(680, 100);
 		titleLabel.setFont(Font.font("Krona One", 25));
 		titleLabel.setStyle("-fx-alignment: center;");
-		titleLabel.setTextFill(Color.web("#272727"));
+		titleLabel.setTextFill(GREY_COLOR);
 
 		this.buttonBox = new HBox(100);
 		buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
@@ -253,13 +253,13 @@ public class MainContentVbox extends VBox {
 			// label
 			Label label = new Label(labelTexts[i]);
 			label.setFont(Font.font("Krona One", 16));
-			label.setTextFill(Color.web("#272727"));
+			label.setTextFill(GREY_COLOR);
 			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
 
 			// texte de droite
 			TextField textField = new TextField();
 			textField.setPrefHeight(35);
-			textField.setStyle("-fx-background-color: #DD734C; " + "-fx-background-radius: 13; "
+			textField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; "
 					+ "-fx-border-radius: 13; " + "-fx-border-color: transparent transparent #704739 transparent;");
 			textField.setEffect(new InnerShadow(23.93, 2.0, 2.0, Color.web("#000000", 0.1)));
 			GridPane.setMargin(textField, new Insets(0, 40, 0, 0));

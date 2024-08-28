@@ -7,7 +7,7 @@ import javafx.util.Duration;
 
 public class UtilStaticValues {
 
-	public static class MainSceneValues {
+	public static class Colors {
 		
 		public static final String SET_BG_GREY_COLOR = "-fx-background-color: #272727;";
 		public static final String SET_BG_ORANGE_COLOR = "-fx-background-color: #DD734C;";
@@ -17,6 +17,9 @@ public class UtilStaticValues {
 		public static final String STRING_GREY_COLOR = "#272727";
 		public static final Color ORANGE_COLOR = Color.web(STRING_ORANGE_COLOR);
 		public static final Color GREY_COLOR = Color.web(STRING_GREY_COLOR);
+	}
+	
+	public static class MainSceneValues {
 		
 		public static final int TOX_SMALL_MENU = -1035;
 		public static final int TOX_MEDIUM_MENU = -850;

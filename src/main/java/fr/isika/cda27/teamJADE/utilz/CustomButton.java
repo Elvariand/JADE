@@ -7,6 +7,7 @@ import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomButton extends Button {
 	private Button button;
@@ -20,8 +21,8 @@ public class CustomButton extends Button {
 		this.text = text;
 		
 		this.setPrefSize(BTN_WIDTH, BTN_HEIGHT);
-		this.setStyle("-fx-background-color: #272727; -fx-background-radius: 13;");
-		this.setTextFill(Color.web("#DD734C"));
+		this.setStyle(SET_BG_GREY_COLOR + " -fx-background-radius: 13;");
+		this.setTextFill(ORANGE_COLOR);
 		this.setFont(Font.font("Krona One", 18));
 		this.setEffect(INNER_SHADOW);
 		this.setText(text);
@@ -33,7 +34,7 @@ public class CustomButton extends Button {
 		
 		this.setOnMouseExited(event -> {
 			this.setStyle("-fx-background-color: #272727; -fx-background-radius: 13;");
-			this.setTextFill(Color.web("#DD734C"));
+			this.setTextFill(ORANGE_COLOR);
 		});
 		
 	}
