@@ -9,7 +9,8 @@ public class TreeNode {
 	private TreeNode rightChild;
 	private TreeNode leftChild;
 	private LinkedList<Intern> twins;
-	private static final int SIZE_NODE = Intern.getSizeIntern()+4 +4 +4;
+	private static final int SIZE_INDEX = 4;
+	private static final int SIZE_NODE = Intern.getSizeIntern() + TreeNode.getSizeIndex() + TreeNode.getSizeIndex() + TreeNode.getSizeIndex();
 
 	/**
 	 * @param intern Le Stagiaire dont l'info sera dans ce noeud
@@ -97,6 +98,15 @@ public class TreeNode {
 
 
 	/**
+	 * @return the sizeIndex
+	 */
+	public static int getSizeIndex() {
+		return SIZE_INDEX;
+	}
+
+
+
+	/**
 	 * @return the sizeNode
 	 */
 	public static int getSizeNode() {
@@ -107,25 +117,13 @@ public class TreeNode {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder();
-		builder.append("TreeNode [");
-		if (familyName != null) {
-			builder.append("familyName=");
-			builder.append(familyName);
-			builder.append(", ");
-		}
-		if (rightChild != null) {
-			builder.append("rightChild=");
-			builder.append(rightChild);
-			builder.append(", ");
-		}
-		if (leftChild != null) {
-			builder.append("leftChild=");
-			builder.append(leftChild);
-		}
-		builder.append("]");
-		return builder.toString();
+		return "TreeNode [familyName=" + familyName + ", rightChild=" + rightChild + ", leftChild=" + leftChild
+				+ ", twins=" + twins + "]";
 	}
+
+
+
+
 
 	
 

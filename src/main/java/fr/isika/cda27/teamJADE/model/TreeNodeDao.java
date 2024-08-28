@@ -11,288 +11,402 @@ import fr.isika.cda27.teamJADE.view.App;
 
 public class TreeNodeDao {
 
-	private TreeNode root;
-
 	public TreeNodeDao() {
-		this.root = null;
 	}
 
 	/**
-	 * @param root
+	 * @param intern L'information sous forme d'objet de type Intern qui sera
+	 *               stockée dans le fichier binaire.
+	 * 
+	 *               Cette fonction permet d'écrire un objet de type Intern dans le
+	 *               fichier binaire en le parcourant de manière efficace. La
+	 *               position du curseur est au début du fichier.
 	 */
-	public TreeNodeDao(TreeNode root) {
-		this.root = root;
+	public void insert(Intern intern) {
+		insert(intern, 0);
 	}
 
 	/**
-	 * @return
+	 * @param intern         L'information sous forme d'objet de type Intern qui
+	 *                       sera stockée dans le fichier binaire.
+	 * @param cursorPosition La position en Long du curseur dans le fichier binaire.
+	 * 
+	 *                       Cette fonction permet d'écrire un objet de type Intern
+	 *                       dans le fichier binaire en le parcourant de manière
+	 *                       efficace.
 	 */
-	public TreeNode getRoot() {
-		return root;
-	}
+	public void insert(Intern intern, long cursorPosition) {
 
-	/**
-	 * @param root
-	 */
-	public void setRoot(TreeNode root) {
-		this.root = root;
-	}
+		long binarySize = this.getBinarySize();
 
-	/**
-	 * @param intern
-	 */
-	public void addIntern(Intern intern) {
-		if (root == null) {
-			this.root = new TreeNode(intern);
-			this.writeInBinary(intern, this.getBinarySize());
-		} else {
-			this.root = insert(intern, root);
+		// Si le fichier binaire est vide
+		if (binarySize == 0) {
+			// Alors nous écrivons le noeud au début
+			this.writeInBinary(intern, 0);
+			return;
 		}
 
-	}
+		String nodeFamilyName = this.readFamilyNameFromBinary(cursorPosition);
 
-	/**
-	 * @param intern   l'information sous forme d'objet de type Intern qui sera
-	 *                 stockée dans le noeud à ajouter à l'arbre binaire.
-	 * @param treeNode l'objet de type TreeNode correspondant au noeud de l'arbre
-	 *                 que nous voulons parcourir. Renseigner la Racine de l'arbre
-	 *                 au départ.
-	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si
-	 *         aucun noeud suivant n'existe.
-	 * 
-	 *         Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le
-	 *         parcourant de manière efficace ainsi que de l'écrire dans le fichier
-	 *         binaire. La position du curseur est au début du fichier.
-	 */
-	public TreeNode insert(Intern intern, TreeNode treeNode) {
-		return insert(intern, treeNode, 0);
-	}
+		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
+		// celle du nom de famille du Stagiaire courant lu dans le fichier binaire.
+		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
 
-	/**
-	 * @param intern         l'information sous forme d'objet de type Intern qui
-	 *                       sera stockée dans le noeud à ajouter à l'arbre binaire.
-	 * @param treeNode       l'objet de type TreeNode correspondant au noeud de
-	 *                       l'arbre que nous voulons parcourir. Renseigner la
-	 *                       Racine de l'arbre au départ.
-	 * @param cursorPosition la position en Long du curseur dans le fichier binaire.
-	 * @return Le noeud suivant dans le parcourt de l'arbre ou le noeud ajouté si
-	 *         aucun noeud suivant n'existe.
-	 * 
-	 *         Cette fonction permet d'ajouter un Noeud à l'arbre binaire en le
-	 *         parcourant de manière efficace ainsi que de l'écrire dans le fichier
-	 *         binaire.
-	 */
-	public TreeNode insert(Intern intern, TreeNode treeNode, long cursorPosition) {
-
-		// Si le noeud courant est null
-		if (treeNode == null) {
-
-			// Alors nous écrivons le noeud à cet endroit dans le fichier binaire
-			this.writeInBinary(intern, cursorPosition);
-			return new TreeNode(intern);
-		}
-
-		// Si la valeur du noeud à insérer est plus petite que celle du noeud courant
-		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
-
-			// On lit depuis le fichier binaire l'information du fils gauche du noeud actuel
-			// Afin de pouvoir y placer le curseur sur le fichier binaire
-			long newCursorPosition = readLeftChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
 
 			// Si il n'y a pas de fils gauche, c'est donc que l'information sur le fichier
 			// binaire vaut -1
 			if (newCursorPosition < 0) {
 
 				/*
-				 * Dans ce cas nous allons créer un fils gauche au noeud courant et nous
-				 * remplaçons dans le fichier binaire le -1 correspondant au fils gauche par la
-				 * valeur de la position du noeud que l'on va ajouter à la fin du fichier
-				 * binaire
+				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
+				 * fils gauche par la valeur de la position du Stagiaire que l'on va écrire à la
+				 * fin du fichier binaire
 				 */
 				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern());
-				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), this.getBinarySize()));
-			} else {
+				this.writeInBinary(intern);
+				return;
 
 				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
 				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
-				treeNode.setLeftChild(insert(intern, treeNode.getLeftChild(), newCursorPosition));
+			} else {
+				this.insert(intern, newCursorPosition * TreeNode.getSizeNode());
+				return;
 			}
 		}
 
-		// Si la valeur du noeud à insérer est plus grande que celle du noeud courant
-		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
+		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
+		// celle
+		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
+		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
 
-			// On lit depuis le fichier binaire l'information du fils droit du noeud actuel
-			// Afin de pouvoir y placer le curseur sur le fichier binaire
-			long newCursorPosition = readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
+			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
 			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier
 			// binaire vaut -1
 			if (newCursorPosition < 0) {
 
 				/*
-				 * Dans ce cas nous allons créer un fils droit au noeud courant et nous
-				 * remplaçons dans le fichier binaire le -1 correspondant au fils droit par la
-				 * valeur de la position du noeud que l'on va ajouter à la fin du fichier
-				 * binaire
+				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
+				 * fils droit par la valeur de la position du Stagiaire que l'on va écrire à la
+				 * fin du fichier binaire
 				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4);
-				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), this.getBinarySize()));
-			} else {
+				this.writeIntInBinary(this.getNumberNodeInBinary(),
+						cursorPosition + Intern.getSizeIntern() + TreeNode.getSizeIndex());
+				this.writeInBinary(intern);
+				return;
+
 				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
 				// position correspondante dans le fichier binaire
 				// et nous relançons une comparaison d'insertion.
-				treeNode.setRightChild(insert(intern, treeNode.getRightChild(), newCursorPosition));
+			} else {
+				this.insert(intern, newCursorPosition * TreeNode.getSizeNode());
+				return;
 			}
 		}
 
-		// Si la valeur du noeud à insérer est égale à celle du noeud courant
+		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
+		// de famille de l'Intern courant lu dans le fichier binaire.
 		else {
-			// Si le noeud est déjà présent
-			if (treeNode.getTwins().contains(intern)) {
-				System.out.println("Le stagiaire est déjà présent dans la base de données");
-			} else {
 
-				// Sinon nous ajoutons l'objet de type Intern à la liste chaînée du noeud
-				// courant
-				treeNode.getTwins().add(intern);
-				int read = 1;
+			int read = 1;
 
-				/*
-				 * Pour le fichier binaire nous lisons la valeur de position du noeud suivant le
-				 * noeud courant. Tant que nous n'obtenons pas -1 c'est que nous ne sommes pas
-				 * au bout de la liste chaînée alors nous déplaçons notre curseur vers la
-				 * position du noeud suivant et nous recommençons à lire la valeur de position
-				 * du noeud suivant
-				 */
-				while (read > 0) {
-					read = readTwinFromBinary(cursorPosition);
-					if (read > 0)
-						cursorPosition = read * TreeNode.getSizeNode();
+			/*
+			 * Pour le fichier binaire nous lisons la valeur de position du doublon du
+			 * Stagiaire que nous sommes en train de lire. Tant que nous n'obtenons pas -1
+			 * c'est que nous ne sommes pas au bout des doublons alors nous déplaçons notre
+			 * curseur vers la position du doublon suivant dans le fichier et nous
+			 * recommençons à lire la valeur de position du noeud suivant
+			 */
+			while (read > 0) {
+				// Si le Stagiaire est déjà présent
+				if (intern.equals(this.readInternFromBinary(cursorPosition))) {
+					System.out.println("Le stagiaire est déjà présent dans la base de données");
+					return;
 				}
-
-				/*
-				 * Une fois le bout de liste chaînée atteint, nous ajoutons le noeud en bout de
-				 * liste et nous remplaçons dans le fichier binaire le -1 correspondant suivant
-				 * dans la liste chainée par la valeur de la position du noeud que l'on va
-				 * ajouter à la fin du fichier binaire
-				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + Intern.getSizeIntern() + 4 + 4);
-				this.writeInBinary(intern, this.getBinarySize());
+				read = readTwinFromBinary(cursorPosition);
+				if (read > 0)
+					cursorPosition = read * TreeNode.getSizeNode();
 			}
+
+			/*
+			 * Une fois le bout de liste des doublons atteint, nous remplaçons dans le
+			 * fichier binaire le -1 correspondant suivant dans la liste par la valeur de la
+			 * position du Stagiaire que l'on va ajouter à la fin du fichier binaire
+			 */
+			this.writeIntInBinary(this.getNumberNodeInBinary(),
+					cursorPosition + Intern.getSizeIntern() + TreeNode.getSizeIndex() + TreeNode.getSizeIndex());
+			this.writeInBinary(intern, binarySize);
 		}
-		return treeNode;
+		return;
 
 	}
 
-	public void removeIntern(Intern intern) {
-		if (root == null) {
-			System.out.println("Impossible de supprimer le stagiaire");
-		} else {
-			root = delete(intern, root);
-		}
+	/**
+	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
+	 *               binaire
+	 * 
+	 *               Cette fonction parcourt le fichier binaire de manière efficace
+	 *               pour trouver l'emplacement du Stagiaire à effacer dans le
+	 *               fichier binaire. Elle l'efface et modifie les parents, enfants
+	 *               et doublons en conséquence. Elle parcourt le fichier depuis le
+	 *               début.
+	 */
+	public void delete(Intern intern) {
+		this.delete(intern, 0, 0, false);
 	}
 
-	public TreeNode delete(Intern intern, TreeNode treeNode) {
-		return this.delete(intern, treeNode, 0, 0, false);
-	}
+	/**
+	 * @param intern               L'objet de type Intern que nous voulons effacer
+	 *                             du fichier binaire
+	 * @param parentCursorPosition La position en Long du parent du Stagiaire
+	 *                             actuellement lu dans le fichier Binaire
+	 * @param childCursorPosition  La position en Long du Stagiaire actuellement lu
+	 *                             dans le fichier Binaire
+	 * @param isFromLeft           Booléen indiquand si le Stagiaire actuellement lu
+	 *                             est un fils gauche ou non de son parent
+	 * 
+	 *                             Cette fonction parcourt le fichier binaire de
+	 *                             manière efficace pour trouver l'emplacement du
+	 *                             Stagiaire à effacer dans le fichier binaire. Elle
+	 *                             l'efface et modifie les parents, enfants et
+	 *                             doublons en conséquence. Elle parcourt le fichier
+	 *                             depuis childCursorPosition.
+	 */
+	public void delete(Intern intern, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
 
-	public TreeNode delete(Intern intern, TreeNode treeNode, long parentCursorPosition, long childCursorPosition,
-			boolean isFromLeft) {
+		String nodeFamilyName = this.readFamilyNameFromBinary(childCursorPosition);
 
-		// Si le noeud courant est null
-		if (treeNode == null) {
-			return treeNode;
-		}
-		long buffer = childCursorPosition;
+		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
+		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
+		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
 
-		// Si la valeur du noeud à supprimer est plus petite que celle du noeud courant
-		if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) < 0) {
 			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * TreeNode.getSizeNode();
-			treeNode.setLeftChild(delete(intern, treeNode.getLeftChild(), buffer, childCursorPosition, true));
-		}
 
-		// Si la valeur du noeud à supprimer est plus grande que celle du noeud courant
-		else if (intern.getFamilyName().compareTo(treeNode.getFamilyName()) > 0) {
-
-			childCursorPosition = readRightChildFromBinary(childCursorPosition) * TreeNode.getSizeNode();
-			treeNode.setRightChild(delete(intern, treeNode.getRightChild(), buffer, childCursorPosition, false));		
-
-		// Si la valeur du noeud à supprimer est égale à celle du noeud courant
-		} else {
-			// Si on a une LinkedList > 1 donc si on a plusieurs homonymes
-			if (treeNode.getTwins().size() > 1) {
-				int index = treeNode.getTwins().indexOf(intern);
-				for (int i = 0; i < index; i++) {
-					buffer = childCursorPosition;
-					childCursorPosition = readTwinFromBinary(childCursorPosition) * TreeNode.getSizeNode();
-					if (i == index - 1) {
-						this.writeIntInBinary(
-								index + 1 >= treeNode.getTwins().size() - 1 ?
-										-1 : readTwinFromBinary(childCursorPosition),
-								buffer + Intern.getSizeIntern() + 4 + 4);
-					}
-				}
-				this.eraseFromBinary(childCursorPosition);
-				treeNode.getTwins().remove(intern); // on efface dans la liste
-				return treeNode;
-				// Sinon
-			} else {
-				TreeNode substitute = deleteNode(treeNode);
-				this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + Intern.getSizeIntern()
-						: parentCursorPosition + Intern.getSizeIntern() + 4);
-				this.eraseFromBinary(childCursorPosition);
-				return substitute;
+			// Si l'on doit aller vers le fils gauche pour trouver le Stagiaire que l'on
+			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
+			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
+			// l'affiche
+			if (childCursorPosition < 0) {
+				System.err.println(
+						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant gauche inexistant. On veut supprimer\n"
+								+ intern + "/net nous sommes en train de lire\n"
+								+ this.readInternFromBinary(parentCursorPosition)
+								+ "\n*******************************************");
+				return;
 			}
 
-		}
-		return treeNode;
-
-	}
-
-	private TreeNode deleteNode(TreeNode treeNode) {
-		// Si il n'y a pas d'enfants gauche
-		if (treeNode.getLeftChild() == null && treeNode.getLeftChild() != null) {
-			return treeNode.getRightChild();
-
-		// Si il n'y a pas d'enfants droit
-		} else if (treeNode.getRightChild() == null && treeNode.getRightChild() != null) {
-			return treeNode.getLeftChild();
-
-		// Si il y a deux enfants
-		} else if (treeNode.getRightChild() != null && treeNode.getRightChild() != null) {
-		TreeNode substitute = findSubstitute(treeNode.getRightChild());
-		treeNode.setFamilyName(substitute.getFamilyName());
-		treeNode.setTwins(substitute.getTwins());
-
-		treeNode.setRightChild(delete(substitute.getTwins().getFirst(), treeNode.getRightChild()));
-		
-		}
-		// S'il n'y a ni d'enfant gauche ni d'enfant droit
-
-		return treeNode;
-	}
-
-	private TreeNode findSubstitute(TreeNode minNode) {
-		// On cherche la valeur minimale du sous arbre droit
-		while (minNode.getLeftChild() != null) {
-			minNode = minNode.getLeftChild();
-		}
-		return minNode;
-	}
-
-	public void sortView(TreeNode node) {
-
-		if (node == null) {
+			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
+			// niveau de l'enfant gauche
+			this.delete(intern, parentCursorPosition, childCursorPosition, true);
 			return;
 		}
 
-		sortView(node.getLeftChild());
-		for (Intern intern : node.getTwins()) {
-			System.out.println(intern.getFamilyName());
+		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
+		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
+		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
+
+			childCursorPosition = readRightChildFromBinary(childCursorPosition) * TreeNode.getSizeNode();
+
+			// Si l'on doit aller vers le fils droit pour trouver le Stagiaire que l'on
+			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
+			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
+			// l'affiche
+			if (childCursorPosition < 0) {
+				System.err.println(
+						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant droit inexistant. On veut supprimer\n"
+								+ intern + "/net nous sommes en train de lire\n"
+								+ this.readInternFromBinary(parentCursorPosition)
+								+ "\n*******************************************");
+				return;
+			}
+
+			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
+			// niveau de l'enfant droit
+			this.delete(intern, parentCursorPosition, childCursorPosition, false);
+			return;
+
+			// Si la valeur du nom de famille du Stagiaire à écrire est égale à
+			// celle du nom de famille du Stagiaire lu dans le fichier binaire.
+		} else {
+
+			// Si on a plusieurs homonymes et donc que la valeur de doublon suivant dans le
+			// fichier binaire au niveau du stagiaire courant est différente de -1
+			if (this.readTwinFromBinary(childCursorPosition) != -1) {
+
+				// On parcourt la suite de doublons jusqu'à trouver celui qui correspond au
+				// Stagiaire que l'on veut supprimer
+				while (!intern.equals(this.readInternFromBinary(childCursorPosition)) && childCursorPosition > 0) {
+					parentCursorPosition = childCursorPosition;
+					childCursorPosition = readTwinFromBinary(childCursorPosition) * TreeNode.getSizeNode();
+
+					// Si nous atteignons le bout de la liste c'est que nous n'avons pas trouver le
+					// stagiaire à supprimer et donc qu'il y a une erreur et on l'affiche.
+					if (childCursorPosition < 0) {
+						System.err.println(
+								"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Doublon inexistant. On veut supprimer\n"
+										+ intern + "/net nous sommes en train de lire\n"
+										+ this.readInternFromBinary(parentCursorPosition)
+										+ "\n*******************************************");
+						return;
+					}
+				}
+
+				// On efface le Stagiaire cible dans notre fichier binaire et met à jour la
+				// valeur du suivant dans la liste des doublons chez le parent ou -1 s'il n'y a
+				// pas de suivant
+				this.writeIntInBinary(this.readTwinFromBinary(childCursorPosition), parentCursorPosition);
+				this.eraseFromBinary(childCursorPosition);
+				return;
+
+				// S'il n'y a pas de doublon/ d'homonyme
+			} else {
+
+				// Si le Stagiaire à supprimer est une feuille et donc le seul cas où la valeur
+				// des enfants gauche et droits sont égales
+				if (this.readLeftChildFromBinary(childCursorPosition) == this
+						.readRightChildFromBinary(childCursorPosition)) {
+
+					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
+					// fils droit suivant duquel il est issu, par -1
+					this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + Intern.getSizeIntern()
+							: parentCursorPosition + Intern.getSizeIntern() + TreeNode.getSizeIndex());
+
+					// On efface le Stagiaire voulu dans le fichier binaire
+					this.eraseFromBinary(childCursorPosition);
+					return;
+
+				} else {
+
+					// Nous parcourons le fichier binaire jusqu'à trouver le bon Stagiaire qui va
+					// prendre la place du Stagiaire que l'on veut supprimer
+					long[] result = findSubstitute(childCursorPosition);
+					long substitute = result[0], parentSubstituteCursor = result[1];
+
+					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
+					// fils droit suivant duquel il est issu, par la valeur de position du substitut
+					// que l'on a trouvé
+					this.writeIntInBinary((int) substitute / TreeNode.getSizeNode(),
+							isFromLeft ? parentCursorPosition + Intern.getSizeIntern()
+									: parentCursorPosition + Intern.getSizeIntern() + TreeNode.getSizeIndex());
+
+					// Alors nous remplaçons la valeur de l'enfant gauche du parent du substitut par
+					// -1
+					this.writeIntInBinary(-1, parentSubstituteCursor + Intern.getSizeIntern());
+
+					// On transmet au substitut les valeurs des enfants du Stagiaire que l'on
+					// supprime
+					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition),
+							substitute + Intern.getSizeIntern());
+					this.writeIntInBinary(this.readRightChildFromBinary(childCursorPosition),
+							substitute + Intern.getSizeIntern() + TreeNode.getSizeIndex());
+
+					// On efface le stagiaire
+					this.eraseFromBinary(childCursorPosition);
+					return;
+				}
+			}
+
 		}
-		sortView(node.getRightChild());
+
+	}
+
+	/**
+	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
+	 *                       début du stagiaire dont on veut trouver le substitut
+	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
+	 *         celle de son parent.
+	 * 
+	 *         Cette fonction permet de trouver dans le fichier binaire, un
+	 *         substitut à un stagiaire que l'on veut supprimer et qui a au moins un
+	 *         enfant
+	 */
+	private long[] findSubstitute(long cursorPosition) {
+		int leftChild = this.readLeftChildFromBinary(cursorPosition);
+		int rightChild = this.readRightChildFromBinary(cursorPosition);
+		// Si il n'y a pas d'enfant gauche
+		long[] tabCursorPosition = new long[2];
+		if (leftChild == -1 && rightChild != -1) {
+			tabCursorPosition[0] = rightChild * TreeNode.getSizeNode();
+			tabCursorPosition[1] = cursorPosition;
+
+			// Si il n'y a pas d'enfant droit
+		} else if (rightChild == -1 && leftChild != -1) {
+			tabCursorPosition[0] = leftChild * TreeNode.getSizeNode();
+			tabCursorPosition[1] = cursorPosition;
+
+			// Si il y a deux enfants
+		} else if (rightChild != -1 && leftChild != -1) {
+			tabCursorPosition = findTwoChildSubstitute(rightChild * TreeNode.getSizeNode());
+		} else {
+			System.err.println(
+					"*****************\nLe Stagiaire recherché n'a pas d'enfant.\nLe stagiaire recherché est :\n"
+							+ this.readInternFromBinary(cursorPosition) + "\n************************************");
+		}
+		return tabCursorPosition;
+	}
+
+	/**
+	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
+	 *                       début du stagiaire dont on veut trouver le substitut
+	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
+	 *         celle de son parent.
+	 * 
+	 *         Cette fonction permet de trouver dans le fichier binaire, un
+	 *         substitut à un stagiaire que l'on veut supprimer et qui a exactement
+	 *         2 enfants
+	 */
+	private long[] findTwoChildSubstitute(long cursorPosition) {
+		// On cherche la valeur minimale du sous arbre droit
+		long substitute = cursorPosition, parent = cursorPosition;
+		while (cursorPosition > 0) {
+			parent = substitute;
+			substitute = cursorPosition;
+			cursorPosition = this.readLeftChildFromBinary(cursorPosition) * TreeNode.getSizeNode();
+		}
+		long[] result = { substitute, parent };
+		return result;
+	}
+
+	/**
+	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
+	 *                       début du stagiaire depuis lequel on veut démarrer la
+	 *                       lecture de l'arbre
+	 * 
+	 *                       Cette fonction lit et affiche l'arbre suivant l'ordre
+	 *                       infixe
+	 */
+	public void sortView(long cursorPosition) {
+
+		// Si le position du curseur est négative, c'est une erreur, on ne peut rien
+		// lire et on interrompt immédiatement la fonction
+		if (cursorPosition < 0) {
+			System.err.println("Position du curseur négative");
+			return;
+		}
+
+		int leftChild = this.readLeftChildFromBinary(cursorPosition);
+		int rightChild = this.readRightChildFromBinary(cursorPosition);
+
+		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
+		// alors on lit celui-ci en priorité
+		if (leftChild != -1)
+			sortView(leftChild * TreeNode.getSizeNode());
+
+		// On affiche le Stagiaire lu
+		System.out.println(this.readInternFromBinary(cursorPosition));
+
+		// S'il y a des homonymes, on les affiche tous
+		long twinPosition = this.readTwinFromBinary(cursorPosition) * TreeNode.getSizeNode();
+		while (twinPosition > 0) {
+			System.out.println(this.readInternFromBinary(twinPosition));
+			twinPosition = this.readTwinFromBinary(twinPosition) * TreeNode.getSizeNode();
+		}
+		
+		// Puis on s'intéresse au fils droit du Stagiaire lu
+		if (rightChild != -1)
+			sortView(this.readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode());
 	}
 
 	/**
@@ -363,7 +477,7 @@ public class TreeNodeDao {
 					// Nous créons un objet de type Intern avec les variables dans lesquelles nous
 					// avons stocké les informations des 5 lignes précédentes
 					// et nous ajoutons immédiatement cet objet de type Intern à l'arbre binaire
-					this.addIntern(new Intern(familyName, firstName, county, cursus, yearIn));
+					this.insert(new Intern(familyName, firstName, county, cursus, yearIn));
 
 					// Et nous remettons le compteur à zéro afin de pouvoir repartir sur la création
 					// d'un nouveau stagiaire
@@ -613,6 +727,38 @@ public class TreeNodeDao {
 			e.printStackTrace();
 		}
 		return TwinInt;
+	}
+
+	/**
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return
+	 */
+	public String readFamilyNameFromBinary(long cursorPosition) {
+		String familyName = "";
+
+		try {
+			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
+
+			// On met le curseur à la position demandée
+			raf.seek(cursorPosition);
+
+			// On lit tous les caractères du Nom de famille du Stagiaire incluant les
+			// espaces supplémentaires
+			for (int i = 0; i < Intern.getMaxCharNames(); i++) {
+				familyName += raf.readChar();
+			}
+
+			// On coupe le flux d'échanges de données entre l'application et le fichier afin
+			// de libérer de la mémoire pour l'ordinateur.
+			raf.close();
+		} catch (IOException e) {
+
+			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de
+			// pouvoir la régler
+			e.printStackTrace();
+		}
+		return familyName.trim();
 	}
 
 	/**
