@@ -13,8 +13,9 @@ public class Intern {
 	private static final int MAX_CHAR_COUNTY = 3;
 	private static final int MAX_CHAR_CURSUS = 10;
 	private static final int MAX_CHAR_YEARIN = 4;
+	private static final int SIZE_INDEX = 4;
 	private static final int SIZE_INTERN = (MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_COUNTY + MAX_CHAR_CURSUS + MAX_CHAR_YEARIN)*2;
-	// + 12 octets
+	private static final int SIZE_NODE = SIZE_INTERN + SIZE_INDEX + SIZE_INDEX + SIZE_INDEX;
 	
 	
 	/**
@@ -138,6 +139,22 @@ public class Intern {
 		return MAX_CHAR_YEARIN;
 	}
 
+
+	/**
+	 * @return the sizeIndex
+	 */
+	public static int getSizeIndex() {
+		return SIZE_INDEX;
+	}
+
+
+
+	/**
+	 * @return the sizeNode
+	 */
+	public static int getSizeNode() {
+		return SIZE_NODE;
+	}
 
 
 	/**
