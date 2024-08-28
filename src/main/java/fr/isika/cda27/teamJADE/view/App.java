@@ -1,17 +1,9 @@
 package fr.isika.cda27.teamJADE.view;
 
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
-import fr.isika.cda27.teamJADE.view.CustomMainScene;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
-import fr.isika.cda27.teamJADE.model.InternDao;
-import fr.isika.cda27.teamJADE.model.TreeNode;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 /**

@@ -403,7 +403,7 @@ public class TreeNodeDao {
 			System.out.println(this.readInternFromBinary(twinPosition));
 			twinPosition = this.readTwinFromBinary(twinPosition) * TreeNode.getSizeNode();
 		}
-		
+
 		// Puis on s'intéresse au fils droit du Stagiaire lu
 		if (rightChild != -1)
 			sortView(this.readRightChildFromBinary(cursorPosition) * TreeNode.getSizeNode());
@@ -769,6 +769,13 @@ public class TreeNodeDao {
 		return (int) (this.getBinarySize() / TreeNode.getSizeNode());
 	}
 
+	/**
+	 * @param cursorPosition long - La position du curseur en octet. Doit être au
+	 *                       niveau du début du noeud.
+	 * 
+	 *                       Efface le Stagiaire à la position cursorPosition sur le
+	 *                       fichier Binaire et le remplace par des espaces.
+	 */
 	public void eraseFromBinary(long cursorPosition) {
 		try {
 			String white = "";
