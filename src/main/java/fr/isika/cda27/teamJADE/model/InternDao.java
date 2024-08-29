@@ -11,402 +11,7 @@ import java.io.RandomAccessFile;
 
 import fr.isika.cda27.teamJADE.view.App;
 
-public class InternDao {
-
-	/**
-	 * @param intern L'information sous forme d'objet de type Intern qui sera
-	 *               stockée dans le fichier binaire.
-	 * 
-	 *               Cette fonction permet d'écrire un objet de type Intern dans le
-	 *               fichier binaire en le parcourant de manière efficace. La
-	 *               position du curseur est au début du fichier.
-	 */
-	public void insert(Intern intern) {
-		insert(intern, 0);
-	}
-
-	/**
-	 * @param intern         L'information sous forme d'objet de type Intern qui
-	 *                       sera stockée dans le fichier binaire.
-	 * @param cursorPosition La position en Long du curseur dans le fichier binaire.
-	 * 
-	 *                       Cette fonction permet d'écrire un objet de type Intern
-	 *                       dans le fichier binaire en le parcourant de manière
-	 *                       efficace.
-	 */
-	public void insert(Intern intern, long cursorPosition) {
-
-		long binarySize = this.getBinarySize();
-
-		// Si le fichier binaire est vide
-		if (binarySize == 0) {
-			// Alors nous écrivons le noeud au début
-			this.writeInBinary(intern, 0);
-			return;
-		}
-
-		String nodeFamilyName = this.readFamilyNameFromBinary(cursorPosition);
-
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
-		// celle du nom de famille du Stagiaire courant lu dans le fichier binaire.
-		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
-
-			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
-
-			// Si il n'y a pas de fils gauche, c'est donc que l'information sur le fichier
-			// binaire vaut -1
-			if (newCursorPosition < 0) {
-
-				/*
-				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
-				 * fils gauche par la valeur de la position du Stagiaire que l'on va écrire à la
-				 * fin du fichier binaire
-				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + INTERN_SIZE);
-				this.writeInBinary(intern);
-				return;
-
-				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
-				// position correspondante dans le fichier binaire
-				// et nous relançons une comparaison d'insertion.
-			} else {
-				this.insert(intern, newCursorPosition * INTERN_NODE_SIZE);
-				return;
-			}
-		}
-
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
-		// celle
-		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
-		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
-
-			long newCursorPosition = readRightChildFromBinary(cursorPosition);
-
-			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier
-			// binaire vaut -1
-			if (newCursorPosition < 0) {
-
-				/*
-				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
-				 * fils droit par la valeur de la position du Stagiaire que l'on va écrire à la
-				 * fin du fichier binaire
-				 */
-				this.writeIntInBinary(this.getNumberNodeInBinary(),
-						cursorPosition + INTERN_SIZE + INDEX_SIZE);
-				this.writeInBinary(intern);
-				return;
-
-				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
-				// position correspondante dans le fichier binaire
-				// et nous relançons une comparaison d'insertion.
-			} else {
-				this.insert(intern, newCursorPosition * INTERN_NODE_SIZE);
-				return;
-			}
-		}
-
-		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
-		// de famille de l'Intern courant lu dans le fichier binaire.
-		else {
-
-			int read = 1;
-
-			/*
-			 * Pour le fichier binaire nous lisons la valeur de position du doublon du
-			 * Stagiaire que nous sommes en train de lire. Tant que nous n'obtenons pas -1
-			 * c'est que nous ne sommes pas au bout des doublons alors nous déplaçons notre
-			 * curseur vers la position du doublon suivant dans le fichier et nous
-			 * recommençons à lire la valeur de position du noeud suivant
-			 */
-			while (read > 0) {
-				// Si le Stagiaire est déjà présent
-				if (intern.equals(this.readInternFromBinary(cursorPosition))) {
-					System.out.println("Le stagiaire est déjà présent dans la base de données");
-					return;
-				}
-				read = readTwinFromBinary(cursorPosition);
-				if (read > 0)
-					cursorPosition = read * INTERN_NODE_SIZE;
-			}
-
-			/*
-			 * Une fois le bout de liste des doublons atteint, nous remplaçons dans le
-			 * fichier binaire le -1 correspondant suivant dans la liste par la valeur de la
-			 * position du Stagiaire que l'on va ajouter à la fin du fichier binaire
-			 */
-			this.writeIntInBinary(this.getNumberNodeInBinary(),
-					cursorPosition + INTERN_SIZE + INDEX_SIZE + INDEX_SIZE);
-			this.writeInBinary(intern, binarySize);
-		}
-		return;
-
-	}
-
-	/**
-	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
-	 *               binaire
-	 * 
-	 *               Cette fonction parcourt le fichier binaire de manière efficace
-	 *               pour trouver l'emplacement du Stagiaire à effacer dans le
-	 *               fichier binaire. Elle l'efface et modifie les parents, enfants
-	 *               et doublons en conséquence. Elle parcourt le fichier depuis le
-	 *               début.
-	 */
-	public void delete(Intern intern) {
-		this.delete(intern, 0, 0, false);
-	}
-
-	/**
-	 * @param intern               L'objet de type Intern que nous voulons effacer
-	 *                             du fichier binaire
-	 * @param parentCursorPosition La position en Long du parent du Stagiaire
-	 *                             actuellement lu dans le fichier Binaire
-	 * @param childCursorPosition  La position en Long du Stagiaire actuellement lu
-	 *                             dans le fichier Binaire
-	 * @param isFromLeft           Booléen indiquand si le Stagiaire actuellement lu
-	 *                             est un fils gauche ou non de son parent
-	 * 
-	 *                             Cette fonction parcourt le fichier binaire de
-	 *                             manière efficace pour trouver l'emplacement du
-	 *                             Stagiaire à effacer dans le fichier binaire. Elle
-	 *                             l'efface et modifie les parents, enfants et
-	 *                             doublons en conséquence. Elle parcourt le fichier
-	 *                             depuis childCursorPosition.
-	 */
-	public void delete(Intern intern, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
-
-		String nodeFamilyName = this.readFamilyNameFromBinary(childCursorPosition);
-
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
-		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
-		if (intern.getFamilyName().compareTo(nodeFamilyName) < 0) {
-
-			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
-
-			// Si l'on doit aller vers le fils gauche pour trouver le Stagiaire que l'on
-			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
-			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
-			// l'affiche
-			if (childCursorPosition < 0) {
-				System.err.println(
-						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant gauche inexistant. On veut supprimer\n"
-								+ intern + "/net nous sommes en train de lire\n"
-								+ this.readInternFromBinary(parentCursorPosition)
-								+ "\n*******************************************");
-				return;
-			}
-
-			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
-			// niveau de l'enfant gauche
-			this.delete(intern, parentCursorPosition, childCursorPosition, true);
-			return;
-		}
-
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
-		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
-		else if (intern.getFamilyName().compareTo(nodeFamilyName) > 0) {
-
-			childCursorPosition = readRightChildFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
-
-			// Si l'on doit aller vers le fils droit pour trouver le Stagiaire que l'on
-			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
-			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
-			// l'affiche
-			if (childCursorPosition < 0) {
-				System.err.println(
-						"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Enfant droit inexistant. On veut supprimer\n"
-								+ intern + "/net nous sommes en train de lire\n"
-								+ this.readInternFromBinary(parentCursorPosition)
-								+ "\n*******************************************");
-				return;
-			}
-
-			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
-			// niveau de l'enfant droit
-			this.delete(intern, parentCursorPosition, childCursorPosition, false);
-			return;
-
-			// Si la valeur du nom de famille du Stagiaire à écrire est égale à
-			// celle du nom de famille du Stagiaire lu dans le fichier binaire.
-		} else {
-
-			// Si on a plusieurs homonymes et donc que la valeur de doublon suivant dans le
-			// fichier binaire au niveau du stagiaire courant est différente de -1
-			if (this.readTwinFromBinary(childCursorPosition) != -1) {
-
-				// On parcourt la suite de doublons jusqu'à trouver celui qui correspond au
-				// Stagiaire que l'on veut supprimer
-				while (!intern.equals(this.readInternFromBinary(childCursorPosition)) && childCursorPosition > 0) {
-					parentCursorPosition = childCursorPosition;
-					childCursorPosition = readTwinFromBinary(childCursorPosition) * INTERN_NODE_SIZE;
-
-					// Si nous atteignons le bout de la liste c'est que nous n'avons pas trouver le
-					// stagiaire à supprimer et donc qu'il y a une erreur et on l'affiche.
-					if (childCursorPosition < 0) {
-						System.err.println(
-								"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Doublon inexistant. On veut supprimer\n"
-										+ intern + "/net nous sommes en train de lire\n"
-										+ this.readInternFromBinary(parentCursorPosition)
-										+ "\n*******************************************");
-						return;
-					}
-				}
-
-				// On efface le Stagiaire cible dans notre fichier binaire et met à jour la
-				// valeur du suivant dans la liste des doublons chez le parent ou -1 s'il n'y a
-				// pas de suivant
-				this.writeIntInBinary(this.readTwinFromBinary(childCursorPosition), parentCursorPosition);
-				this.eraseFromBinary(childCursorPosition);
-				return;
-
-				// S'il n'y a pas de doublon/ d'homonyme
-			} else {
-
-				// Si le Stagiaire à supprimer est une feuille et donc le seul cas où la valeur
-				// des enfants gauche et droits sont égales
-				if (this.readLeftChildFromBinary(childCursorPosition) == this
-						.readRightChildFromBinary(childCursorPosition)) {
-
-					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
-					// fils droit suivant duquel il est issu, par -1
-					this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + INTERN_SIZE
-							: parentCursorPosition + INTERN_SIZE + INDEX_SIZE);
-
-					// On efface le Stagiaire voulu dans le fichier binaire
-					this.eraseFromBinary(childCursorPosition);
-					return;
-
-				} else {
-
-					// Nous parcourons le fichier binaire jusqu'à trouver le bon Stagiaire qui va
-					// prendre la place du Stagiaire que l'on veut supprimer
-					long[] result = findSubstitute(childCursorPosition);
-					long substitute = result[0], parentSubstituteCursor = result[1];
-
-					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
-					// fils droit suivant duquel il est issu, par la valeur de position du substitut
-					// que l'on a trouvé
-					this.writeIntInBinary((int) substitute / INTERN_NODE_SIZE,
-							isFromLeft ? parentCursorPosition + INTERN_SIZE
-									: parentCursorPosition + INTERN_SIZE + INDEX_SIZE);
-
-					// Alors nous remplaçons la valeur de l'enfant gauche du parent du substitut par
-					// -1
-					this.writeIntInBinary(-1, parentSubstituteCursor + INTERN_SIZE);
-
-					// On transmet au substitut les valeurs des enfants du Stagiaire que l'on
-					// supprime
-					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition),
-							substitute + INTERN_SIZE);
-					this.writeIntInBinary(this.readRightChildFromBinary(childCursorPosition),
-							substitute + INTERN_SIZE + INDEX_SIZE);
-
-					// On efface le stagiaire
-					this.eraseFromBinary(childCursorPosition);
-					return;
-				}
-			}
-
-		}
-
-	}
-
-	/**
-	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire dont on veut trouver le substitut
-	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
-	 *         celle de son parent.
-	 * 
-	 *         Cette fonction permet de trouver dans le fichier binaire, un
-	 *         substitut à un stagiaire que l'on veut supprimer et qui a au moins un
-	 *         enfant
-	 */
-	private long[] findSubstitute(long cursorPosition) {
-		int leftChild = this.readLeftChildFromBinary(cursorPosition);
-		int rightChild = this.readRightChildFromBinary(cursorPosition);
-		// Si il n'y a pas d'enfant gauche
-		long[] tabCursorPosition = new long[2];
-		if (leftChild == -1 && rightChild != -1) {
-			tabCursorPosition[0] = rightChild * INTERN_NODE_SIZE;
-			tabCursorPosition[1] = cursorPosition;
-
-			// Si il n'y a pas d'enfant droit
-		} else if (rightChild == -1 && leftChild != -1) {
-			tabCursorPosition[0] = leftChild * INTERN_NODE_SIZE;
-			tabCursorPosition[1] = cursorPosition;
-
-			// Si il y a deux enfants
-		} else if (rightChild != -1 && leftChild != -1) {
-			tabCursorPosition = findTwoChildSubstitute(rightChild * INTERN_NODE_SIZE);
-		} else {
-			System.err.println(
-					"*****************\nLe Stagiaire recherché n'a pas d'enfant.\nLe stagiaire recherché est :\n"
-							+ this.readInternFromBinary(cursorPosition) + "\n************************************");
-		}
-		return tabCursorPosition;
-	}
-
-	/**
-	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire dont on veut trouver le substitut
-	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
-	 *         celle de son parent.
-	 * 
-	 *         Cette fonction permet de trouver dans le fichier binaire, un
-	 *         substitut à un stagiaire que l'on veut supprimer et qui a exactement
-	 *         2 enfants
-	 */
-	private long[] findTwoChildSubstitute(long cursorPosition) {
-		// On cherche la valeur minimale du sous arbre droit
-		long substitute = cursorPosition, parent = cursorPosition;
-		while (cursorPosition > 0) {
-			parent = substitute;
-			substitute = cursorPosition;
-			cursorPosition = this.readLeftChildFromBinary(cursorPosition) * INTERN_NODE_SIZE;
-		}
-		long[] result = { substitute, parent };
-		return result;
-	}
-
-	/**
-	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire depuis lequel on veut démarrer la
-	 *                       lecture de l'arbre
-	 * 
-	 *                       Cette fonction lit et affiche l'arbre suivant l'ordre
-	 *                       infixe
-	 */
-	public void sortView(long cursorPosition) {
-
-		// Si le position du curseur est négative, c'est une erreur, on ne peut rien
-		// lire et on interrompt immédiatement la fonction
-		if (cursorPosition < 0) {
-			System.err.println("Position du curseur négative");
-			return;
-		}
-
-		int leftChild = this.readLeftChildFromBinary(cursorPosition);
-		int rightChild = this.readRightChildFromBinary(cursorPosition);
-
-		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
-		// alors on lit celui-ci en priorité
-		if (leftChild != -1)
-			sortView(leftChild * INTERN_NODE_SIZE);
-
-		// On affiche le Stagiaire lu
-		System.out.println(this.readInternFromBinary(cursorPosition));
-
-		// S'il y a des homonymes, on les affiche tous
-		long twinPosition = this.readTwinFromBinary(cursorPosition) * INTERN_NODE_SIZE;
-		while (twinPosition > 0) {
-			System.out.println(this.readInternFromBinary(twinPosition));
-			twinPosition = this.readTwinFromBinary(twinPosition) * INTERN_NODE_SIZE;
-		}
-
-		// Puis on s'intéresse au fils droit du Stagiaire lu
-		if (rightChild != -1)
-			sortView(this.readRightChildFromBinary(cursorPosition) * INTERN_NODE_SIZE);
-	}
+public class InternDao extends TreeNodeDao<Intern>{
 
 	/**
 	 * Lit le fichier .DON et ajoute tous les stagiaires s'y trouvant dans l'arbre
@@ -416,7 +21,7 @@ public class InternDao {
 
 		try {
 			// Le fichier .DON à lire
-			FileReader fr = new FileReader(App.getFichierDon());
+			FileReader fr = new FileReader(App.getInternDonFile());
 
 			// Le buffered reader, l'objet qui permet de lire toute une ligne d'un coup dans
 			// un fichier texte (ici le .DON)
@@ -506,7 +111,7 @@ public class InternDao {
 		FileWriter fw;
 
 		try {
-			fw = new FileWriter(App.getFichierDon(), true);
+			fw = new FileWriter(App.getInternDonFile(), true);
 			fw.write(internToAdd.getFamilyName().toUpperCase() + "\n" + internToAdd.getFirstName() + "\n"
 					+ internToAdd.getCounty() + "\n" + internToAdd.getCursus() + "\n" + internToAdd.getYearIn()
 					+ "\n*\n");
@@ -517,95 +122,22 @@ public class InternDao {
 		}
 	}
 
+
 	/**
-	 * @return retourne un long correspondant à la taille du fichier binaire en
-	 *         octets
+	 * @param memberToAdd L'objet type Member à ajouter dans le fichier binaire
+	 * @param raf Le RandomAccessFile 
 	 */
-	public long getBinarySize() {
-		long binSize = 0;
+	@Override
+	protected void writeSpecificFields(Intern internToAdd, RandomAccessFile raf) {
 		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-
-			binSize = raf.length();
-
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return binSize;
-	}
-
-	/**
-	 * @param internToAdd L'objet type Intern à ajouter dans le fichier binaire
-	 *                    Ajoute le noeud à la fin du fichier binaire en tant que
-	 *                    feuille: fils gauche vaut -1, fils droit vaut -1 et
-	 *                    suivant liste chainée vaut -1 aussi.
-	 */
-	public void writeInBinary(Intern internToAdd) {
-		writeInBinary(internToAdd, this.getBinarySize(), -1, -1, -1);
-	}
-
-	/**
-	 * @param internToAdd    L'objet type Intern à ajouter dans le fichier binaire
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du noeud. Ajoute le noeud en tant que feuille:
-	 *                       fils gauche vaut -1, fils droit vaut -1 et suivant
-	 *                       liste chainée vaut -1 aussi.
-	 */
-	public void writeInBinary(Intern internToAdd, long cursorPosition) {
-		writeInBinary(internToAdd, cursorPosition, -1, -1, -1);
-	}
-
-	/**
-	 * @param internToAdd    L'objet type Intern à ajouter dans le fichier binaire
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du noeud.
-	 * @param leftChildInt   L'entier correspondant à la position du fils gauche
-	 *                       dans le fichier binaire
-	 * @param rightChildInt  L'entier correspondant à la position du fils droit dans
-	 *                       le fichier binaire
-	 * @param twinInt        L'entier correspondant à la position du noeud suivant
-	 *                       dans la liste chainée dans le fichier binaire
-	 */
-	public void writeInBinary(Intern internToAdd, long cursorPosition, int leftChildInt, int rightChildInt,
-			int twinInt) {
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-
-			raf.seek(cursorPosition);
 			raf.writeChars(internToAdd.getFamilyNameLong());
 			raf.writeChars(internToAdd.getFirstNameLong());
 			raf.writeInt(internToAdd.getCounty());
 			raf.writeChars(internToAdd.getCursusLong());
 			raf.writeInt(internToAdd.getYearIn());
-			raf.writeInt(leftChildInt);
-			raf.writeInt(rightChildInt);
-			raf.writeInt(twinInt);
-
-			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-
-	/**
-	 * @param twinOrChild    L'entier à inscrire dans le fichier binaire.
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du fils gauche, droit ou du noeud suivant dans la
-	 *                       liste chainée.
-	 */
-	public void writeIntInBinary(int intToWrite, long cursorPosition) {
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-
-			raf.seek(cursorPosition);
-			raf.writeInt(intToWrite);
-
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
 	}
 
 	/**
@@ -614,7 +146,7 @@ public class InternDao {
 	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
 	 *         le fichier binaire.
 	 */
-	public Intern readInternFromBinary(long cursorPosition) {
+	public Intern readObjectFromBinary(long cursorPosition) {
 		String familyName = "";
 		String firstName = "";
 		int county = 0;
@@ -622,7 +154,7 @@ public class InternDao {
 		int yearIn = 0;
 
 		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
+			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
 
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
@@ -663,78 +195,39 @@ public class InternDao {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire
-	 *         du noeud fils gauche dans l'abre binaire. Retourne -1 s'il n'y a pas
-	 *         de noeud fils gauche.
+	 * Lit le fichier binaire et l'affiche dans la console
 	 */
-	public int readLeftChildFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE;
-		int leftChildInt = -1;
+	public void readBinary() {
 		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			raf.seek(cursorPosition);
-			leftChildInt = raf.readInt();
+			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
+			for (long cursor = 0; cursor < this.getBinarySize(); cursor++) {
+				Intern intern = this.readObjectFromBinary(cursor);
+				int indexLeft = this.readLeftChildFromBinary(cursor);
+				int indexRight = this.readRightChildFromBinary(cursor);
+				int indexTwin = this.readTwinFromBinary(cursor);
+				System.out.println(
+						intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
+								+ "\t" + intern.getCounty() + "\t" + intern.getCursusLong() + "\t" + intern.getYearIn()
+								+ "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
+				cursor += INTERN_NODE_SIZE - 1;
+			}
 			raf.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return leftChildInt;
 	}
-
-	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire
-	 *         du noeud fils droit dans l'abre binaire. Retourne -1 s'il n'y a pas
-	 *         de noeud fils droit.
-	 */
-	public int readRightChildFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE + INDEX_SIZE;
-		int rightChildInt = -1;
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			raf.seek(cursorPosition);
-			rightChildInt = raf.readInt();
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return rightChildInt;
-	}
-
-	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
-	 *                       début du noeud.
-	 * @return Retourne un entier correspondant à la place dans le fichier binaire
-	 *         du noeud suivant dans la liste chainée. Retourne -1 s'il n'y a pas de
-	 *         noeud suivant dans cette liste.
-	 */
-	public int readTwinFromBinary(long cursorPosition) {
-		cursorPosition += INTERN_SIZE + INDEX_SIZE + INDEX_SIZE;
-		int TwinInt = -1;
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			raf.seek(cursorPosition);
-			TwinInt = raf.readInt();
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return TwinInt;
-	}
-
+	
+	
 	/**
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return
 	 */
-	public String readFamilyNameFromBinary(long cursorPosition) {
+	public String readKeyFromBinary(long cursorPosition) {
 		String familyName = "";
 
 		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
+			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
 
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
@@ -757,65 +250,27 @@ public class InternDao {
 		return familyName.trim();
 	}
 
-	/**
-	 * @return Retourn un int correspondant au nombre de noeuds écrits dans le
-	 *         fichier binaire.
-	 */
-	public int getNumberNodeInBinary() {
-		return (int) (this.getBinarySize() / INTERN_NODE_SIZE);
+	@Override
+	protected int getNodeSize() {
+		return INTERN_NODE_SIZE;
 	}
 
-	/**
-	 * @param cursorPosition long - La position du curseur en octet. Doit être au
-	 *                       niveau du début du noeud.
-	 * 
-	 *                       Efface le Stagiaire à la position cursorPosition sur le
-	 *                       fichier Binaire et le remplace par des espaces.
-	 */
-	public void eraseFromBinary(long cursorPosition) {
-		try {
-			String white = "";
-			for (int i = 0; i < INTERN_NODE_SIZE / 2; i++) {
-				white += " ";
-			}
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			raf.seek(cursorPosition);
-			raf.writeChars(white);
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	protected String getKey(Intern intern) {
+		return intern.getFamilyName();
 	}
 
-	/**
-	 * Supprime le fichier binaire
-	 */
-	public void deleteBinary() {
-		File bin = new File(App.getFichierBin());
-		bin.delete();
+
+	@Override
+	protected int getObjectSize() {
+		return INTERN_SIZE;
 	}
 
-	/**
-	 * Lit le fichier binaire et l'affiche dans la console
-	 */
-	public void readBinary() {
-		try {
-			RandomAccessFile raf = new RandomAccessFile(App.getFichierBin(), "rw");
-			for (long cursor = 0; cursor < this.getBinarySize(); cursor++) {
-				Intern intern = this.readInternFromBinary(cursor);
-				int indexLeft = this.readLeftChildFromBinary(cursor);
-				int indexRight = this.readRightChildFromBinary(cursor);
-				int indexTwin = this.readTwinFromBinary(cursor);
-				System.out.println(
-						intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
-								+ "\t" + intern.getCounty() + "\t" + intern.getCursusLong() + "\t" + intern.getYearIn()
-								+ "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
-				cursor += INTERN_NODE_SIZE - 1;
-			}
-			raf.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	@Override
+	protected String getBinFile() {
+		return App.getInternBinFile();
 	}
+
+
 }
 

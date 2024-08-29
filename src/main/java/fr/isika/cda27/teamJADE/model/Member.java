@@ -2,6 +2,8 @@ package fr.isika.cda27.teamJADE.model;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
 
+import java.util.Objects;
+
 public class Member {
 
 	private String alias;  // 60 octets
@@ -83,9 +85,76 @@ public class Member {
 		this.admin = admin;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("Member [");
+		if (alias != null) {
+			builder.append("alias=");
+			builder.append(alias);
+			builder.append(", ");
+		}
+		if (password != null) {
+			builder.append("password=");
+			builder.append(password);
+			builder.append(", ");
+		}
+		builder.append("admin=");
+		builder.append(admin);
+		builder.append(", ");
+		builder.append("]");
+		return builder.toString();
+	}
+
+	
+	@Override
+	public int hashCode() {
+		return Objects.hash(alias, password);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Member other = (Member) obj;
+		return Objects.equals(alias, other.alias) && Objects.equals(password, other.password);
+	}
+
+	
 	public boolean authenticate (String alias, String password) {
 		return this.alias.equals(alias) && this.password.equals(password); 
 	}
+	
+	public String getAliasLong() {
+		String aliasLong = this.alias;
+		if (aliasLong.length() < MAX_CHAR_ALIAS) {
+
+			for (int i = this.alias.length(); i < MAX_CHAR_ALIAS; i++) {
+				aliasLong += " ";
+			}
+		} else {
+			aliasLong = aliasLong.substring(0,MAX_CHAR_ALIAS);
+		}
+		return aliasLong;
+	}
+	public String getPasswordLong() {
+		String passwordLong = this.password;
+		if (passwordLong.length() < MAX_CHAR_PASSWORD) {
+
+			for (int i = this.password.length(); i < MAX_CHAR_PASSWORD; i++) {
+				passwordLong += " ";
+			}
+		} else {
+			passwordLong = passwordLong.substring(0,MAX_CHAR_PASSWORD);
+		}
+		return passwordLong;
+	}
+
+	
 	
 	
 }

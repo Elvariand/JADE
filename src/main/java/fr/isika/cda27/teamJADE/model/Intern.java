@@ -169,9 +169,9 @@ public class Intern {
 		if (getClass() != obj.getClass())
 			return false;
 		Intern other = (Intern) obj;
-		return Objects.equals(county, other.county) && Objects.equals(cursus, other.cursus)
+		return county == other.county && Objects.equals(cursus, other.cursus)
 				&& Objects.equals(familyName, other.familyName) && Objects.equals(firstName, other.firstName)
-				&& Objects.equals(yearIn, other.yearIn);
+				&& yearIn == other.yearIn;
 	}
 
 

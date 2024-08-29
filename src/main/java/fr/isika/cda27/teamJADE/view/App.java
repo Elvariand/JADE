@@ -2,6 +2,8 @@ package fr.isika.cda27.teamJADE.view;
 
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
+import fr.isika.cda27.teamJADE.model.Member;
+import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -12,21 +14,29 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-	private final static String FICHIER_DON = "src/main/resources/data/TEST_STAGIAIRES.DON";
-	private final static String FICHIER_BIN = "src/main/resources/data/TEST_STAGIAIRES.bin";
+	private final static String INTERN_DON_FILE = "src/main/resources/data/TEST_STAGIAIRES.DON";
+	private final static String INTERN_BIN_FILE = "src/main/resources/data/TEST_STAGIAIRES.bin";
+	private final static String MEMBER_BIN_FILE = "src/main/resources/data/MEMBRES.bin";
 
 	/**
 	 * @return le fichier .don
 	 */
-	public static String getFichierDon() {
-		return FICHIER_DON;
+	public static String getInternDonFile() {
+		return INTERN_DON_FILE;
 	}
 
 	/**
 	 * @return le fichier binaire
 	 */
-	public static String getFichierBin() {
-		return FICHIER_BIN;
+	public static String getInternBinFile() {
+		return INTERN_BIN_FILE;
+	}
+	
+	/**
+	 * @return le fichier binaire
+	 */
+	public static String getMemberBinFile() {
+		return MEMBER_BIN_FILE;
 	}
 
 	@Override
@@ -54,19 +64,36 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 
-//		TreeNodeDao test = new TreeNodeDao();
-//		test.deleteBinary();
-//		test.addFromDon();
-//    	test.sortView(0);
-//		System.out.println("======================");
-//		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", "77", "AI 95", "2015");
-//		test.insert(PY);
-//		test.readBinary();
-//		test.delete(new Intern("CHAVENEAU", "Kim Anh", "92", "ATOD 22", "2014"));
-//		System.out.println("======================");
-//		test.readBinary();
+		InternDao test_intern = new InternDao();
+		test_intern.deleteBinary();
+		test_intern.addFromDon();
+		test_intern.sortView(0);
+		System.out.println("======================");
+		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
+		test_intern.insert(PY);
+		test_intern.readBinary();
+		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
+		System.out.println("======================");
+		test_intern.readBinary();
 
-
+		System.out.println("======================");
+		System.out.println("======================");
+		MemberDao test_member = new MemberDao();
+		test_member.deleteBinary();
+		Member User1 = new Member("delphine", "mdpdedelphine");
+		Member User2 = new Member("jason", "mdpdejason");
+		Member User3 = new Member("alexia", "mdpdealexia");
+		
+		test_member.addFirstMember();
+		test_member.insert(User1);
+		test_member.insert(User2);
+		test_member.insert(User3);
+		
+		System.out.println("======================");
+		test_member.sortView(0);
+		test_member.readBinary();
+		
+		
 		launch();
 	}
 

@@ -204,11 +204,11 @@ public class UtilStaticValues {
 		public static final int INTERN_NODE_SIZE = INTERN_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 
 		// Member
-		public static final int MAX_CHAR_ALIAS = 30;
-		public static final int MAX_CHAR_PASSWORD = 30;
-		public static final int MAX_CHAR_ADMIN = 5;
-		public static final int MEMBER_SIZE = (MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD + MAX_CHAR_ADMIN)
-				* OCTETS_TOOK_BY_CHAR;
+		public static final int MAX_CHAR_ALIAS = 31;
+		public static final int MAX_CHAR_PASSWORD = 31;
+		public static final int OCTETS_TOOK_BY_ADMIN = 1;
+		public static final int MEMBER_SIZE = ((MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD)
+				* OCTETS_TOOK_BY_CHAR) + OCTETS_TOOK_BY_ADMIN;
 		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 	}
 
