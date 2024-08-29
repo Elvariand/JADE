@@ -18,7 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+<<<<<<< Updated upstream
 import javafx.scene.Node;
+=======
+>>>>>>> Stashed changes
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -53,6 +56,13 @@ public class CustomMainScene extends AnchorPane {
 		StackPane bgStackPane = new StackPane();
 		bgStackPane.setPrefSize(1280, 720);
 		bgStackPane.setStyle("-fx-background-color: #272727;");
+		
+		
+		StackPaneHelp stackPaneHelp = new StackPaneHelp ("help.png", "help_hover.png"); 
+		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT); 
+		stackPaneHelp.setTranslateX(545); 
+		stackPaneHelp.setTranslateY(-320); 
+		
 
 		// TableView
 		// données d'exemple
@@ -144,7 +154,7 @@ public class CustomMainScene extends AnchorPane {
 		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
 
 		// On ajoute la tableview et menuhbox a la stackpane
-		bgStackPane.getChildren().addAll(tableView, menuHbox);
+		bgStackPane.getChildren().addAll(tableView, menuHbox, stackPaneHelp);
 
 		// On ajoute la stackpane
 		this.getChildren().add(bgStackPane);
