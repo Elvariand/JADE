@@ -62,7 +62,12 @@ public class CustomMainScene extends AnchorPane {
 		
 		StackPaneHelp stackPaneHelp = new StackPaneHelp ("help.png", "help_hover.png"); 
 		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT); 
+
 		stackPaneHelp.setMaxSize(75, 75);
+
+		
+		
+
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage)CustomMainScene.this.getScene().getWindow());
 			Scene scene = new Scene(new HelpScene()); 

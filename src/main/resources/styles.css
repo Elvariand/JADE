@@ -79,7 +79,9 @@
 .accordion {
     -fx-background-color: null; /* Changer la couleur de fond de l'accordéon */
     -fx-padding: 10px; /* Ajouter un padding autour de l'accordéon */
+    
 }
+
 
 .titled-pane > .title {
     -fx-background-color: #454443; /* Changer la couleur de fond des titres */
@@ -90,10 +92,10 @@
 }
 
 .titled-pane > .content {
-    -fx-background-color: #DD734C; /* Changer la couleur de fond du contenu */
+    -fx-background-color: transparent; /* Changer la couleur de fond du contenu */
     -fx-text-fill: #272727; /* Changer la couleur du texte des titres */
     -fx-font-size: 13px; /* Changer la taille de la police du titre */
-    -fx-padding: 10px; /* Ajouter un padding autour du contenu */
+   
   }
 
 .textarea {
