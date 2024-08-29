@@ -1,7 +1,11 @@
 package fr.isika.cda27.teamJADE.view;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.HOVER_GREY_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.HOVER_ORANGE_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.ORANGE_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.SET_BG_GREY_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.STRING_ORANGE_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_HEIGHT;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_WIDTH;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_WHITE;
@@ -90,6 +94,12 @@ public class HelpScene extends AnchorPane {
         btnRetourHelp.setEffect(INNER_SHADOW_WHITE);
         hboxBtnRetourHelp.getChildren().add(btnRetourHelp); 
         hboxBtnRetourHelp.setAlignment(Pos.BOTTOM_RIGHT);
+        
+       // Hover Effect sur le bouton Retour
+        btnRetourHelp.setOnMouseEntered(e -> btnRetourHelp.setStyle("-fx-background-color: #F39471; -fx-background-radius: 13; fx-text-fill : '#272727'; -fx-font-family : 'Krona One'; -fx-font-size : 18px;")); 
+        btnRetourHelp.setOnMouseExited(e -> btnRetourHelp.setStyle("-fx-background-color: #DD734C; -fx-background-radius: 13; fx-text-fill : '#272727'; -fx-font-family : 'Krona One'; -fx-font-size : 18px;")); 
+       
+        // Action du bouton Retour : retourne à la mainScene
         btnRetourHelp.setOnAction(event -> {
         	Stage stage = ((Stage) HelpScene.this.getScene().getWindow()); 
         	Scene scene = new Scene(new CustomMainScene()); 
@@ -97,12 +107,12 @@ public class HelpScene extends AnchorPane {
 			stage.setScene(scene);
         }); 
            
-//        // Mettre l'Accordion dans une VBox pour l'ajuster dans la scène
+       // Mettre l'Accordion dans une VBox pour l'ajuster dans la scène
        VBox vboxHelp = new VBox(20);
        vboxHelp.setPrefSize(1080, 720); 
        vboxHelp.getChildren().addAll(bienvenue,accordionHelp, hboxBtnRetourHelp); 
        vboxHelp.setStyle("-fx-background-color:#272727"); 
-//        
+   
         StackPane StackPaneHelp = new StackPane();
         StackPaneHelp.setPrefSize(1280, 720);
         StackPaneHelp.setStyle("-fx-background-color: #272727;");

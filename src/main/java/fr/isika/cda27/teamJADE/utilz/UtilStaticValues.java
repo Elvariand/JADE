@@ -212,7 +212,7 @@ public class UtilStaticValues {
 		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 	}
 
-	public static class HelpTextValues{
+	public static class HelpTextValues {
 		
 		public static final String INTRODUCTION="Introduction"; 
 		public static final String INTRODUCTION_TEXT = "Cet annuaire est un outil destiné à centraliser et gérer les informations des stagiaires de manière simple et efficace." + "\n"
