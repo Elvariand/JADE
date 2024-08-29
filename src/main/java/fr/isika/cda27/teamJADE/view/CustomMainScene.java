@@ -96,12 +96,13 @@ public class CustomMainScene extends AnchorPane {
 		menuHbox.setEffect(DROP_SHADOW);
 		menuHbox.setTranslateX(TOX_SMALL_MENU);
 
+		
 		// VBox avec les contenu pringipaux à gauche du menu
 		ScopeScene scopeContentVbox = new ScopeScene();
 		AddScene addContentVbox = new AddScene();
 		RemoveScene removeContentVbox = new RemoveScene();
 		UpdateScene updateContentVbox = new UpdateScene();
-		PrintScene printContentVbox = new PrintScene();
+		PrintScene printContentVbox = new PrintScene(tableView);
 		SeeMembersScene seeMembersContentVbox = new SeeMembersScene();
 		QuitScene quitContentVbox = new QuitScene();
 

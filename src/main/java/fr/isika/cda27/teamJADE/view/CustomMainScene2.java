@@ -31,6 +31,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
@@ -70,7 +71,7 @@ public class CustomMainScene2 extends AnchorPane {
 
 		ObservableList<Intern> observableInterns = FXCollections.observableArrayList(list);
 		FilteredList<Intern> filteredInterns = new FilteredList<>(observableInterns, p -> true);
-		TableView<Intern> tableView = createTableView(filteredInterns);
+		TableView tableView = createTableView(filteredInterns);
 
 		HBox menuPane = new HBox();
 		MenuContentHBox menuContent = new MenuContentHBox();
@@ -89,13 +90,14 @@ public class CustomMainScene2 extends AnchorPane {
 //		menuHbox.setStyle("-fx-background-color: #DD734C; -fx-background-radius: 70;");
 //		menuHbox.setEffect(DROP_SHADOW);
 //		menuHbox.setTranslateX(TOX_SMALL_MENU);
-
+		
+		Stage stage = ((Stage)CustomMainScene2.this.getScene().getWindow());
 		// VBox avec les contenu principaux à gauche du menu
 		ScopeScene scopeContentVbox = new ScopeScene();
 		AddScene addContentVbox = new AddScene();
 		RemoveScene removeContentVbox = new RemoveScene();
 		UpdateScene updateContentVbox = new UpdateScene();
-		PrintScene printContentVbox = new PrintScene();
+		PrintScene printContentVbox = new PrintScene(tableView);
 		SeeMembersScene seeMembersContentVbox = new SeeMembersScene();
 		QuitScene quitContentVbox = new QuitScene();
 

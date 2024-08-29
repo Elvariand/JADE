@@ -6,6 +6,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
+
 import fr.isika.cda27.teamJADE.view.App;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
@@ -645,6 +647,50 @@ public abstract class TreeNodeDao<T> {
 		bin.delete();
 	}
 
+	/**
+	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
+	 *                       début du stagiaire depuis lequel on veut démarrer la
+	 *                       lecture de l'arbre
+	 * 
+	 *                       Cette fonction lit et affiche l'arbre suivant l'ordre
+	 *                       infixe
+	 */
+	public ArrayList<T> sortView(long cursorPosition, ArrayList<T> list) {
+
+		
+		// Si le position du curseur est négative, c'est une erreur, on ne peut rien
+		// lire et on interrompt immédiatement la fonction
+		if (cursorPosition < 0) {
+			System.err.println("Position du curseur négative");
+			return list;
+		}
+
+		int leftChild = this.readLeftChildFromBinary(cursorPosition);
+		int rightChild = this.readRightChildFromBinary(cursorPosition);
+
+		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
+		// alors on lit celui-ci en priorité
+		if (leftChild != -1)
+			sortView(leftChild * getNodeSize(), list);
+
+		// On affiche le Stagiaire lu
+		System.out.println(this.readObjectFromBinary(cursorPosition));
+		list.add(this.readObjectFromBinary(cursorPosition));
+
+		// S'il y a des homonymes, on les affiche tous
+		long twinPosition = this.readTwinFromBinary(cursorPosition) * getNodeSize();
+		while (twinPosition > 0) {
+			System.out.println(this.readObjectFromBinary(twinPosition));
+			list.add(this.readObjectFromBinary(twinPosition));
+			twinPosition = this.readTwinFromBinary(twinPosition) * getNodeSize();
+		}
+
+		// Puis on s'intéresse au fils droit du Stagiaire lu
+		if (rightChild != -1)
+			sortView(this.readRightChildFromBinary(cursorPosition) * getNodeSize(), list);
+		return list;
+	}
+	
 	/**
 	 * Lit le fichier binaire et l'affiche dans la console
 	 */

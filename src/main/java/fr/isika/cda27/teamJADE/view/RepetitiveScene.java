@@ -42,7 +42,7 @@ public class RepetitiveScene extends VBox {
 		this.gridPane = MenuVboxValues.createFormGridPane();
 
 		this.buttonBox = new HBox(SPACE_BETWEEN_BTNS);
-		this.buttonBox.setAlignment(javafx.geometry.Pos.CENTER);
+		this.buttonBox.setAlignment(Pos.CENTER);
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH, BTN_BOX_HEIGHT);
 
 		this.leftButton = new CustomButton("GAUCHE");

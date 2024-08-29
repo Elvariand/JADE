@@ -1,4 +1,6 @@
 /* styles.css */
+	
+
 .table-view {
     -fx-background-color: #454443;
 	-fx-background-radius: 13px;
@@ -73,3 +75,34 @@
     -fx-background-color: #DD734C; /* Couleur plus claire que #504F4E */
     -fx-text-background-color: #272727;
 }
+
+.accordion {
+    -fx-background-color: null; /* Changer la couleur de fond de l'accordéon */
+    -fx-padding: 10px; /* Ajouter un padding autour de l'accordéon */
+}
+
+.titled-pane > .title {
+    -fx-background-color: #454443; /* Changer la couleur de fond des titres */
+    -fx-text-fill: #FFFFFF; /* Changer la couleur du texte des titres */
+    -fx-font-size: 18px; /* Changer la taille de la police du titre */
+    -fx-background-radius: 13px;
+ 
+}
+
+.titled-pane > .content {
+    -fx-background-color: #DD734C; /* Changer la couleur de fond du contenu */
+    -fx-text-fill: #272727; /* Changer la couleur du texte des titres */
+    -fx-font-size: 13px; /* Changer la taille de la police du titre */
+    -fx-padding: 10px; /* Ajouter un padding autour du contenu */
+  }
+
+.textarea {
+	-fx-background-color: #DD734C;	
+	-fx-text-fill: #272727;
+	-fx-font-size: 13px;
+	
+	}
+
+
+
+
