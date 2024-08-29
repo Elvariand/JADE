@@ -67,6 +67,7 @@ public class StackPaneMenubar extends StackPane {
 		smallSvgPath.setFill(Color.web("#DD734C"));
 		smallSvgPath.setVisible(false);
 
+
 		this.button = new Button();
 		button.setPrefSize(btnWidth, btnHeight);
 		button.setStyle("-fx-background-color: transparent;");
@@ -107,7 +108,9 @@ public class StackPaneMenubar extends StackPane {
 		
 		this.gridPane = createMenuGridPane();
 
+
 		this.label = new Label("     " + this.tooltipText);
+
 		label.setFont(Font.font("Krona One", 18));
 		gridPane.add(label, 0, 0);
 		gridPane.add(btnStackPane, 1, 0);
@@ -147,6 +150,7 @@ public class StackPaneMenubar extends StackPane {
 	 * @param text the text to set
 	 */
 	public void setText(String text) {
+
 		this.tooltipText = text;
 	}
 
@@ -353,12 +357,14 @@ public class StackPaneMenubar extends StackPane {
 		return label;
 	}
 
+
 	/**
 	 * @param label the label to set
 	 */
 	public void setLabel(Label label) {
 		this.label = label;
 	}
+
 
 	private GridPane createMenuGridPane() {
 

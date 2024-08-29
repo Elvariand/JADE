@@ -104,7 +104,9 @@ public class CustomMainScene extends AnchorPane {
 		
 		// VBox avec les contenu pringipaux à gauche du menu
 		ScopeScene scopeContentVbox = new ScopeScene();
+
 		AddScene addContentVbox = new AddScene();
+
 		RemoveScene removeContentVbox = new RemoveScene();
 		UpdateScene updateContentVbox = new UpdateScene();
 		PrintScene printContentVbox = new PrintScene(tableView);
@@ -136,6 +138,7 @@ public class CustomMainScene extends AnchorPane {
 
 		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
 
+
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
 		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_stagiaire_orange.png", "ajout_stagiaire_gris.png",
@@ -152,6 +155,7 @@ public class CustomMainScene extends AnchorPane {
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion", SMALL_PATH_BOT,
 				LARGE_PATH_BOT);
 
+
 		// On ajoute la croix (invisible pour le moment)
 		menubarVBox.getChildren().add(closeBtn);
 		// On ajoute tous les boutons dans le VBox
@@ -159,8 +163,6 @@ public class CustomMainScene extends AnchorPane {
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
 
-		StackPaneMenubar[] menuChildren = { closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
-				quitBtn };
 
 		// On ajoute le contenu de gauche et de droite a la HBox du menu
 		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
@@ -176,7 +178,7 @@ public class CustomMainScene extends AnchorPane {
 		/* BOUTONS ACCTIONS */
 
 		TranslateTransition moveTransition = new TranslateTransition();
-		FadeTransition fadeTransition = new FadeTransition();
+
 
 		/*
 		 * On configure les listes de boutons (qui sont des StackPaneMenubar) dans
@@ -290,6 +292,7 @@ public class CustomMainScene extends AnchorPane {
 			String cursusFilter = data[3];
 			String yearInFilter = data[4];
 
+
 			// on filtre la liste de la TableView en fonction
 			filteredInterns.setPredicate(intern -> {
 				// pour chaque textfield on doit vérifier si il n'est pas null
@@ -309,7 +312,9 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (countyFilter != null) {
+
 					filters = filters && intern.getCountyString().toUpperCase().contains(countyFilter.toUpperCase());
+
 				}
 
 				if (cursusFilter != null) {
@@ -317,7 +322,9 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (yearInFilter != null) {
+
 					filters = filters && intern.getYearInString().toUpperCase().contains(yearInFilter.toUpperCase());
+
 				}
 
 				return filters;
@@ -346,6 +353,7 @@ public class CustomMainScene extends AnchorPane {
 			setLarger(printBtn);
 			setLarger(seeMemberBtn);
 			setLarger(quitBtn);
+
 
 		});
 
@@ -437,6 +445,7 @@ public class CustomMainScene extends AnchorPane {
 		addHoverEffect(buttonClicked);
 
 	}
+
 
 
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {

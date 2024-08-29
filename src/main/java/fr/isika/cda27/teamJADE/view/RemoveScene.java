@@ -12,11 +12,13 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class RemoveScene extends RepetitiveScene {
 	
+
 	private Label labelError;
 	private String[] gridPaneLabelsList = {"","","","",""};
 
 
 	public RemoveScene() {
+
 		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");
 		
@@ -92,6 +94,7 @@ public class RemoveScene extends RepetitiveScene {
 		gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
 		gridPane.setVgap(15);
 		gridPane.setHgap(10);
+
 
 		// première colonne
 		ColumnConstraints col1Constraints = new ColumnConstraints();

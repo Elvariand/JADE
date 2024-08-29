@@ -74,6 +74,7 @@
 .table-row-cell:focused, .table-row-cell:selected {
     -fx-background-color: #DD734C; /* Couleur plus claire que #504F4E */
     -fx-text-background-color: #272727;
+
 }
 
 .accordion {
@@ -104,6 +105,7 @@
 	-fx-font-size: 13px;
 	
 	}
+
 
 
 

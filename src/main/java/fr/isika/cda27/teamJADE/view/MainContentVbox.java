@@ -20,6 +20,7 @@ import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
+
 public class MainContentVbox extends VBox {
 
 	private VBox mainContentVbox;
@@ -139,7 +140,5 @@ public class MainContentVbox extends VBox {
 	public void setTitleLabel(String titleLabel) {
 		this.titleLabel.setText(titleLabel);
 	}
-
-
 
 }

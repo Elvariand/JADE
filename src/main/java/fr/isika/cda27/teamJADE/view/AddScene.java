@@ -17,8 +17,6 @@ public class AddScene extends RepetitiveScene {
 		this.titleLabel.setText("Ajout d'un stagiaire");
 
 
-
-
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 
 		this.leftButton.setText("Annuler");
@@ -34,6 +32,7 @@ public class AddScene extends RepetitiveScene {
 		this.labelError.setVisible(false);
 
 		this.getChildren().add(labelError);
+
 	}
 
 	/**
@@ -49,5 +48,6 @@ public class AddScene extends RepetitiveScene {
 	public void setLabelError(Label labelError) {
 		this.labelError = labelError;
 	}
+
 
 }
