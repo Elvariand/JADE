@@ -1,17 +1,10 @@
 package fr.isika.cda27.teamJADE.view;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.HOVER_GREY_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.HOVER_ORANGE_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.ORANGE_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.SET_BG_GREY_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.STRING_ORANGE_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_HEIGHT;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_WIDTH;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_WHITE;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.HelpTextValues.*;
 
-import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
@@ -19,12 +12,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 

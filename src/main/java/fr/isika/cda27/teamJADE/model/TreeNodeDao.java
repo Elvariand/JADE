@@ -369,46 +369,6 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire depuis lequel on veut démarrer la
-	 *                       lecture de l'arbre
-	 * 
-	 *                       Cette fonction lit et affiche l'arbre suivant l'ordre
-	 *                       infixe
-	 */
-	public void sortView(long cursorPosition) {
-
-		// Si le position du curseur est négative, c'est une erreur, on ne peut rien
-		// lire et on interrompt immédiatement la fonction
-		if (cursorPosition < 0) {
-			System.err.println("Position du curseur négative");
-			return;
-		}
-
-		int leftChild = this.readLeftChildFromBinary(cursorPosition);
-		int rightChild = this.readRightChildFromBinary(cursorPosition);
-
-		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
-		// alors on lit celui-ci en priorité
-		if (leftChild != -1)
-			sortView(leftChild * getNodeSize());
-
-		// On affiche le Stagiaire lu
-		System.out.println(this.readObjectFromBinary(cursorPosition));
-
-		// S'il y a des homonymes, on les affiche tous
-		long twinPosition = this.readTwinFromBinary(cursorPosition) * getNodeSize();
-		while (twinPosition > 0) {
-			System.out.println(this.readObjectFromBinary(twinPosition));
-			twinPosition = this.readTwinFromBinary(twinPosition) * getNodeSize();
-		}
-
-		// Puis on s'intéresse au fils droit du Stagiaire lu
-		if (rightChild != -1)
-			sortView(this.readRightChildFromBinary(cursorPosition) * getNodeSize());
-	}
-
-	/**
 	 * @return retourne un long correspondant à la taille du fichier binaire en
 	 *         octets
 	 */

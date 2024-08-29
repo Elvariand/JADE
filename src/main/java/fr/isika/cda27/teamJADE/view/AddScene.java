@@ -17,6 +17,13 @@ public class AddScene extends RepetitiveScene {
 		this.titleLabel.setText("Ajout d'un stagiaire");
 
 
+		this.getGridPaneFamilyName().setText("Roy");
+		this.getGridPaneFirstName().setText("Alexia");
+		this.getGridPaneCounty().setText("31");
+		this.getGridPaneCursus().setText("cda 27");
+		this.getGridPaneYearIn().setText("2024");
+
+
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 
 		this.leftButton.setText("Annuler");

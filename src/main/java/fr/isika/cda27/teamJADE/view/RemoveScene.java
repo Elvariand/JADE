@@ -2,6 +2,7 @@ package fr.isika.cda27.teamJADE.view;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -22,9 +23,10 @@ public class RemoveScene extends RepetitiveScene {
 		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");
 		
-		super.gridPane.setManaged(false);
-		super.gridPane.setVisible(false);
+
+		super.getChildren().remove(super.gridPane);
 		this.gridPane = createFormGridPane(gridPaneLabelsList);
+		super.getChildren().add(1, this.gridPane);
 
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 		
@@ -132,4 +134,5 @@ public class RemoveScene extends RepetitiveScene {
 
 		return gridPane;
 	}
+
 }

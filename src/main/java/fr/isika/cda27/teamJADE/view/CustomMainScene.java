@@ -2,6 +2,7 @@ package fr.isika.cda27.teamJADE.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
@@ -12,6 +13,7 @@ import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -46,6 +48,11 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomMainScene extends AnchorPane {
+	
+	private ArrayList<Intern> list;
+	private ObservableList<Intern> observableInterns;
+	private FilteredList<Intern> filteredInterns;
+	private TableView<Intern> tableView;
 
 	public CustomMainScene() {
 		// AnchorPane
@@ -78,20 +85,23 @@ public class CustomMainScene extends AnchorPane {
 
 		// TableView
 		// données d'exemple
-		ArrayList<Intern> list = new ArrayList<Intern>();
-		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2008));
-		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2009));
-		list.add(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
-		list.add(new Intern("GARIJO", "Rosie", 75, "AI 79", 2011));
-		list.add(new Intern("POTIN", "Thomas", 75, "ATOD 21", 2014));
-		list.add(new Intern("AUGEREAU", "Kévin", 76, "AI 78", 2010));
-		list.add(new Intern("UNG", "Jet-Ming", 75, "ATOD 16 CP", 2012));
-		list.add(new Intern("ROIGNANT", "Pierre-Yves", 75, "Al", 2015));
-		list.add(new Intern("CHONE", "Martin", 92, "ATOD 24 CP", 2015));
+		InternDao test = new InternDao();
+		this.list = new ArrayList<Intern>();
+		this.list = test.sortView(0, list);
+//		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2008));
+//		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2009));
+//		list.add(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
+//		list.add(new Intern("GARIJO", "Rosie", 75, "AI 79", 2011));
+//		list.add(new Intern("POTIN", "Thomas", 75, "ATOD 21", 2014));
+//		list.add(new Intern("AUGEREAU", "Kévin", 76, "AI 78", 2010));
+//		list.add(new Intern("UNG", "Jet-Ming", 75, "ATOD 16 CP", 2012));
+//		list.add(new Intern("ROIGNANT", "Pierre-Yves", 75, "Al", 2015));
+//		list.add(new Intern("CHONE", "Martin", 92, "ATOD 24 CP", 2015));
 
-		ObservableList<Intern> observableInterns = FXCollections.observableArrayList(list);
-		FilteredList<Intern> filteredInterns = new FilteredList<>(observableInterns, p -> true);
-		TableView<Intern> tableView = createTableView(filteredInterns);
+		this.observableInterns = FXCollections.observableArrayList(this.list);
+		this.filteredInterns = new FilteredList<>(this.observableInterns, p -> true);
+		this.tableView = createTableView(this.filteredInterns);
+		
 
 		// HBox du menu
 		HBox menuHbox = new HBox();
@@ -360,11 +370,7 @@ public class CustomMainScene extends AnchorPane {
 		// Refresh button
 		Button refreshBtn = scopeContentVbox.getLeftButton();
 		refreshBtn.setOnAction(event -> {
-			refresh(scopeContentVbox.getGridPaneFamilyName());
-			refresh(scopeContentVbox.getGridPaneFirstName());
-			refresh(scopeContentVbox.getGridPaneCounty());
-			refresh(scopeContentVbox.getGridPaneCursus());
-			refresh(scopeContentVbox.getGridPaneYearIn());
+			refreshPane(scopeContentVbox);
 		});
 
 		/* ADD CONTENT : configuration des boutons annuler et ajouter */
@@ -374,32 +380,61 @@ public class CustomMainScene extends AnchorPane {
 		addContentAddBtn.setOnAction(event -> {
 			String[] data = grabInfos(addContentVbox);
 			InternDao dao = new InternDao();
-			dao.insert(new Intern(data[0], data[1], Integer.parseInt(data[2]), data[3], Integer.parseInt(data[4])));
+			dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1), Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+			ArrayList<Intern> suppr = new ArrayList<Intern>();
+			this.observableInterns.setAll(test.sortView(0, suppr));
+
 		});
 		
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
 		addcontentCancelBtn.setOnAction(event -> {
-			refresh(addContentVbox.getGridPaneFamilyName());
-			refresh(addContentVbox.getGridPaneFirstName());
-			refresh(addContentVbox.getGridPaneCounty());
-			refresh(addContentVbox.getGridPaneCursus());
-			refresh(addContentVbox.getGridPaneYearIn());
+			refreshPane(addContentVbox);
+		});
+		
+		/* REMOVE CONTENT : configuration des boutons annuler et valider */
+		
+		// valider suppression
+		Button removeContentValidateBtn = removeContentVbox.getRightButton();
+		removeContentValidateBtn.setOnAction(event -> {
+			String[] data = grabInfos(removeContentVbox);
+			InternDao dao = new InternDao();
+			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1), Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+			ArrayList<Intern> suppr = new ArrayList<Intern>();
+			this.observableInterns.setAll(test.sortView(0, suppr));
+			
+		});
+		
+		// Annuler button
+		Button removecontentCancelBtn = removeContentVbox.getLeftButton();
+		removecontentCancelBtn.setOnAction(event -> {
+			refresh(removeContentVbox.getGridPaneFamilyName());
+			refresh(removeContentVbox.getGridPaneFirstName());
+			refresh(removeContentVbox.getGridPaneCounty());
+			refresh(removeContentVbox.getGridPaneCursus());
+			refresh(removeContentVbox.getGridPaneYearIn());
 		});
 	}
 	
 		
 	private String[] grabInfos(RepetitiveScene scene) {
 		// on récupère tous les textfield
-		String familyName = scene.getGridPaneFamilyName().getText();
-		String firstName = scene.getGridPaneFirstName().getText();
-		String county = scene.getGridPaneCounty().getText();
-		String cursus = scene.getGridPaneCursus().getText();
-		String yearIn = scene.getGridPaneYearIn().getText();
+		String familyName = scene.getTextFamilyName();
+		String firstName = scene.getTextFirstName();
+		String county = scene.getTextCounty();
+		String cursus = scene.getTextCursus();
+		String yearIn = scene.getTextYearIn();
 		String[] data = {familyName, firstName, county, cursus, yearIn};
 		return data;
 	}
 
+	private void refreshPane(RepetitiveScene pane) {
+		refresh(pane.getGridPaneFamilyName());
+		refresh(pane.getGridPaneFirstName());
+		refresh(pane.getGridPaneCounty());
+		refresh(pane.getGridPaneCursus());
+		refresh(pane.getGridPaneYearIn());
+	}
 	private void refresh(TextField textField) {
 		textField.setText("");
 	}

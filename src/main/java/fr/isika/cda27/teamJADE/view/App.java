@@ -68,31 +68,31 @@ public class App extends Application {
 		InternDao test_intern = new InternDao();
 		test_intern.deleteBinary();
 		test_intern.addFromDon();
-		test_intern.sortView(0);
-		System.out.println("======================");
-		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
-		test_intern.insert(PY);
-		test_intern.readBinary();
-		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
-		System.out.println("======================");
-		test_intern.readBinary();
-
-		System.out.println("======================");
-		System.out.println("======================");
-		MemberDao test_member = new MemberDao();
-		test_member.deleteBinary();
-		Member User1 = new Member("delphine", "mdpdedelphine");
-		Member User2 = new Member("jason", "mdpdejason");
-		Member User3 = new Member("alexia", "mdpdealexia");
-		
-		test_member.addFirstMember();
-		test_member.insert(User1);
-		test_member.insert(User2);
-		test_member.insert(User3);
-		
-		System.out.println("======================");
-		test_member.sortView(0);
-		test_member.readBinary();
+//		test_intern.sortView(0);
+//		System.out.println("======================");
+//		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
+//		test_intern.insert(PY);
+//		test_intern.readBinary();
+//		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
+//		System.out.println("======================");
+//		test_intern.readBinary();
+//
+//		System.out.println("======================");
+//		System.out.println("======================");
+//		MemberDao test_member = new MemberDao();
+//		test_member.deleteBinary();
+//		Member User1 = new Member("delphine", "mdpdedelphine");
+//		Member User2 = new Member("jason", "mdpdejason");
+//		Member User3 = new Member("alexia", "mdpdealexia");
+//		
+//		test_member.addFirstMember();
+//		test_member.insert(User1);
+//		test_member.insert(User2);
+//		test_member.insert(User3);
+//		
+//		System.out.println("======================");
+//		test_member.sortView(0);
+//		test_member.readBinary();
 		
 		
 		launch();
