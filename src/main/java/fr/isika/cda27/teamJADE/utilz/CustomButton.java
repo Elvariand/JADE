@@ -24,7 +24,7 @@ public class CustomButton extends Button {
 		this.setStyle(SET_BG_GREY_COLOR + " -fx-background-radius: 13;");
 		this.setTextFill(ORANGE_COLOR);
 		this.setFont(Font.font("Krona One", 18));
-		this.setEffect(INNER_SHADOW);
+		this.setEffect(INNER_SHADOW_WHITE);
 		this.setText(text);
 		
 		this.setOnMouseEntered(event -> {

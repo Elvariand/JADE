@@ -6,7 +6,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomTextFieldValues.*;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_BLACK;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomTextField extends TextField {
@@ -24,7 +24,7 @@ public class CustomTextField extends TextField {
 				+ "-fx-border-color: transparent transparent #704739 transparent;");
 		this.setFont(Font.font("Krona One", 18)); 
 
-		this.setEffect(INNER_SHADOW);
+		this.setEffect(INNER_SHADOW_BLACK);
 
 	}
 	
