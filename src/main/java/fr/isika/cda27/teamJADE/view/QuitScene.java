@@ -1,5 +1,8 @@
 package fr.isika.cda27.teamJADE.view;
 
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+
 public class QuitScene extends RepetitiveScene {
 
 	public QuitScene() {
@@ -13,6 +16,14 @@ public class QuitScene extends RepetitiveScene {
 		this.leftButton.setText("Non");
 
 		this.rightButton.setText("Oui");
-	}
+		
+		rightButton.setOnAction(event -> {
+        	Stage stage = ((Stage) QuitScene.this.getScene().getWindow()); 
+        	Scene scene = new Scene(new CustomLoginScene()); 
+        	scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+			stage.setScene(scene);
+			
+	}); 
 
+}
 }

@@ -1,10 +1,12 @@
 package fr.isika.cda27.teamJADE.view;
 
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 public class StackPaneHelp extends StackPane {
@@ -61,8 +63,15 @@ public StackPaneHelp (String helpFile, String helpHoverFile) {
 
 		this.getChildren().addAll(btnHelpImageView, btnHelpHoverImageView, button);
 
-	// set on Action 
+				
+		
 }
+
+
+
+
+
+
 
 
 public ImageView getBtnHelpImageView() {

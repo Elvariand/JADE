@@ -212,4 +212,47 @@ public class UtilStaticValues {
 		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 	}
 
+	public static class HelpTextValues{
+		
+		public static final String INTRODUCTION="Introduction"; 
+		public static final String INTRODUCTION_TEXT = "Cet annuaire est un outil destiné à centraliser et gérer les informations des stagiaires de manière simple et efficace." + "\n"
+				+                		"Il s'adresse aux administrateurs du centre de formation." + "\n"
+				+                 		"Une authentification à l'aide d'un nom d'utilisateur et d'un mot de passe est nécessaire pour accéder à l'annuaire." + "\n"
+				+                 		"L'annuaire est accessible sur ordinateur uniquement."; 
+		public static final String GESTION_STAGIAIRES = "Gestion des stagiaires"; 
+		public static final String AJOUT_STAGIAIRE = "Comment ajouter un stagiaire?"; 
+		public static final String AJOUT_STAGIAIRE_TEXT = "La procédure pour ajouter un stagiaire est la suivante :" + "\n"
+				+ "    1/ Cliquez sur l'icône 'Ajouter' situé dans la barre du menu à gauche de l'écran puis" + "\n"
+				+ "    2/ Complétez les champs du formulaire d'ajout : Nom de famille, Prénom, Département, Formation suivie, Année d'entrée en formation" + "\n"
+				+ "    3/ Cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n"
+				+ "Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
+				+ "Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."; 
+		public static final String MODIFICATION_STAGIAIRE= "Comment modifier un stagiaire?"; 
+		public static final String MODIFICATION_STAGIAIRE_TEXT = "La procédure pour modifier un stagiaire est la suivante :" + "\n" 
+				+                 		"	1/ Selectionnez le stagiaire à modifier en le selectionnant directement dans la liste puis"  + "\n"
+				+                		"	2/ Cliquez sur l'icône 'modifier' (représenté par un stagiaire tenant un stylo) situé dans la barre du menu à gauche de l'écran puis" + "\n"
+				+                 		"	3/ Modifiez le(s) champ(s) du formulaire souhaité(s)" + "\n"
+				+                 		"	4/ Cliquez sur le bouton 'Modifier' située en bas à droite pour valider la modification." + "\n" 
+				+                 		"Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
+				+                		"Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."; 
+		public static final String SUPPRESSION_STAGIAIRE = "Comment supprimer un stagaire?"; 
+		public static final String SUPRESSION_STAGAIRE_TEXT = "La procédure pour supprime un stagiaire est la suivante :" + "\n"
+				+                  		"	1/ Selectionnez le stagiaire à supprimer en le selectionnant directement dans la liste" + "\n"
+				+                 		"	2/ Cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un petit moins) situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies" + "\n"
+				+                 		"	3/ Après avoir vérifier qu'il s'agit du bon stagiaire à supprimer, cliquez sur le bouton 'Oui' ou annulez la suppression en appuyant sur le bouton 'Non'."; 
+		public static final String MEMBRES = "Espace Membres"; 
+		public static final String MEMBRES_TEXT = "L'espace membre permet de voir XXXX. Pour modifier XXX. Pour ajouter un membres, pour supprimer un membre.  Pour se déconnecter de l'annuaire, il suffit de cliquer sur l'icone 'déconnexion' situé ???"; 
+		public static final String IMPRESSION = "Impression"; 
+		public static final String IMPRESSION_TEXT = "Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé en bas à gauche dans la barre du menu."+ "\n"  
+				+               		"OPTIONS D'IMPRESSION" + "\n" 
+				+               		"Il possible d'exporter la liste des stagiaires en format PDF avant impression."; 
+		
+		
+		
+		
+	}
+	
+	
 }
+
+

@@ -18,7 +18,10 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
+
+
+import javafx.scene.Scene;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -34,10 +37,11 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.DROP_SHADOW;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomMainScene extends AnchorPane {
@@ -57,8 +61,14 @@ public class CustomMainScene extends AnchorPane {
 		
 		StackPaneHelp stackPaneHelp = new StackPaneHelp ("help.png", "help_hover.png"); 
 		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT); 
-		stackPaneHelp.setTranslateX(545); 
-		stackPaneHelp.setTranslateY(-320); 
+		stackPaneHelp.setTranslateX(540); 
+		stackPaneHelp.setTranslateY(-340); 
+		stackPaneHelp.getButton().setOnAction(event -> {
+			Stage stage = ((Stage)CustomMainScene.this.getScene().getWindow());
+			Scene scene = new Scene(new HelpScene()); 
+			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+			stage.setScene(scene);
+		}); 
 		
 
 		// TableView
