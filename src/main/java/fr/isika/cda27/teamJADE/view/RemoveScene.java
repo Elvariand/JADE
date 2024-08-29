@@ -13,20 +13,15 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 public class RemoveScene extends RepetitiveScene {
 	
 	private Label labelError;
-	private String[] gridPaneLabelsList;
+	private String[] gridPaneLabelsList = {"","","","",""};
 
 
 	public RemoveScene() {
-
+		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");
-
-		this.gridPaneLabelsList = new String[5];
-		gridPaneLabelsList[0] = "";
-		gridPaneLabelsList[1] = "";
-		gridPaneLabelsList[2] = "";
-		gridPaneLabelsList[3] = "";
-		gridPaneLabelsList[4] = "";
 		
+		super.gridPane.setManaged(false);
+		super.gridPane.setVisible(false);
 		this.gridPane = createFormGridPane(gridPaneLabelsList);
 
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));

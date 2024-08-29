@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import fr.isika.cda27.teamJADE.model.Intern;
-import fr.isika.cda27.teamJADE.model.InternDao;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -19,18 +18,12 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-
-
-import javafx.scene.Scene;
-
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -38,16 +31,15 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
-import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.DROP_SHADOW;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class CustomMainScene extends AnchorPane {
+public class CustomMainScene2 extends AnchorPane {
 
-	public CustomMainScene() {
+	public CustomMainScene2() {
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
@@ -58,18 +50,10 @@ public class CustomMainScene extends AnchorPane {
 		StackPane bgStackPane = new StackPane();
 		bgStackPane.setPrefSize(1280, 720);
 		bgStackPane.setStyle("-fx-background-color: #272727;");
-		
-		
-		StackPaneHelp stackPaneHelp = new StackPaneHelp ("help.png", "help_hover.png"); 
-		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT); 
+
+		StackPaneHelp stackPaneHelp = new StackPaneHelp("help.png", "help_hover.png");
+		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT);
 		stackPaneHelp.setMaxSize(75, 75);
-		stackPaneHelp.getButton().setOnAction(event -> {
-			Stage stage = ((Stage)CustomMainScene.this.getScene().getWindow());
-			Scene scene = new Scene(new HelpScene()); 
-			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-			stage.setScene(scene);
-		}); 
-		
 
 		// TableView
 		// données d'exemple
@@ -88,15 +72,25 @@ public class CustomMainScene extends AnchorPane {
 		FilteredList<Intern> filteredInterns = new FilteredList<>(observableInterns, p -> true);
 		TableView<Intern> tableView = createTableView(filteredInterns);
 
-		// HBox du menu
-		HBox menuHbox = new HBox();
-		menuHbox.setMaxWidth(990);
-		menuHbox.setMaxHeight(720);
-		menuHbox.setStyle("-fx-background-color: #DD734C; -fx-background-radius: 70;");
-		menuHbox.setEffect(DROP_SHADOW);
-		menuHbox.setTranslateX(TOX_SMALL_MENU);
+		HBox menuPane = new HBox();
+		MenuContentHBox menuContent = new MenuContentHBox();
+		MenuIconsVBox menuIcons = new MenuIconsVBox();
+		MenuLabelsVBox menuLabels = new MenuLabelsVBox();
+		menuPane.getChildren().addAll(menuContent, menuLabels, menuIcons);
+//		menuPane.setTranslateX(-100);
+		System.out.println(menuIcons.widthProperty());
+		System.out.println(menuLabels.getWidth());
+		System.out.println(menuContent.getWidth());
 
-		// VBox avec les contenu pringipaux à gauche du menu
+//		// HBox du menu
+//		HBox menuHbox = new HBox();
+//		menuHbox.setMaxWidth(990);
+//		menuHbox.setMaxHeight(720);
+//		menuHbox.setStyle("-fx-background-color: #DD734C; -fx-background-radius: 70;");
+//		menuHbox.setEffect(DROP_SHADOW);
+//		menuHbox.setTranslateX(TOX_SMALL_MENU);
+
+		// VBox avec les contenu principaux à gauche du menu
 		ScopeScene scopeContentVbox = new ScopeScene();
 		AddScene addContentVbox = new AddScene();
 		RemoveScene removeContentVbox = new RemoveScene();
@@ -120,47 +114,13 @@ public class CustomMainScene extends AnchorPane {
 			}
 		});
 
-		// VBox avec les boutons du menu
-		VBox menubarVBox = new VBox();
-		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
-		menubarVBox.setTranslateX(TOX_MENUBAR);
-//		menubarVBox.setStyle("-fx-background-color: transparent; -fx-border-color: green; -fx-border-width: 5;");
 
-		// On crée la croix du haut
 
-		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
-
-		// On crée les autres boutons
-		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
-		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_stagiaire_orange.png", "ajout_stagiaire_gris.png",
-				"Ajouter");
-		StackPaneMenubar removeBtn = new StackPaneMenubar("suppr_stagiaire_orange.png", "suppr_stagiaire_gris.png",
-				"Supprimer");
-		StackPaneMenubar updateBtn = new StackPaneMenubar("modif_stagiaire_orange.png", "modif_stagiaire_gris.png",
-				"Modifier");
-		StackPaneMenubar printBtn = new StackPaneMenubar("imprimante_orange.png", "imprimante_grise.png", "Imprimer");
-		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_membre_orange.png", "voir_membre_gris.png",
-				"Membres");
-
-		// On crée le bouton quitter
-		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion", SMALL_PATH_BOT,
-				LARGE_PATH_BOT);
-
-		// On ajoute la croix (invisible pour le moment)
-		menubarVBox.getChildren().add(closeBtn);
-		// On ajoute tous les boutons dans le VBox
-		menubarVBox.getChildren().addAll(scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn);
-		// On ajoute le bouton quitter
-		menubarVBox.getChildren().add(quitBtn);
-
-		StackPaneMenubar[] menuChildren = { closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
-				quitBtn };
-
-		// On ajoute le contenu de gauche et de droite a la HBox du menu
-		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
+//		// On ajoute le contenu de gauche et de droite a la HBox du menu
+//		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
 
 		// On ajoute la tableview et menuhbox a la stackpane
-		bgStackPane.getChildren().addAll(tableView, menuHbox, stackPaneHelp);
+		bgStackPane.getChildren().addAll(tableView, menuPane, stackPaneHelp);
 
 		// On ajoute la stackpane
 		this.getChildren().add(bgStackPane);
@@ -180,25 +140,34 @@ public class CustomMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn, removeBtn, updateBtn, printBtn,
+		StackPaneMenubar3 closeBtn = menuIcons.getCloseBtn();
+		StackPaneMenubar3 addBtn = menuIcons.getAddBtn();
+		StackPaneMenubar3 scopeBtn = menuIcons.getScopeBtn();
+		StackPaneMenubar3 removeBtn = menuIcons.getRemoveBtn();
+		StackPaneMenubar3 updateBtn = menuIcons.getUpdateBtn();
+		StackPaneMenubar3 printBtn = menuIcons.getPrintBtn();
+		StackPaneMenubar3 seeMemberBtn = menuIcons.getSeeMemberBtn();
+		StackPaneMenubar3 quitBtn = menuIcons.getQuitBtn();
+		
+		List<StackPaneMenubar3> scopeBtnConfig = Arrays.asList(closeBtn, addBtn, removeBtn, updateBtn, printBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn, removeBtn, updateBtn, printBtn,
+		List<StackPaneMenubar3> addBtnConfig = Arrays.asList(closeBtn, scopeBtn, removeBtn, updateBtn, printBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
+		List<StackPaneMenubar3> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+		List<StackPaneMenubar3> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
+		List<StackPaneMenubar3> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+		List<StackPaneMenubar3> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
 				printBtn, quitBtn);
 
-		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
+		List<StackPaneMenubar3> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
 				printBtn, seeMemberBtn);
 
 		/*
@@ -206,13 +175,13 @@ public class CustomMainScene extends AnchorPane {
 		 * bouton cliqué 2) le contenu à afficher 3) la HBox du menu 4)
 		 */
 
-		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig);
-		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig);
-		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
-		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
-		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
+		configureButtonAction(scopeBtn, scopeContentVbox, menuContent, scopeBtnConfig);
+		configureButtonAction(addBtn, addContentVbox, menuContent, addBtnConfig);
+		configureButtonAction(removeBtn, removeContentVbox, menuContent, removeBtnConfig);
+		configureButtonAction(updateBtn, updateContentVbox, menuContent, updateBtnConfig);
+		configureButtonAction(printBtn, printContentVbox, menuContent, printBtnConfig);
+		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuContent, seeMemberBtnConfig);
+		configureButtonAction(quitBtn, quitContentVbox, menuContent, quitBtnBtnConfig);
 
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
@@ -220,10 +189,10 @@ public class CustomMainScene extends AnchorPane {
 			RotateTransition rotateTransition = new RotateTransition(Duration.millis(500),
 					closeBtn.getBtnOrangeImageView());
 
-			if ((int) (menuHbox.getTranslateX()) == TOX_SMALL_MENU) {
-				// si la menuHbox est à -985 on ouvre un peu
+			if ((int) (menuContent.getTranslateX()) == TOX_SMALL_MENU) {
+				// si la menuContent est à -985 on ouvre un peu
 				moveTransition.setDuration(DURATION_TIME);
-				moveTransition.setNode(menuHbox);
+				moveTransition.setNode(menuContent);
 				moveTransition.setToX(TOX_MEDIUM_MENU);
 				moveTransition.play();
 
@@ -231,10 +200,10 @@ public class CustomMainScene extends AnchorPane {
 				rotateTransition.setByAngle(180);
 				rotateTransition.play();
 
-			} else if ((int) (menuHbox.getTranslateX()) == TOX_MEDIUM_MENU) {
-				// sinon si la menuHbox est à -600 on referme
+			} else if ((int) (menuContent.getTranslateX()) == TOX_MEDIUM_MENU) {
+				// sinon si la menuContent est à -600 on referme
 				moveTransition.setDuration(DURATION_TIME);
-				moveTransition.setNode(menuHbox);
+				moveTransition.setNode(menuContent);
 				moveTransition.setToX(TOX_SMALL_MENU);
 				moveTransition.play();
 
@@ -245,7 +214,7 @@ public class CustomMainScene extends AnchorPane {
 			} else {
 				// sinon on ferme
 				moveTransition.setDuration(DURATION_TIME);
-				moveTransition.setNode(menuHbox);
+				moveTransition.setNode(menuContent);
 				moveTransition.setToX(TOX_SMALL_MENU);
 				moveTransition.play();
 
@@ -277,12 +246,11 @@ public class CustomMainScene extends AnchorPane {
 		Button searchBtn = scopeContentVbox.getRightButton();
 		searchBtn.setOnAction(event -> {
 			// on récupère tous les textfield
-			String[] data = grabInfos(scopeContentVbox);
-			String familyNameFilter = data[0];
-			String firstNameFilter = data[1];
-			String countyFilter = data[2];
-			String cursusFilter = data[3];
-			String yearInFilter = data[4];
+			String familyNameFilter = scopeContentVbox.getGridPaneFamilyName().getText();
+			String firstNameFilter = scopeContentVbox.getGridPaneFirstName().getText();
+			String countyFilter = scopeContentVbox.getGridPaneCounty().getText();
+			String cursusFilter = scopeContentVbox.getGridPaneCursus().getText();
+			String yearInFilter = scopeContentVbox.getGridPaneYearIn().getText();
 
 			// on filtre la liste de la TableView en fonction
 			filteredInterns.setPredicate(intern -> {
@@ -318,7 +286,7 @@ public class CustomMainScene extends AnchorPane {
 			});
 
 			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
+			moveTransition.setNode(menuContent);
 			moveTransition.setToX(TOX_SMALL_MENU);
 			moveTransition.play();
 
@@ -353,45 +321,14 @@ public class CustomMainScene extends AnchorPane {
 			refresh(scopeContentVbox.getGridPaneYearIn());
 		});
 
-		/* ADD CONTENT : configuration des boutons annuler et ajouter */
-
-		// ajouter
-		Button addContentAddBtn = addContentVbox.getRightButton();
-		addContentAddBtn.setOnAction(event -> {
-			String[] data = grabInfos(addContentVbox);
-			InternDao dao = new InternDao();
-			dao.insert(new Intern(data[0], data[1], Integer.parseInt(data[2]), data[3], Integer.parseInt(data[4])));
-		});
-		
-		// Annuler button
-		Button addcontentCancelBtn = addContentVbox.getLeftButton();
-		addcontentCancelBtn.setOnAction(event -> {
-			refresh(addContentVbox.getGridPaneFamilyName());
-			refresh(addContentVbox.getGridPaneFirstName());
-			refresh(addContentVbox.getGridPaneCounty());
-			refresh(addContentVbox.getGridPaneCursus());
-			refresh(addContentVbox.getGridPaneYearIn());
-		});
-	}
-	
-		
-	private String[] grabInfos(RepetitiveScene scene) {
-		// on récupère tous les textfield
-		String familyName = scene.getGridPaneFamilyName().getText();
-		String firstName = scene.getGridPaneFirstName().getText();
-		String county = scene.getGridPaneCounty().getText();
-		String cursus = scene.getGridPaneCursus().getText();
-		String yearIn = scene.getGridPaneYearIn().getText();
-		String[] data = {familyName, firstName, county, cursus, yearIn};
-		return data;
 	}
 
 	private void refresh(TextField textField) {
 		textField.setText("");
 	}
 
-	public void configureButtonAction(StackPaneMenubar buttonClicked, VBox mainContentToShow, HBox menuHbox,
-			List<StackPaneMenubar> otherButtons) {
+	public void configureButtonAction(StackPaneMenubar3 buttonClicked, VBox mainContentToShow, HBox menuHbox,
+			List<StackPaneMenubar3> otherButtons) {
 
 		buttonClicked.getButton().setOnAction(event -> {
 
@@ -432,8 +369,7 @@ public class CustomMainScene extends AnchorPane {
 
 	}
 
-
-	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
+	private void setSmaller(StackPaneMenubar3 stackPaneMenubar) {
 		// on change la taille du bouton à 100
 		stackPaneMenubar.getButton().setPrefSize(BTN_SMALL_WIDTH, BTN_HEIGHT);
 		stackPaneMenubar.getButton().setTranslateX(TOX_SMALL_BTN);
@@ -442,11 +378,11 @@ public class CustomMainScene extends AnchorPane {
 		stackPaneMenubar.getSmallSvgPath().setVisible(true);
 		stackPaneMenubar.getLargeSvgPath().setVisible(false);
 
-		// on fait disparaitre le label
-		stackPaneMenubar.getLabel().setVisible(false);
+//		// on fait disparaitre le label
+//		stackPaneMenubar.getLabel().setVisible(false);
 	}
 
-	private void setLarger(StackPaneMenubar stackPaneMenubar) {
+	private void setLarger(StackPaneMenubar3 stackPaneMenubar) {
 		// pause de 1 sec
 		PauseTransition pause = new PauseTransition(DURATION_TIME);
 
@@ -458,15 +394,15 @@ public class CustomMainScene extends AnchorPane {
 			stackPaneMenubar.getSmallSvgPath().setVisible(false);
 			stackPaneMenubar.getLargeSvgPath().setVisible(true);
 
-			// on fait apparaitre le label
-			stackPaneMenubar.getLabel().setVisible(true);
+//			// on fait apparaitre le label
+//			stackPaneMenubar.getLabel().setVisible(true);
 		});
 
 		// on démarre
 		pause.play();
 	}
 
-	private void addHoverEffect(StackPaneMenubar buttonSP) {
+	private void addHoverEffect(StackPaneMenubar3 buttonSP) {
 
 		// Variables pour stocker les couleurs
 		String[] initialColorHex = new String[2];
@@ -546,7 +482,7 @@ public class CustomMainScene extends AnchorPane {
 
 	/* ---------------------------------------------------------------- */
 
-	private void changeToOrange(StackPaneMenubar button) {
+	private void changeToOrange(StackPaneMenubar3 button) {
 		applyColorTransition(button.getLargeSvgPath(), ORANGE_COLOR);
 		button.getLargeSvgPath().setFill(ORANGE_COLOR);
 
@@ -557,7 +493,7 @@ public class CustomMainScene extends AnchorPane {
 		button.getBtnGreyImageView().setVisible(true);
 	}
 
-	private void changeToGrey(StackPaneMenubar button) {
+	private void changeToGrey(StackPaneMenubar3 button) {
 		applyColorTransition(button.getLargeSvgPath(), GREY_COLOR);
 		button.getLargeSvgPath().setFill(GREY_COLOR);
 
