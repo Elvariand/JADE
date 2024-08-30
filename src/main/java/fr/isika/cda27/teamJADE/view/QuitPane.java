@@ -1,6 +1,7 @@
 package fr.isika.cda27.teamJADE.view;
 
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 public class QuitPane extends RepetitivePane {
@@ -23,6 +24,7 @@ public class QuitPane extends RepetitivePane {
         	scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 			
+
 	}); 
 
 }

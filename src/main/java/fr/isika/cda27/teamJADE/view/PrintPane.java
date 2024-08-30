@@ -65,6 +65,9 @@ public class PrintPane extends RepetitivePane {
 		
 		this.tableView = tableView;
 		
+//		this.gridPane.setManaged(false);
+//		this.gridPane.setVisible(false);
+		
 		LocalDate currentDate = LocalDate.now();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
         String formattedDate = currentDate.format(formatter);

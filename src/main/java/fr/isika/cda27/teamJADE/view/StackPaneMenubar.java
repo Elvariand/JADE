@@ -12,6 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
@@ -32,14 +33,16 @@ public class StackPaneMenubar extends StackPane {
 	private boolean visibility = true;
 	private Tooltip tooltip;
 	private String tooltipText;
-	private GridPane gridPane;
+	private HBox btnContainer;
 	private Label label;
 	private HBox hbox;
-
+	private VBox leftSubcontainer;
+	private VBox rightSubcontainer;
+	private HBox container;
 
 	// Pour le bouton déconnexion
 	public StackPaneMenubar(String orangeFile, String greyFile, String tooltipText, String svgSmallPath, String svgLargePath) {
-		this(orangeFile, greyFile, tooltipText, svgSmallPath, svgLargePath, 46, 100);
+		this(orangeFile, greyFile, tooltipText, svgSmallPath, svgLargePath, 46, 300);
 	}
 	
 	// Pour les boutons classiques
@@ -61,11 +64,11 @@ public class StackPaneMenubar extends StackPane {
 		this.imgSize = imgSize;
 		this.orangeFile = orangeFile;
 		this.greyFile = greyFile;
-
+		
 		this.smallSvgPath = new SVGPath();
 		smallSvgPath.setContent(svgSmallPath);
 		smallSvgPath.setFill(Color.web("#DD734C"));
-		smallSvgPath.setVisible(false);
+//		smallSvgPath.setVisible(false);
 
 
 		this.button = new Button();
@@ -98,30 +101,38 @@ public class StackPaneMenubar extends StackPane {
 		if (tooltipText.equals("fleche")) {
 			btnGreyImageView.setVisible(false); 
 			btnStackPane.getChildren().addAll(smallSvgPath, btnOrangeImageView, btnGreyImageView);
-			this.setTranslateX(-100);
+			this.setTranslateX(100);
 			this.getChildren().addAll(btnStackPane, button);
 			return;
 		}
-		
 		btnStackPane.getChildren().addAll(btnOrangeImageView, btnGreyImageView);
 
 		
-		this.gridPane = createMenuGridPane();
 
 
 		this.label = new Label("     " + this.tooltipText);
 
 		label.setFont(Font.font("Krona One", 18));
-		gridPane.add(label, 0, 0);
-		gridPane.add(btnStackPane, 1, 0);
 
-		// on translate
-		largeSvgPath.setTranslateX(-100);
-		gridPane.setTranslateX(-100);
-		button.setTranslateX(-100);
-		this.setTranslateX(-100);
+		this.btnContainer = new HBox();
+		btnContainer.setAlignment(Pos.CENTER);
+		// 2VBox dans la HBox
+	
+		this.rightSubcontainer = new VBox();
+		rightSubcontainer.setPrefWidth(100);
+		rightSubcontainer.setAlignment(Pos.CENTER);
+		
+		this.leftSubcontainer = new VBox();
+		leftSubcontainer.setPrefWidth(200);
+		leftSubcontainer.setAlignment(Pos.CENTER_LEFT);
+		
+		rightSubcontainer.getChildren().add(btnStackPane);
+		leftSubcontainer.getChildren().add(label);
+		
+		btnContainer.getChildren().addAll(leftSubcontainer,rightSubcontainer);
 
-		this.getChildren().addAll(largeSvgPath, smallSvgPath, gridPane, button);
+
+		this.getChildren().addAll(largeSvgPath , btnContainer, button);
 	}
 
 
@@ -311,8 +322,8 @@ public class StackPaneMenubar extends StackPane {
 	/**
 	 * @return the gridPane
 	 */
-	public GridPane getGridPane() {
-		return gridPane;
+	public HBox getBtnContainer() {
+		return btnContainer;
 	}
 
 	/**
@@ -332,8 +343,8 @@ public class StackPaneMenubar extends StackPane {
 	/**
 	 * @param gridPane the gridPane to set
 	 */
-	public void setGridPane(GridPane gridPane) {
-		this.gridPane = gridPane;
+	public void setBtnContainer(HBox btnContainer) {
+		this.btnContainer = btnContainer;
 	}
 
 	/**
@@ -365,27 +376,34 @@ public class StackPaneMenubar extends StackPane {
 		this.label = label;
 	}
 
-
-	private GridPane createMenuGridPane() {
-
-		GridPane gridPane = new GridPane();
-
-		// 2col 200 et 100
-		// première colonne
-		ColumnConstraints col1Constraints = new ColumnConstraints();
-		col1Constraints.setPrefWidth(200);
-		gridPane.getColumnConstraints().add(col1Constraints);
-
-		// deuxième colonne
-		ColumnConstraints col2Constraints = new ColumnConstraints();
-		col2Constraints.setPrefWidth(100);
-		gridPane.getColumnConstraints().add(col2Constraints);
-
-		// 1 ligne
-		RowConstraints rowConstraints = new RowConstraints();
-		rowConstraints.setPrefHeight(87);
-		gridPane.getRowConstraints().add(rowConstraints);
-
-		return gridPane;
+	public VBox getLeftSubcontainer() {
+		return leftSubcontainer;
 	}
+
+	public VBox getRightSubcontainer() {
+		return rightSubcontainer;
+	}
+	
+//	private HBox createMenuBtnContainer() {
+//
+//		this.container = new HBox();
+//		container.setStyle("-fx-border-color: red;");
+//		container.setAlignment(Pos.CENTER);
+//		// 2VBox dans la HBox
+//	
+//		this.rightSubcontainer = new VBox();
+//		rightSubcontainer.setPrefWidth(100);
+//		rightSubcontainer.setAlignment(Pos.CENTER);
+//		
+//		this.leftSubcontainer = new VBox();
+//		leftSubcontainer.setPrefWidth(200);
+//		leftSubcontainer.setAlignment(Pos.CENTER_LEFT);
+//		
+//		rightSubcontainer.getChildren().add(btnStackPane);
+//		leftSubcontainer.getChildren().add(label);
+//		
+//		container.getChildren().addAll(leftSubcontainer,rightSubcontainer);
+//
+//		return container;
+//	}
 }

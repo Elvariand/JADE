@@ -2,13 +2,8 @@ package fr.isika.cda27.teamJADE.utilz;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.SET_BG_ORANGE_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.COL1_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.COL2_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.GRIDPANE_HEIGHT;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.GRIDPANE_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_TEXTS;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.NBR_OF_LINES;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.ROW_HEIGHT;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.DURATION_TIME;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.TOX_SMALL_MENU;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -59,7 +54,6 @@ public class UtilStaticValues {
 		public static final String SMALL_PATH_BOT = "M5.02681e-06 0L100 0L100 19.5L100 47.5C100 49 99.8383 52.4704 99 57.5C98 63.5 95 73 92 78C89 83 86.5 88 80 94.5C73.5 101 64.5 107 53.5 111C44.7 114.2 37 115 31 115L5.02681e-06 115L5.02681e-06 0Z";
 
 		public static final Duration DURATION_TIME = Duration.millis(500);
-
 	}
 
 	public static class MenuVboxValues {
@@ -249,7 +243,7 @@ public class UtilStaticValues {
 		
 		
 		
-		
+	
 	}
 	
 	
