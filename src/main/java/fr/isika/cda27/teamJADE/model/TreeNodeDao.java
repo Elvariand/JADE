@@ -51,6 +51,7 @@ public abstract class TreeNodeDao<T> {
 		// Si la valeur de la clé à écrire est plus petite que
 		// celle de la clé courante lue dans le fichier binaire.
 		if (getKey(object).compareTo(nodeKey) < 0) {
+			System.out.println(getKey(object) + " < " + nodeKey);
 
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
 
@@ -80,6 +81,7 @@ public abstract class TreeNodeDao<T> {
 		// celle
 		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
 		else if (getKey(object).compareTo(nodeKey) > 0) {
+			System.out.println(getKey(object) + " > " + nodeKey);
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
@@ -108,7 +110,7 @@ public abstract class TreeNodeDao<T> {
 		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
 		// de famille de l'Intern courant lu dans le fichier binaire.
 		else {
-
+			System.out.println(getKey(object) + " e " + nodeKey);
 			int read = 1;
 
 			/*
@@ -141,6 +143,7 @@ public abstract class TreeNodeDao<T> {
 		return;
 
 	}
+	
 
 	/**
 	 * @param newObject
@@ -151,11 +154,20 @@ public abstract class TreeNodeDao<T> {
 			this.update(newObject, oldObject, 0);
 		} else {
 			this.delete(oldObject);
+			System.out.println("===============================================================");
+			this.sortView(0, new ArrayList<T>());
+			System.out.println("===============================================================");
+			this.readBinary();
+			System.out.println("===============================================================");
 			this.insert(newObject);
+			this.readBinary();
+			System.out.println("===============================================================");
+
 		}
-		
+
 	}
 
+	
 	/**
 	 * @param newObject
 	 * @param oldObject
@@ -222,7 +234,7 @@ public abstract class TreeNodeDao<T> {
 					cursorPosition = read * getNodeSize();
 			}
 
-			if (read < 0 && !oldObject.equals(this.readObjectFromBinary(cursorPosition)) ) {
+			if (read < 0 && !oldObject.equals(this.readObjectFromBinary(cursorPosition))) {
 				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
 			}
 		}
@@ -230,6 +242,7 @@ public abstract class TreeNodeDao<T> {
 
 	}
 
+	
 	/**
 	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
 	 *               binaire
@@ -243,6 +256,7 @@ public abstract class TreeNodeDao<T> {
 	public void delete(T object) {
 		this.delete(object, 0, 0, false);
 	}
+	
 
 	/**
 	 * @param intern               L'objet de type Intern que nous voulons effacer
@@ -264,6 +278,7 @@ public abstract class TreeNodeDao<T> {
 	public void delete(T object, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
 
 		String nodeKey = this.readKeyFromBinary(childCursorPosition);
+		long buffer = childCursorPosition;
 
 		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
 		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
@@ -286,7 +301,7 @@ public abstract class TreeNodeDao<T> {
 
 			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
 			// niveau de l'enfant gauche
-			this.delete(object, parentCursorPosition, childCursorPosition, true);
+			this.delete(object, buffer, childCursorPosition, true);
 			return;
 		}
 
@@ -311,7 +326,7 @@ public abstract class TreeNodeDao<T> {
 
 			// S'il n'y a pas d'erreur, on relance la fonction en positionnant le curseur au
 			// niveau de l'enfant droit
-			this.delete(object, parentCursorPosition, childCursorPosition, false);
+			this.delete(object, buffer, childCursorPosition, false);
 			return;
 
 			// Si la valeur du nom de famille du Stagiaire à écrire est égale à
@@ -352,8 +367,8 @@ public abstract class TreeNodeDao<T> {
 
 				// Si le Stagiaire à supprimer est une feuille et donc le seul cas où la valeur
 				// des enfants gauche et droits sont égales
-				if (this.readLeftChildFromBinary(childCursorPosition) == this
-						.readRightChildFromBinary(childCursorPosition)) {
+				if (this.readLeftChildFromBinary(childCursorPosition) ==
+					this.readRightChildFromBinary(childCursorPosition)) {
 
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par -1
@@ -374,6 +389,7 @@ public abstract class TreeNodeDao<T> {
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par la valeur de position du substitut
 					// que l'on a trouvé
+					System.out.println("Valeur substitut : " + (int) substitute / getNodeSize());
 					this.writeIntInBinary((int) substitute / getNodeSize(),
 							isFromLeft ? parentCursorPosition + getObjectSize()
 									: parentCursorPosition + getObjectSize() + INDEX_SIZE);
@@ -560,6 +576,17 @@ public abstract class TreeNodeDao<T> {
 	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
 	 *         le fichier binaire.
 	 */
+	protected String readNodeFromBinary(long cursorPosition) {
+		return this.readObjectFromBinary(cursorPosition).toString() + " " + readLeftChildFromBinary(cursorPosition)
+				+ " " + readRightChildFromBinary(cursorPosition) + " " + readTwinFromBinary(cursorPosition);
+	}
+
+	/**
+	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 *                       début du noeud.
+	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
+	 *         le fichier binaire.
+	 */
 	protected abstract T readObjectFromBinary(long cursorPosition);
 
 	/**
@@ -571,9 +598,14 @@ public abstract class TreeNodeDao<T> {
 	 */
 	public int readLeftChildFromBinary(long cursorPosition) {
 		cursorPosition += getObjectSize();
-		int leftChildInt = -1;
+		int leftChildInt = -99;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
+			raf.seek(cursorPosition);
+			if (raf.readChar() == ' ') {
+				raf.close();
+				return -99;
+			}
 			raf.seek(cursorPosition);
 			leftChildInt = raf.readInt();
 			raf.close();
@@ -592,9 +624,14 @@ public abstract class TreeNodeDao<T> {
 	 */
 	public int readRightChildFromBinary(long cursorPosition) {
 		cursorPosition += getObjectSize() + INDEX_SIZE;
-		int rightChildInt = -1;
+		int rightChildInt = -99;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
+			raf.seek(cursorPosition);
+			if (raf.readChar() == ' ') {
+				raf.close();
+				return -99;
+			}
 			raf.seek(cursorPosition);
 			rightChildInt = raf.readInt();
 			raf.close();
@@ -613,9 +650,14 @@ public abstract class TreeNodeDao<T> {
 	 */
 	public int readTwinFromBinary(long cursorPosition) {
 		cursorPosition += getObjectSize() + INDEX_SIZE + INDEX_SIZE;
-		int TwinInt = -1;
+		int TwinInt = -99;
 		try {
 			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
+			raf.seek(cursorPosition);
+			if (raf.readChar() == ' ') {
+				raf.close();
+				return -99;
+			}
 			raf.seek(cursorPosition);
 			TwinInt = raf.readInt();
 			raf.close();
@@ -717,23 +759,23 @@ public abstract class TreeNodeDao<T> {
 
 		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
 		// alors on lit celui-ci en priorité
-		if (leftChild != -1)
+		if (leftChild > 0)
 			sortView(leftChild * getNodeSize(), list);
 
 		// On affiche le Stagiaire lu
-		System.out.println(this.readObjectFromBinary(cursorPosition));
+//		System.out.println(this.readNodeFromBinary(cursorPosition));
 		list.add(this.readObjectFromBinary(cursorPosition));
 
 		// S'il y a des homonymes, on les affiche tous
 		long twinPosition = this.readTwinFromBinary(cursorPosition) * getNodeSize();
 		while (twinPosition > 0) {
-			System.out.println(this.readObjectFromBinary(twinPosition));
+//			System.out.println(this.readNodeFromBinary(twinPosition));
 			list.add(this.readObjectFromBinary(twinPosition));
 			twinPosition = this.readTwinFromBinary(twinPosition) * getNodeSize();
 		}
 
 		// Puis on s'intéresse au fils droit du Stagiaire lu
-		if (rightChild != -1)
+		if (rightChild > 0)
 			sortView(this.readRightChildFromBinary(cursorPosition) * getNodeSize(), list);
 		return list;
 	}

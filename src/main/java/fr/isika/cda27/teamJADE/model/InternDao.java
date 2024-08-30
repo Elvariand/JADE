@@ -164,6 +164,11 @@ public class InternDao extends TreeNodeDao<Intern>{
 			for (int i = 0; i < MAX_CHAR_NAMES; i++) {
 				familyName += raf.readChar();
 			}
+			if (familyName.trim().length() == 0) {
+				raf.close();
+				return new Intern("", "", -99, "", -99);
+			}
+			
 			// On lit tous les caractères du Prénom du Stagiaire incluant les espaces
 			// supplémentaires
 			for (int i = 0; i < MAX_CHAR_NAMES; i++) {
@@ -201,12 +206,19 @@ public class InternDao extends TreeNodeDao<Intern>{
 		try {
 			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
 			for (long cursor = 0; cursor < this.getBinarySize(); cursor++) {
+				int indexLeft = -99;
+				int indexRight = -99;
+				int indexTwin = -99;
+				
 				Intern intern = this.readObjectFromBinary(cursor);
-				int indexLeft = this.readLeftChildFromBinary(cursor);
-				int indexRight = this.readRightChildFromBinary(cursor);
-				int indexTwin = this.readTwinFromBinary(cursor);
+				
+				if (intern.getFamilyName() != "") {
+				indexLeft = this.readLeftChildFromBinary(cursor);
+				indexRight = this.readRightChildFromBinary(cursor);
+				indexTwin = this.readTwinFromBinary(cursor);
+				}
 				System.out.println(
-						intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
+						cursor/INTERN_NODE_SIZE +" : " + intern.getFamilyNameLong().substring(0, 10) + "\t" + intern.getFirstNameLong().substring(0, 11)
 								+ "\t" + intern.getCounty() + "\t" + intern.getCursusLong() + "\t" + intern.getYearIn()
 								+ "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
 				cursor += INTERN_NODE_SIZE - 1;
@@ -257,7 +269,7 @@ public class InternDao extends TreeNodeDao<Intern>{
 
 	@Override
 	protected String getKey(Intern intern) {
-		return intern.getFamilyName();
+		return intern.getFamilyName().trim();
 	}
 
 

@@ -1,6 +1,8 @@
 package fr.isika.cda27.teamJADE.view;
 
 
+import java.util.ArrayList;
+
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;

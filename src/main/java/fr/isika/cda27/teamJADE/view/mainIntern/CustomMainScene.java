@@ -27,6 +27,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
@@ -58,6 +59,7 @@ public class CustomMainScene extends AnchorPane {
 	private ObservableList<Intern> observableInterns;
 	private FilteredList<Intern> filteredInterns;
 	private TableView<Intern> tableView;
+	private Intern selected;
 
 	public CustomMainScene() {
 		// AnchorPane
@@ -86,9 +88,9 @@ public class CustomMainScene extends AnchorPane {
 
 		// TableView
 		// données d'exemple
-		InternDao test = new InternDao();
+		InternDao internDao = new InternDao();
 		this.list = new ArrayList<Intern>();
-		this.list = test.sortView(0, list);
+		this.list = internDao.sortView(0, list);
 
 		this.observableInterns = FXCollections.observableArrayList(this.list);
 		this.filteredInterns = new FilteredList<>(this.observableInterns, p -> true);
@@ -115,6 +117,7 @@ public class CustomMainScene extends AnchorPane {
 			@Override
 			public void changed(ObservableValue<? extends Intern> observableValue, Intern oldValue, Intern newValue) {
 				String[] gridPaneLabelsList = new String[5];
+				selected = newValue;
 
 				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getFamilyName();
 				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getFirstName();
@@ -123,11 +126,11 @@ public class CustomMainScene extends AnchorPane {
 				gridPaneLabelsList[4] = newValue == null ? " " : newValue.getYearInString();
 
 				removeContentVbox.setGridPane(gridPaneLabelsList);
-				updateContentVbox.getGridPaneFamilyName().setPromptText(gridPaneLabelsList[0]);
-				updateContentVbox.getGridPaneFirstName().setPromptText(gridPaneLabelsList[1]);
-				updateContentVbox.getGridPaneCounty().setPromptText(gridPaneLabelsList[2]);
-				updateContentVbox.getGridPaneCursus().setPromptText(gridPaneLabelsList[3]);
-				updateContentVbox.getGridPaneYearIn().setPromptText(gridPaneLabelsList[4]);
+				updateContentVbox.getGridPaneFamilyName().setText(gridPaneLabelsList[0]);
+				updateContentVbox.getGridPaneFirstName().setText(gridPaneLabelsList[1]);
+				updateContentVbox.getGridPaneCounty().setText(gridPaneLabelsList[2]);
+				updateContentVbox.getGridPaneCursus().setText(gridPaneLabelsList[3]);
+				updateContentVbox.getGridPaneYearIn().setText(gridPaneLabelsList[4]);
 			}
 		});
 
@@ -260,8 +263,7 @@ public class CustomMainScene extends AnchorPane {
 				closeBtn.getBtnGreyImageView().setVisible(false);
 				closeBtn.getBtnOrangeImageView().setVisible(true);
 
-				closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
-						quitBtn);
+				closeMenu(menubarVBox);
 
 			}
 		});
@@ -320,7 +322,7 @@ public class CustomMainScene extends AnchorPane {
 			closeBtn.getBtnGreyImageView().setVisible(false);
 			closeBtn.getBtnOrangeImageView().setVisible(true);
 
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+			closeMenu(menubarVBox);
 
 		});
 
@@ -345,7 +347,7 @@ public class CustomMainScene extends AnchorPane {
 				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
 						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 				ArrayList<Intern> suppr = new ArrayList<Intern>();
-				this.observableInterns.setAll(test.sortView(0, suppr));
+				this.observableInterns.setAll(internDao.sortView(0, suppr));
 			} else {
 				addContentVbox.getLabelError().setVisible(true);
 			}
@@ -368,7 +370,7 @@ public class CustomMainScene extends AnchorPane {
 			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
 					Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 			ArrayList<Intern> suppr = new ArrayList<Intern>();
-			this.observableInterns.setAll(test.sortView(0, suppr));
+			this.observableInterns.setAll(internDao.sortView(0, suppr));
 
 		});
 
@@ -381,22 +383,28 @@ public class CustomMainScene extends AnchorPane {
 		/* UPDATE CONTENT : configuration des boutons annuler et valider */
 
 		// valider mise à jour
-//		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
-//		updateContentUpdateBtn.setOnAction(event -> {
-//			String[] data = grabInfos(updateContentVbox);
-//			InternDao dao = new InternDao();
-//			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
-//
-//			if (good[0] && good[1]) {
-//
-//				dao.update(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-//						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-//				ArrayList<Intern> suppr = new ArrayList<Intern>();
-//				this.observableInterns.setAll(test.sortView(0, suppr));
-//			} else {
-//				updateContentVbox.getLabelError().setVisible(true);
-//			}
-//		});
+		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
+		updateContentUpdateBtn.setOnAction(event -> {
+			Intern oldIntern = selected;
+			System.out.println(oldIntern);
+			String[] data = grabInfos(updateContentVbox);
+			InternDao dao = new InternDao();
+			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
+
+			if (good[0] && good[1]) {
+				
+				System.out.println( (new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])).toString()) );
+
+				dao.update(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])), oldIntern);
+				this.tableView.getSelectionModel().clearSelection();
+				refreshPane(updateContentVbox);
+				this.closeMenu(menubarVBox);
+			} else {
+				updateContentVbox.getLabelError().setVisible(true);
+			}
+		});
 
 		// Annuler button
 		Button updateContentCancelBtn = updateContentVbox.getLeftButton();
@@ -416,7 +424,7 @@ public class CustomMainScene extends AnchorPane {
 
 			closeBtn.getBtnGreyImageView().setVisible(false);
 			closeBtn.getBtnOrangeImageView().setVisible(true);
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+			closeMenu(menubarVBox);
 		});
 		
 		
@@ -431,7 +439,7 @@ public class CustomMainScene extends AnchorPane {
 
 			closeBtn.getBtnGreyImageView().setVisible(false);
 			closeBtn.getBtnOrangeImageView().setVisible(true);
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+			closeMenu(menubarVBox);
 		});
 		
 		
@@ -439,11 +447,11 @@ public class CustomMainScene extends AnchorPane {
 
 	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield
-		String familyName = Pane.getTextFamilyName();
-		String firstName = Pane.getTextFirstName();
-		String county = Pane.getTextCounty();
-		String cursus = Pane.getTextCursus();
-		String yearIn = Pane.getTextYearIn();
+		String familyName = Pane.getTextFamilyName().trim();
+		String firstName = Pane.getTextFirstName().trim();
+		String county = Pane.getTextCounty().trim();
+		String cursus = Pane.getTextCursus().trim();
+		String yearIn = Pane.getTextYearIn().trim();
 
 		String[] data = { familyName, firstName, county, cursus, yearIn };
 		return data;
@@ -515,9 +523,17 @@ public class CustomMainScene extends AnchorPane {
 
 	}
 
-	public void closeMenu(VBox menubarVBox, StackPaneMenubar closeBtn, StackPaneMenubar scopeBtn,
-			StackPaneMenubar addBtn, StackPaneMenubar removeBtn, StackPaneMenubar updateBtn, StackPaneMenubar printBtn,
-			StackPaneMenubar seeMemberBtn, StackPaneMenubar quitBtn) {
+	public void closeMenu(VBox menubarVBox) {
+		
+		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
+		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
+		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
+		StackPaneMenubar removeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(3);
+		StackPaneMenubar updateBtn = (StackPaneMenubar) menubarVBox.getChildren().get(4);
+		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(5);
+		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
+		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
+		
 // On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
@@ -540,6 +556,17 @@ public class CustomMainScene extends AnchorPane {
 		setLarger(printBtn);
 		setLarger(seeMemberBtn);
 		setLarger(quitBtn);
+		
+		System.out.println("Update incoming");
+		InternDao internDao = new InternDao();
+		System.out.println("Hello World 1");
+		ArrayList<Intern> suppr = new ArrayList<Intern>();
+		System.out.println("Hello World 2");
+		this.observableInterns.setAll();
+		System.out.println(this.observableInterns.size());
+		System.out.println("Hello World 3");
+		this.observableInterns.setAll(internDao.sortView(0, suppr));
+		System.out.println("Hello World 4");
 	}
 
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
@@ -702,11 +729,15 @@ public class CustomMainScene extends AnchorPane {
 				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(cursus).find()) {
 			filled = false;
 		}
-		int countyInt = Integer.parseInt(county);
-		int yearInInt = Integer.parseInt(yearIn);
-		if (countyInt > 0 && countyInt < 1000 && yearInInt > 1950 && yearInInt < 3000) {
+		if (Pattern.compile("[\\D]").matcher(county).find()
+				|| Pattern.compile("[\\D]").matcher(yearIn).find() ) {
 			areInteger = false;
 		}
+//		int countyInt = Integer.parseInt(county);
+//		int yearInInt = Integer.parseInt(yearIn);
+//		if (countyInt > 0 && countyInt < 1000 && yearInInt > 1950 && yearInInt < 3000) {
+//			areInteger = false;
+//		}
 		boolean[] tab = { filled, areInteger };
 		return tab;
 	}

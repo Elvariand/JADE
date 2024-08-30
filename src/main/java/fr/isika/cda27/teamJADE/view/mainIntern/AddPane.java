@@ -17,13 +17,6 @@ public class AddPane extends RepetitivePane {
 		this.titleLabel.setText("Ajout d'un stagiaire");
 
 
-		this.getGridPaneFamilyName().setText("Roy");
-		this.getGridPaneFirstName().setText("Alexia");
-		this.getGridPaneCounty().setText("31");
-		this.getGridPaneCursus().setText("cda 27");
-		this.getGridPaneYearIn().setText("2024");
-
-
 		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 
 		this.leftButton.setText("Annuler");
@@ -31,7 +24,7 @@ public class AddPane extends RepetitivePane {
 		this.rightButton.setText("Ajouter");
 
 		
-		this.labelError = new Label("Veuilez entrer tous les champs avant d'ajouter le stagiaire");
+		this.labelError = new Label("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
 		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		this.labelError.setFont(Font.font("Krona One", 14));
 		this.labelError.setStyle("-fx-alignment: center;");
