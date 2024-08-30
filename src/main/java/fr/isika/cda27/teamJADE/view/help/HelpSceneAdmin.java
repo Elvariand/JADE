@@ -8,6 +8,7 @@ import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.HelpTextValues.*;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
@@ -16,9 +17,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -54,6 +61,7 @@ public class HelpSceneAdmin extends AnchorPane {
 		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneAjoutStagiaire, paneSuppressionStagiaire, paneModificationStagiaire, paneMembres,
 		paneImpression, paneDeconnexion);
 //    	accordionHelp.setStyle("-fx-padding:10px;"); 
+
 
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
 		bienvenue.setStyle(

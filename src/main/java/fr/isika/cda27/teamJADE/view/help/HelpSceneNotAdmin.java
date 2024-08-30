@@ -17,9 +17,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -54,8 +60,15 @@ public class HelpSceneNotAdmin extends AnchorPane {
 				paneImpression, paneDeconnexion);
     	accordionHelp.setMinSize(fixedWidth, fixedHeight); 
     	accordionHelp.setPrefSize(fixedWidth, fixedHeight); 
-    	accordionHelp.setMaxSize(fixedWidth, fixedHeight); 
-		
+    	accordionHelp.setMaxSize(fixedWidth, fixedHeight);
+    	
+    	CustomPaneHelp[] accordionPanes = {paneIntroduction, paneRecherche, paneAjoutStagiaire, paneMembres,
+				paneImpression, paneDeconnexion};
+
+		for (int i = 0; i < accordionPanes.length; i++) {
+			accordionPanes[i].setBorder(new Border(new BorderStroke(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(10, 0, 10, 0)) ) );
+			accordionPanes[i].setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 16px; -fx-text-fill : #FFFFFF; -fx-background-color: #454443; -fx-padding: 10px; -fx-background-radius: 13px; -fx-margin: 20px");
+		}	
 
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
 		bienvenue.setStyle(
