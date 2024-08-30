@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.mainIntern;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.BTN_BOX_HEIGHT;

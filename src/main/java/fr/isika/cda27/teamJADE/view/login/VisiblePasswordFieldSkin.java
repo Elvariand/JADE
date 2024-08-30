@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.login;
 
 
 import javafx.geometry.HPos;

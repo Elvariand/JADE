@@ -1,5 +1,6 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.mainIntern;
 
+import fr.isika.cda27.teamJADE.view.login.CustomLoginScene;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;

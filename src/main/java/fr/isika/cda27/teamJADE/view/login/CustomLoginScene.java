@@ -1,8 +1,9 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.login;
 
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
+import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;

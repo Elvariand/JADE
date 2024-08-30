@@ -1,15 +1,16 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.mainIntern;
 
-public class SeeMembersPane extends RepetitivePane {
+public class ScopePane extends RepetitivePane {
 
-	public SeeMembersPane() {
+	public ScopePane() {
 		super();
-
+		
 		this.titleLabel.setText("Recherche avancée");
 
 		this.leftButton.setText("Réinitialiser");
 
 		this.rightButton.setText("Rechercher");
+
 	}
 
 }

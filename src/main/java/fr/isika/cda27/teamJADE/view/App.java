@@ -6,6 +6,7 @@ import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
+import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;

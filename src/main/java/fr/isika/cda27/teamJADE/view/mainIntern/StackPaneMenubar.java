@@ -1,16 +1,24 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.mainIntern;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.SVGPath;
+import javafx.scene.text.Font;
 import javafx.util.Duration;
 
-public class StackPaneMenubar3 extends StackPane {
+public class StackPaneMenubar extends StackPane {
 	private StackPane btnStackPane;
 	private SVGPath smallSvgPath;
 	private SVGPath largeSvgPath;
@@ -25,38 +33,43 @@ public class StackPaneMenubar3 extends StackPane {
 	private boolean visibility = true;
 	private Tooltip tooltip;
 	private String tooltipText;
+	private HBox btnContainer;
+	private Label label;
 	private HBox hbox;
-
+	private VBox leftSubcontainer;
+	private VBox rightSubcontainer;
+	private HBox container;
 
 	// Pour le bouton déconnexion
-	public StackPaneMenubar3(String orangeFile, String greyFile, String tooltipText, String svgSmallPath, String svgLargePath) {
-		this(orangeFile, greyFile, tooltipText, svgSmallPath, svgLargePath, 46);
+	public StackPaneMenubar(String orangeFile, String greyFile, String tooltipText, String svgSmallPath, String svgLargePath) {
+		this(orangeFile, greyFile, tooltipText, svgSmallPath, svgLargePath, 46, 300);
 	}
 	
 	// Pour les boutons classiques
-	public StackPaneMenubar3(String orangeFile, String greyFile, String tooltipText) {
-		this(orangeFile, greyFile, tooltipText, "M0,0 H100 V87 H0 Z", "M0,0 H300 V87 H0 Z", 46);
+	public StackPaneMenubar(String orangeFile, String greyFile, String tooltipText) {
+		this(orangeFile, greyFile, tooltipText, "M0,0 H100 V87 H0 Z", "M0,0 H300 V87 H0 Z", 46, 300);
 	}
 	
 	// pour la croix / fleche
-		public StackPaneMenubar3(String greyFile, String orangeFile, String svgSmallPath, int imgSize) {
-			this(orangeFile, greyFile, "fleche", svgSmallPath, "none", imgSize);
+		public StackPaneMenubar(String greyFile, String orangeFile, String svgSmallPath, int imgSize) {
+			this(orangeFile, greyFile, "fleche", svgSmallPath, "none", imgSize, 100);
 		}
 		
 	// Constructeur complet
-	public StackPaneMenubar3(String orangeFile, String greyFile, String tooltipText, String svgSmallPath,
-			String svgLargePath, int imgSize) {
+	public StackPaneMenubar(String orangeFile, String greyFile, String tooltipText, String svgSmallPath,
+			String svgLargePath, int imgSize, int btnWidth) {
 		this.tooltipText = tooltipText;
-		this.btnWidth = 100;
+		this.btnWidth = btnWidth;
 		this.btnHeight = 87;
 		this.imgSize = imgSize;
 		this.orangeFile = orangeFile;
 		this.greyFile = greyFile;
-
+		
 		this.smallSvgPath = new SVGPath();
 		smallSvgPath.setContent(svgSmallPath);
 		smallSvgPath.setFill(Color.web("#DD734C"));
-		smallSvgPath.setVisible(false);
+//		smallSvgPath.setVisible(false);
+
 
 		this.button = new Button();
 		button.setPrefSize(btnWidth, btnHeight);
@@ -78,7 +91,7 @@ public class StackPaneMenubar3 extends StackPane {
 		this.btnOrangeImageView = new ImageView(new Image("file:src/main/resources/img/" + orangeFile));
 		btnOrangeImageView.setFitWidth(imgSize);
 		btnOrangeImageView.setFitHeight(imgSize);
-		if (!tooltipText.equals("fleche")) btnOrangeImageView.setVisible(true);
+		if (!tooltipText.equals("fleche")) btnOrangeImageView.setVisible(false);
 
 		// Sert à la croix
 		this.btnGreyImageView = new ImageView(new Image("file:src/main/resources/img/" + greyFile));
@@ -86,22 +99,40 @@ public class StackPaneMenubar3 extends StackPane {
 		btnGreyImageView.setFitHeight(imgSize);
 
 		if (tooltipText.equals("fleche")) {
-			btnGreyImageView.setVisible(true); 
+			btnGreyImageView.setVisible(false); 
 			btnStackPane.getChildren().addAll(smallSvgPath, btnOrangeImageView, btnGreyImageView);
-//			this.setTranslateX(-100);
+			this.setTranslateX(100);
 			this.getChildren().addAll(btnStackPane, button);
 			return;
 		}
-		
 		btnStackPane.getChildren().addAll(btnOrangeImageView, btnGreyImageView);
 
+		
 
-		// on translate
-//		largeSvgPath.setTranslateX(-100);
-//		button.setTranslateX(-100);
-//		this.setTranslateX(-100);
 
-		this.getChildren().addAll(largeSvgPath, smallSvgPath, button);
+		this.label = new Label("     " + this.tooltipText);
+
+		label.setFont(Font.font("Krona One", 18));
+
+		this.btnContainer = new HBox();
+		btnContainer.setAlignment(Pos.CENTER);
+		// 2VBox dans la HBox
+//		btnContainer.setStyle("-fx-border-color: red;");
+		this.rightSubcontainer = new VBox();
+		rightSubcontainer.setPrefWidth(100);
+		rightSubcontainer.setAlignment(Pos.CENTER);
+		
+		this.leftSubcontainer = new VBox();
+		leftSubcontainer.setPrefWidth(200);
+		leftSubcontainer.setAlignment(Pos.CENTER_LEFT);
+		
+		rightSubcontainer.getChildren().add(btnStackPane);
+		leftSubcontainer.getChildren().add(label);
+		
+		btnContainer.getChildren().addAll(leftSubcontainer,rightSubcontainer);
+
+
+		this.getChildren().addAll(largeSvgPath , btnContainer, button);
 	}
 
 
@@ -130,6 +161,7 @@ public class StackPaneMenubar3 extends StackPane {
 	 * @param text the text to set
 	 */
 	public void setText(String text) {
+
 		this.tooltipText = text;
 	}
 
@@ -288,6 +320,13 @@ public class StackPaneMenubar3 extends StackPane {
 	}
 
 	/**
+	 * @return the gridPane
+	 */
+	public HBox getBtnContainer() {
+		return btnContainer;
+	}
+
+	/**
 	 * @return the hbox
 	 */
 	public HBox getHbox() {
@@ -301,6 +340,12 @@ public class StackPaneMenubar3 extends StackPane {
 		this.hbox = hbox;
 	}
 
+	/**
+	 * @param gridPane the gridPane to set
+	 */
+	public void setBtnContainer(HBox btnContainer) {
+		this.btnContainer = btnContainer;
+	}
 
 	/**
 	 * @return the visibility
@@ -316,4 +361,49 @@ public class StackPaneMenubar3 extends StackPane {
 		this.visibility = visibility;
 	}
 
+	/**
+	 * @return the label
+	 */
+	public Label getLabel() {
+		return label;
+	}
+
+
+	/**
+	 * @param label the label to set
+	 */
+	public void setLabel(Label label) {
+		this.label = label;
+	}
+
+	public VBox getLeftSubcontainer() {
+		return leftSubcontainer;
+	}
+
+	public VBox getRightSubcontainer() {
+		return rightSubcontainer;
+	}
+	
+//	private HBox createMenuBtnContainer() {
+//
+//		this.container = new HBox();
+//		container.setStyle("-fx-border-color: red;");
+//		container.setAlignment(Pos.CENTER);
+//		// 2VBox dans la HBox
+//	
+//		this.rightSubcontainer = new VBox();
+//		rightSubcontainer.setPrefWidth(100);
+//		rightSubcontainer.setAlignment(Pos.CENTER);
+//		
+//		this.leftSubcontainer = new VBox();
+//		leftSubcontainer.setPrefWidth(200);
+//		leftSubcontainer.setAlignment(Pos.CENTER_LEFT);
+//		
+//		rightSubcontainer.getChildren().add(btnStackPane);
+//		leftSubcontainer.getChildren().add(label);
+//		
+//		container.getChildren().addAll(leftSubcontainer,rightSubcontainer);
+//
+//		return container;
+//	}
 }

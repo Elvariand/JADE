@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.view;
+package fr.isika.cda27.teamJADE.view.help;
 
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
