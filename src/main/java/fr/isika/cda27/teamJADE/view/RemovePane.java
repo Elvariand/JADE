@@ -89,6 +89,29 @@ public class RemovePane extends RepetitivePane {
 
 	}
 
+	public String getTextFamilyName() {
+		return ((Label) gridPane.getChildren().get(1)).getText();
+		
+	}
+
+	public String getTextFirstName() {
+		return ((Label) gridPane.getChildren().get(3)).getText();
+		
+	}
+
+	public String getTextCounty() {
+		return ((Label) gridPane.getChildren().get(5)).getText();
+		
+	}
+
+	public String getTextCursus() {
+		return ((Label) gridPane.getChildren().get(7)).getText();
+		
+	}
+
+	public String getTextYearIn() {
+		return ((Label) gridPane.getChildren().get(9)).getText();
+	}
 	public GridPane createFormGridPane(String[] gridPaneLabelsList) {
 
 		// GridPane

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
+
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import javafx.animation.FadeTransition;
@@ -22,13 +24,14 @@ import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
-
 import javafx.scene.Scene;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
@@ -48,7 +51,7 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomMainScene extends AnchorPane {
-	
+
 	private ArrayList<Intern> list;
 	private ObservableList<Intern> observableInterns;
 	private FilteredList<Intern> filteredInterns;
@@ -65,43 +68,28 @@ public class CustomMainScene extends AnchorPane {
 		StackPane bgStackPane = new StackPane();
 		bgStackPane.setPrefSize(1280, 720);
 		bgStackPane.setStyle("-fx-background-color: #272727;");
-		
-		
-		StackPaneHelp stackPaneHelp = new StackPaneHelp ("help.png", "help_hover.png"); 
-		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT); 
+
+		StackPaneHelp stackPaneHelp = new StackPaneHelp("help.png", "help_hover.png");
+		StackPane.setAlignment(stackPaneHelp, Pos.TOP_RIGHT);
 
 		stackPaneHelp.setMaxSize(75, 75);
 
-		
-		
-
 		stackPaneHelp.getButton().setOnAction(event -> {
-			Stage stage = ((Stage)CustomMainScene.this.getScene().getWindow());
-			Scene scene = new Scene(new HelpScene()); 
+			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
+			Scene scene = new Scene(new HelpScene());
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
-		}); 
-		
+		});
 
 		// TableView
 		// données d'exemple
 		InternDao test = new InternDao();
 		this.list = new ArrayList<Intern>();
 		this.list = test.sortView(0, list);
-//		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2008));
-//		list.add(new Intern("LACROIX", "Pascale", 91, "BOBI 5", 2009));
-//		list.add(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
-//		list.add(new Intern("GARIJO", "Rosie", 75, "AI 79", 2011));
-//		list.add(new Intern("POTIN", "Thomas", 75, "ATOD 21", 2014));
-//		list.add(new Intern("AUGEREAU", "Kévin", 76, "AI 78", 2010));
-//		list.add(new Intern("UNG", "Jet-Ming", 75, "ATOD 16 CP", 2012));
-//		list.add(new Intern("ROIGNANT", "Pierre-Yves", 75, "Al", 2015));
-//		list.add(new Intern("CHONE", "Martin", 92, "ATOD 24 CP", 2015));
 
 		this.observableInterns = FXCollections.observableArrayList(this.list);
 		this.filteredInterns = new FilteredList<>(this.observableInterns, p -> true);
 		this.tableView = createTableView(this.filteredInterns);
-		
 
 		// HBox du menu
 		HBox menuHbox = new HBox();
@@ -111,7 +99,6 @@ public class CustomMainScene extends AnchorPane {
 		menuHbox.setEffect(DROP_SHADOW);
 		menuHbox.setTranslateX(TOX_SMALL_MENU);
 
-		
 		// VBox avec les contenu pringipaux à gauche du menu
 		ScopePane scopeContentVbox = new ScopePane();
 
@@ -127,14 +114,20 @@ public class CustomMainScene extends AnchorPane {
 			@Override
 			public void changed(ObservableValue<? extends Intern> observableValue, Intern oldValue, Intern newValue) {
 				String[] gridPaneLabelsList = new String[5];
+				
 
-				gridPaneLabelsList[0] = newValue.getFamilyName();
-				gridPaneLabelsList[1] = newValue.getFirstName();
-				gridPaneLabelsList[2] = newValue.getCountyString();
-				gridPaneLabelsList[3] = newValue.getCursus();
-				gridPaneLabelsList[4] = newValue.getYearInString();
+				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getFamilyName();
+				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getFirstName();
+				gridPaneLabelsList[2] = newValue == null ? " " : newValue.getCountyString();
+				gridPaneLabelsList[3] = newValue == null ? " " : newValue.getCursus();
+				gridPaneLabelsList[4] = newValue == null ? " " : newValue.getYearInString();
 
 				removeContentVbox.setGridPane(gridPaneLabelsList);
+				updateContentVbox.getGridPaneFamilyName().setPromptText(gridPaneLabelsList[0]);
+				updateContentVbox.getGridPaneFirstName().setPromptText(gridPaneLabelsList[1]);
+				updateContentVbox.getGridPaneCounty().setPromptText(gridPaneLabelsList[2]);
+				updateContentVbox.getGridPaneCursus().setPromptText(gridPaneLabelsList[3]);
+				updateContentVbox.getGridPaneYearIn().setPromptText(gridPaneLabelsList[4]);
 			}
 		});
 
@@ -147,7 +140,6 @@ public class CustomMainScene extends AnchorPane {
 		// On crée la croix du haut
 
 		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
-
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
@@ -162,9 +154,8 @@ public class CustomMainScene extends AnchorPane {
 				"Membres");
 
 		// On crée le bouton quitter
-		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion", SMALL_PATH_BOT,
-				LARGE_PATH_BOT);
-
+		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
+				SMALL_PATH_BOT, LARGE_PATH_BOT);
 
 		// On ajoute la croix (invisible pour le moment)
 		menubarVBox.getChildren().add(closeBtn);
@@ -172,7 +163,6 @@ public class CustomMainScene extends AnchorPane {
 		menubarVBox.getChildren().addAll(scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn);
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
-
 
 		// On ajoute le contenu de gauche et de droite a la HBox du menu
 		menuHbox.getChildren().addAll(scopeContentVbox, menubarVBox);
@@ -188,7 +178,6 @@ public class CustomMainScene extends AnchorPane {
 		/* BOUTONS ACCTIONS */
 
 		TranslateTransition moveTransition = new TranslateTransition();
-
 
 		/*
 		 * On configure les listes de boutons (qui sont des StackPaneMenubar) dans
@@ -292,8 +281,8 @@ public class CustomMainScene extends AnchorPane {
 		/* SCOPE CONTENT : configuration des boutons search et refresh */
 
 		// Search button
-		Button searchBtn = scopeContentVbox.getRightButton();
-		searchBtn.setOnAction(event -> {
+		Button scopeContentValidateBtn = scopeContentVbox.getRightButton();
+		scopeContentValidateBtn.setOnAction(event -> {
 			// on récupère tous les textfield
 			String[] data = grabInfos(scopeContentVbox);
 			String familyNameFilter = data[0];
@@ -301,7 +290,6 @@ public class CustomMainScene extends AnchorPane {
 			String countyFilter = data[2];
 			String cursusFilter = data[3];
 			String yearInFilter = data[4];
-
 
 			// on filtre la liste de la TableView en fonction
 			filteredInterns.setPredicate(intern -> {
@@ -322,9 +310,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (countyFilter != null) {
-
 					filters = filters && intern.getCountyString().toUpperCase().contains(countyFilter.toUpperCase());
-
 				}
 
 				if (cursusFilter != null) {
@@ -332,9 +318,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (yearInFilter != null) {
-
 					filters = filters && intern.getYearInString().toUpperCase().contains(yearInFilter.toUpperCase());
-
 				}
 
 				return filters;
@@ -364,12 +348,11 @@ public class CustomMainScene extends AnchorPane {
 			setLarger(seeMemberBtn);
 			setLarger(quitBtn);
 
-
 		});
 
 		// Refresh button
-		Button refreshBtn = scopeContentVbox.getLeftButton();
-		refreshBtn.setOnAction(event -> {
+		Button scopeContentCancelBtn = scopeContentVbox.getLeftButton();
+		scopeContentCancelBtn.setOnAction(event -> {
 			refreshPane(scopeContentVbox);
 		});
 
@@ -380,50 +363,82 @@ public class CustomMainScene extends AnchorPane {
 		addContentAddBtn.setOnAction(event -> {
 			String[] data = grabInfos(addContentVbox);
 			InternDao dao = new InternDao();
-			dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1), Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-			ArrayList<Intern> suppr = new ArrayList<Intern>();
-			this.observableInterns.setAll(test.sortView(0, suppr));
+			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
+
+			if (good[0] && good[1]) {
+
+				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+				ArrayList<Intern> suppr = new ArrayList<Intern>();
+				this.observableInterns.setAll(test.sortView(0, suppr));
+			} else {
+				addContentVbox.getLabelError().setVisible(true);
+			}
 
 		});
-		
+
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
 		});
-		
+
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
-		
+
 		// valider suppression
 		Button removeContentValidateBtn = removeContentVbox.getRightButton();
 		removeContentValidateBtn.setOnAction(event -> {
 			String[] data = grabInfos(removeContentVbox);
 			InternDao dao = new InternDao();
-			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1), Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+					Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 			ArrayList<Intern> suppr = new ArrayList<Intern>();
 			this.observableInterns.setAll(test.sortView(0, suppr));
 		});
+
+		// Annuler button
+		Button removeContentCancelBtn = removeContentVbox.getLeftButton();
+		removeContentCancelBtn.setOnAction(event -> {
+			this.tableView.getSelectionModel().clearSelection();
+		});
+		
+		/* UPDATE CONTENT : configuration des boutons annuler et valider */
+		
+		// valider mise à jour
+//		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
+//		updateContentUpdateBtn.setOnAction(event -> {
+//			String[] data = grabInfos(updateContentVbox);
+//			InternDao dao = new InternDao();
+//			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
+//
+//			if (good[0] && good[1]) {
+//
+//				dao.update(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+//						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+//				ArrayList<Intern> suppr = new ArrayList<Intern>();
+//				this.observableInterns.setAll(test.sortView(0, suppr));
+//			} else {
+//				updateContentVbox.getLabelError().setVisible(true);
+//			}
+//		});
 		
 		// Annuler button
-		Button removecontentCancelBtn = removeContentVbox.getLeftButton();
-		removecontentCancelBtn.setOnAction(event -> {
-			refresh(removeContentVbox.getGridPaneFamilyName());
-			refresh(removeContentVbox.getGridPaneFirstName());
-			refresh(removeContentVbox.getGridPaneCounty());
-			refresh(removeContentVbox.getGridPaneCursus());
-			refresh(removeContentVbox.getGridPaneYearIn());
+		Button updateContentCancelBtn = updateContentVbox.getLeftButton();
+		updateContentCancelBtn.setOnAction(event -> {
+			this.tableView.getSelectionModel().clearSelection();
+			refreshPane(updateContentVbox);
 		});
 	}
-	
-		
-	private String[] grabInfos(RepetitivePane scene) {
+
+
+	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield
-		String familyName = scene.getTextFamilyName();
-		String firstName = scene.getTextFirstName();
-		String county = scene.getTextCounty();
-		String cursus = scene.getTextCursus();
-		String yearIn = scene.getTextYearIn();
-		String[] data = {familyName, firstName, county, cursus, yearIn};
+		String familyName = Pane.getTextFamilyName();
+		String firstName = Pane.getTextFirstName();
+		String county = Pane.getTextCounty();
+		String cursus = Pane.getTextCursus();
+		String yearIn = Pane.getTextYearIn();
+		String[] data = { familyName, firstName, county, cursus, yearIn };
 		return data;
 	}
 
@@ -434,17 +449,22 @@ public class CustomMainScene extends AnchorPane {
 		refresh(pane.getGridPaneCursus());
 		refresh(pane.getGridPaneYearIn());
 	}
+
 	private void refresh(TextField textField) {
 		textField.setText("");
 	}
 
-	public void configureButtonAction(StackPaneMenubar buttonClicked, VBox mainContentToShow, HBox menuHbox,
+	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
 			List<StackPaneMenubar> otherButtons) {
 
 		buttonClicked.getButton().setOnAction(event -> {
 
 			// On remplace le contenu de la HBox
 			menuHbox.getChildren().set(0, mainContentToShow);
+			
+			// On rend les boutons du contenu en bouton par défaut (ceux qui réagissent quand one appuie sur Entrée et échap)
+			mainContentToShow.getLeftButton().setCancelButton(true);
+			mainContentToShow.getRightButton().setDefaultButton(true);
 
 			TranslateTransition moveTransition = new TranslateTransition(Duration.millis(500), menuHbox);
 			moveTransition.setToX(TOX_LARGE_MENU);
@@ -479,8 +499,6 @@ public class CustomMainScene extends AnchorPane {
 		addHoverEffect(buttonClicked);
 
 	}
-
-
 
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
 		// on change la taille du bouton à 100
@@ -627,6 +645,39 @@ public class CustomMainScene extends AnchorPane {
 				new KeyFrame(Duration.millis(500), new KeyValue(svgPath.fillProperty(), finalColor)));
 		timeline.play();
 	}
+
+	private boolean[] areAllFieldsCorrectlyFilled(RepetitivePane scene) {
+		boolean filled = true;
+		boolean areInteger = true;
+
+		String familyName = scene.getTextFamilyName().trim();
+		String firstName = scene.getTextFirstName().trim();
+		String county = scene.getTextCounty().trim();
+		String cursus = scene.getTextCursus().trim();
+		String yearIn = scene.getTextYearIn().trim();
+
+		if (familyName.length() == 0 || firstName.length() == 0 || cursus.length() == 0 || county.length() == 0
+				|| yearIn.length() == 0) {
+			filled = false;
+			boolean[] tab = { filled, areInteger };
+			return tab;
+		}
+
+		if (Pattern.compile("[^(\\p{L}-\\s)]").matcher(familyName).find()
+				|| Pattern.compile("[^(\\p{L}-\\s)]").matcher(firstName).find()
+				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(cursus).find()) {
+			filled = false;
+		}
+		int countyInt = Integer.parseInt(county);
+		int yearInInt = Integer.parseInt(yearIn);
+		if (countyInt > 0 && countyInt < 1000 && yearInInt > 1950 && yearInInt < 3000) {
+			areInteger = false;
+		}
+		boolean[] tab = { filled, areInteger };
+		return tab;
+	}
+	
+
 
 	private String getCurrentColor(SVGPath svgPath) {
 		// couleur actuelle de remplissage de l'SVGPath
