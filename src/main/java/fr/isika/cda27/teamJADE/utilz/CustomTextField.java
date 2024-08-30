@@ -5,6 +5,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.effect.InnerShadow;
+import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -16,55 +17,62 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomTextField extends TextField {
 
-	private TextField textField;
 	private InnerShadow innerShadow;
-//	private final int maxChars = 30; 
+	private int MaxChars = 30;
+	private HBox hboxError; 
+
+
 	/**
 	 * @param textField
 	 * @param innerShadow
 	 */
 	public CustomTextField() {
+		super();
 		this.setPrefHeight(TF_HEIGHT);
 
 		this.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent;");
-		this.setFont(Font.font("Krona One", 18));
+		this.setFont(Font.font("Krona One", 16));
 
 		this.setEffect(INNER_SHADOW_BLACK);
-		
-		Label labelError = new Label("Le nombre de caractère autorisé est dépassé");
-		labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
-		labelError.setFont(Font.font("Krona One", 14));
-		labelError.setStyle("-fx-alignment: center;");
-		labelError.setTextFill(GREY_COLOR);
-		labelError.setVisible(false);
-		
-//		this.textField.textProperty().addListener(new ChangeListener<String>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-//				if (newValue.length()> maxChars) {
-//					textField.setText(newValue.substring(0, maxChars));
-//						}
-//				
-//			}
-//			
-//		}); 
-		labelError.setVisible(true);
+
+		// L'utilisateur ne peut pas saisir plus de 30 caractères
+		this.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue.length() > MaxChars) {
+					setText(newValue.substring(0, MaxChars));
+					if (hboxError != null) {
+							hboxError.setVisible(true); 
+					}
+				}
+			}
+
+		});
+
 	}
 
-	/**
-	 * @return the textField
-	 */
-	public TextField getTextField() {
-		return textField;
+
+
+	public int getMaxChars() {
+		return MaxChars;
 	}
 
-	/**
-	 * @param textField the textField to set
-	 */
-	public void setTextField(TextField textField) {
-		this.textField = textField;
+
+
+	public void setMaxChars(int maxChars) {
+		MaxChars = maxChars;
+	}
+
+
+
+	public HBox getHboxError() {
+		return hboxError;
+	}
+
+	public void setHboxError(HBox hboxError) {
+		this.hboxError = hboxError;
 	}
 
 	/**
@@ -81,5 +89,4 @@ public class CustomTextField extends TextField {
 		this.innerShadow = innerShadow;
 		this.setEffect(innerShadow);
 	}
-
 }

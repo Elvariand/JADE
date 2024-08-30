@@ -33,9 +33,7 @@ public class Intern {
 		this.cursus = cursus;
 		this.yearIn = yearIn;
 	}
-
-	
-	
+		
 	/**
 	 * @return the familyName
 	 */

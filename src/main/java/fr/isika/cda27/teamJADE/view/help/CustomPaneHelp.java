@@ -20,7 +20,7 @@ public class CustomPaneHelp extends TitledPane {
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
 		this.paneTitle = paneTitle; 
-		this.paneText =paneText; 
+		this.paneText = paneText; 
 		
 		
 		this.setText(paneTitle); 
@@ -33,11 +33,12 @@ public class CustomPaneHelp extends TitledPane {
 	            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 	                // Ajuster la hauteur du TextArea en fonction de son contenu
 	                textArea.setPrefHeight(calculateTextAreaHeight(textArea));
+	                
 	            }
 	        });
 		
 		this.setContent(textArea); 
-				this.getContent().setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 12px; -fx-text-fill : #272727; -fx-background-color: #DD734C; -fx-control-inner-background:#DD734C; -fx-padding: 10px; -fx-background-radius: 13px;");
+		this.getContent().setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 12px; -fx-text-fill : #272727; -fx-background-color: #DD734C; -fx-control-inner-background:#DD734C; -fx-padding: 10px; -fx-background-radius: 13px;");
 		
 
 	}

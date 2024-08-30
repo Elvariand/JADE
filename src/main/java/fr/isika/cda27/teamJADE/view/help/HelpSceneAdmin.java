@@ -52,7 +52,7 @@ public class HelpSceneAdmin extends AnchorPane {
 		// On crée l'accordeon 
 		Accordion accordionHelp = new Accordion();
 		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneAjoutStagiaire, paneSuppressionStagiaire, paneModificationStagiaire, paneMembres,
-				paneImpression, paneDeconnexion);
+		paneImpression, paneDeconnexion);
 //    	accordionHelp.setStyle("-fx-padding:10px;"); 
 
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
@@ -67,8 +67,9 @@ public class HelpSceneAdmin extends AnchorPane {
 		btnRetourHelp.setStyle(
 				"-fx-background-color: #DD734C; -fx-background-radius: 13; fx-text-fill : '#272727'; -fx-font-family : 'Krona One'; -fx-font-size : 18px;");
 		btnRetourHelp.setEffect(INNER_SHADOW_WHITE);
-		hboxBtnRetourHelp.getChildren().add(btnRetourHelp);
 		hboxBtnRetourHelp.setAlignment(Pos.BOTTOM_RIGHT);
+		hboxBtnRetourHelp.getChildren().add(btnRetourHelp);
+	
 
 			// Hover Effect sur le bouton Retour
 		btnRetourHelp.setOnMouseEntered(e -> btnRetourHelp.setStyle(

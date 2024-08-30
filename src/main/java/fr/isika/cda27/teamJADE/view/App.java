@@ -49,10 +49,12 @@ public class App extends Application {
 	@Override
 	public void start(Stage stage) {
 
-		// mainscene
+	
+
 //		CustomLoginScene root = new CustomLoginScene();
 		CustomMainScene root = new CustomMainScene();
 //		MembersMainScene root = new MembersMainScene();
+
 
 		// scene
 		Scene scene = new Scene(root);
@@ -65,10 +67,6 @@ public class App extends Application {
 		stage.getIcons().add(icon);
 		stage.setTitle("Annuaire d'ISIKA");
 		stage.show();
-
-//    	Intern intern1 = new Intern ("JACQUIER", "Delphine", "73", "CDA 27", "2024"); 
-//    	Intern intern2 = new Intern ("ROY", "Alexia", "31", "CDA 27", "2024"); 
-//    	Intern intern3 = new Intern ("REVILLARD", "Jason", "60", "CDA 27", "2024"); 
 
 	}
 

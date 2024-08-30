@@ -14,7 +14,7 @@ import fr.isika.cda27.teamJADE.view.App;
 public class MemberDao extends TreeNodeDao<Member>{
 
 	/**
-	 * @param internToAdd L'objet de type Intern à ajouter à la fin du fichier
+	 * @param memberToAdd Le premier objet de type Member à ajouter 
 	 */
 	public void addFirstMember() {
 
@@ -43,7 +43,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 	/**
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
-	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
+	 * @return Retourne un objet de type Member stocké à la position du curseur dans
 	 *         le fichier binaire.
 	 */
 	protected Member readObjectFromBinary(long cursorPosition) {
@@ -60,7 +60,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
 
-			// On lit tous les caractères du pseudo du Membre incluant les
+			// On lit tous les caractères du pseudonyme du Membre incluant les
 			// espaces supplémentaires
 			for (int i = 0; i < MAX_CHAR_ALIAS; i++) {
 				alias += raf.readChar();

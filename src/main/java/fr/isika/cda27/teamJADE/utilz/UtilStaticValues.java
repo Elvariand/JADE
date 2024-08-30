@@ -244,11 +244,13 @@ public static class HelpTextValues {
 				+                 		"	2/ Pour accéder à la page de suppression, cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un '-') situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies" + "\n"
 				+                 		"	3/ Après avoir vérifier qu'il s'agit du bon stagiaire à supprimer, cliquez sur le bouton 'Oui' ou annulez la suppression en appuyant sur le bouton 'Non'."; 
 		public static final String MEMBRES = "Espace Membres"; 
-		public static final String MEMBRES_TEXT = "L'espace membre est permet de voir XXXX. Pour modifier XXX. Pour ajouter un membres, pour supprimer un membre."; 
+		public static final String MEMBRES_TEXT = "L'espace membre permet d'afficher la liste des membres ainsi que les informations associées, à savoir le nom, prénom, pseudonyme, adresse mail et le statut conférant des droits d'accès différents. "
+				+ "Pour ajouter un membre, cliquez sur l'icône 'Ajouter' (représenté par un membre avec un +) puis complétez tous les champs du du formulaire d'ajout. Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n" +
+				"Pour supprimer un membre, "; 
 		public static final String IMPRESSION = "Impression"; 
-		public static final String IMPRESSION_TEXT = "Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé en bas à gauche dans la barre du menu."+ "\n"  
+		public static final String IMPRESSION_TEXT = "Il faut d'abord imprimer Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé dans la barre du menu à gauche de l'écran"+ "\n"  
 				+               		"OPTIONS D'IMPRESSION" + "\n" 
-				+               		"Il possible d'exporter la liste des stagiaires en format PDF avant impression."; 
+				+               		"."; 
 		public static final String DECONNEXION = "Déconnexion"; 
 		public static final String DECONNEXION_TEXT="Lorsque vous avez terminez d'utiliser l'annuaire, il est nécessaire de se déconnecter en cliquant sur l'icone'Déconnecter'(représentée par un bouton éteindre). Vous serez alors rediriger vers la page de connexion. Il vous faudra de nouveau saisir votre nom d'utilisateur et mot de passe pour accéder à l'annuaire."; 
 		

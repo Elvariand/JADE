@@ -47,23 +47,25 @@ public class CustomLoginScene extends AnchorPane {
 		fondConnexion.setFitHeight(720);
 		fondConnexion.setPreserveRatio(true);
 
-		// Création VBoxRight
+		// Création VBoxRight qui contient l'image de fond et la Vbox de droite
 		VBox vboxRight = new VBox();
-		vboxRight.setPadding(new Insets(40, 40, 10, 20));
-		vboxRight.setSpacing(60);
+		vboxRight.setPadding(new Insets(40, 0, 10, 20));
+		vboxRight.setSpacing(40);
+		vboxRight.setMaxWidth(600);
+		vboxRight.setMaxHeight(720);
 
 		Label labelConnexion = new Label("Connexion");
 		labelConnexion.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 64px; -fx-text-fill :#272727; ");
 		labelConnexion.setAlignment(Pos.CENTER);
 
-		// Création HBox Invalide - Conditionnel
+		// Création HBox Authentification Invalide - Conditionnel
 		HBox hboxInvalide = new HBox(15);
 		ImageView imageInvalide = new ImageView(new Image("file:src/main/resources/img/logoAttention.png"));
 		imageInvalide.setFitHeight(40);
 		imageInvalide.setFitWidth(40);
 		imageInvalide.setPreserveRatio(true);
 		Label labelInvalide = new Label("Nom d'utilisateur ou mot de passe invalide");
-		labelInvalide.setStyle("-fx-font-family : 'Krona One'; " + "-fx-font-size:18px; " + "-fx-text-fill :#272727; ");
+		labelInvalide.setStyle("-fx-font-family : 'Krona One'; " + "-fx-font-size:16px; " + "-fx-text-fill :#272727; ");
 		hboxInvalide.getChildren().addAll(imageInvalide, labelInvalide);
 		hboxInvalide.setAlignment(Pos.CENTER_LEFT);
 		hboxInvalide.setVisible(false);
@@ -71,25 +73,23 @@ public class CustomLoginScene extends AnchorPane {
 		// Création VBox Alias
 		VBox vboxAlias = new VBox(5);
 		Label labelAlias = new Label("Nom d'utilisateur");
-		labelAlias.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 18px; -fx-text-fill :#272727; ");
+		labelAlias.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 16px; -fx-text-fill :#272727; ");
 		CustomTextField aliasField = new CustomTextField();
-		aliasField.setPrefWidth(300);
-		vboxAlias.getChildren().addAll(labelAlias, aliasField);
+		aliasField.setPrefWidth(100);
 
 		// Création VBox Password
 		VBox vboxPassword = new VBox(5);
-		vboxPassword.setPadding(new Insets(0, 0, 60, 0));
+//		vboxPassword.setPadding(new Insets(0, 0, 20, 0));
 		Label labelPassword = new Label("Mot de passe");
-		labelPassword.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 18px; -fx-text-fill :#272727; ");
+		labelPassword.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 16px; -fx-text-fill :#272727; ");
 
 		// Création du passwordField
 		PasswordField passwordField = new PasswordField();
-//		passwordField.setSkin(new VisiblePasswordFieldSkin(passwordField));
 		passwordField.setPrefWidth(300);
 		passwordField.setPrefHeight(35);
 		passwordField.setStyle("-fx-background-color : #DD734C; " + "-fx-background-radius: 13; "
 				+ "-fx-border-radius: 13; " + "-fx-border-color: transparent transparent #704739 transparent;");
-		passwordField.setFont(Font.font("Krona One", 18));
+		passwordField.setFont(Font.font("Krona One", 16));
 		InnerShadow innerShadowPassword = new InnerShadow();
 		innerShadowPassword.setRadius(23.93);
 		innerShadowPassword.setOffsetX(2.0);
@@ -98,22 +98,38 @@ public class CustomLoginScene extends AnchorPane {
 		passwordField.setEffect(innerShadowPassword);
 		passwordField.setSkin(new VisiblePasswordFieldSkin(passwordField));
 
-		// Création HBox Invalide - Conditionnel
-		HBox hboxErrorChars = new HBox(15);
+		// Création HBox ErrorChars composé d'une image et d'un texte - Conditionnel
+		HBox hboxErrorChars = new HBox();
 		ImageView imageAttention = new ImageView(new Image("file:src/main/resources/img/logoAttention.png"));
 		imageAttention.setFitHeight(40);
 		imageAttention.setFitWidth(40);
 		imageAttention.setPreserveRatio(true);
-		Label labelErrorChars = new Label("Le nombre de caractère autorisé est dépassé");
+		Label labelErrorChars = new Label("Le nombre de caractères autorisé est dépassé");
 		labelErrorChars.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
-		labelErrorChars
-				.setStyle("-fx-font-family : 'Krona One'; " + "-fx-font-size:18px; " + "-fx-text-fill :#272727; ");
-		labelErrorChars.setStyle("-fx-alignment: center;");
+		labelErrorChars.setStyle("-fx-font-family : 'Krona One'; " + "-fx-font-size:16px; " + "-fx-text-fill :#272727; "
+				+ "-fx-alignment: center;");
 		labelErrorChars.setTextFill(GREY_COLOR);
-		hboxErrorChars.getChildren().addAll(imageInvalide, labelInvalide);
+		hboxErrorChars.getChildren().addAll(imageAttention, labelErrorChars);
 		hboxErrorChars.setAlignment(Pos.CENTER_LEFT);
 		hboxErrorChars.setVisible(false);
+		aliasField.setHboxError(hboxErrorChars); 
+		
+		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le nom
+		// d'utilisateur
+//		aliasField.textProperty().addListener(new ChangeListener<String>() {
+//		@Override
+//		public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+//		System.out.println(newValue);
+//			if (newValue.length() > maxChars) {
+//				aliasField.setText(newValue.substring(0, maxChars));
+//				hboxErrorChars.setVisible(true);
+//				
+//			}
+//		}
+//
+//	});
 
+		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le mot de passe
 		passwordField.textProperty().addListener(new ChangeListener<String>() {
 
 			@Override
@@ -121,13 +137,15 @@ public class CustomLoginScene extends AnchorPane {
 				if (newValue.length() > maxChars) {
 					passwordField.setText(newValue.substring(0, maxChars));
 					hboxErrorChars.setVisible(true);
-
 				}
 
 			}
 
 		});
+		
 
+
+		vboxAlias.getChildren().addAll(labelAlias, aliasField);
 		vboxPassword.getChildren().addAll(labelPassword, passwordField);
 
 		// Valider via la touche Entrée, après avoir renseigné le password !
@@ -144,14 +162,13 @@ public class CustomLoginScene extends AnchorPane {
 		// Gestionnaire d'évènement pour le bouton Valider
 		btnValider.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
 
-//	btnValider.setDefaultButton(true); 
-
 		vboxRight.setAlignment(Pos.CENTER);
-		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, btnValider);
+		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, hboxErrorChars,
+				btnValider);
 		this.getChildren().addAll(fondConnexion, vboxRight);
 
-		AnchorPane.setTopAnchor(vboxRight, 0.0);
-		AnchorPane.setRightAnchor(vboxRight, 0.0);
+		AnchorPane.setTopAnchor(vboxRight, 30.0);
+		AnchorPane.setRightAnchor(vboxRight, 30.0);
 	}
 
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
