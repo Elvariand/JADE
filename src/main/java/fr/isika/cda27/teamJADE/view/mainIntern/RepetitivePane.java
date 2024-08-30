@@ -110,6 +110,14 @@ public class RepetitivePane extends VBox {
 	}
 
 	/**
+	 * @param titleLabelText the titleLabelText to set
+	 */
+	public void setTitleLabelText(String titleLabelText) {
+		this.titleLabel.setText(titleLabelText);;
+	}
+
+	
+	/**
 	 * @return the gridPane
 	 */
 	public GridPane getGridPane() {

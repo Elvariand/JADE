@@ -151,8 +151,19 @@ public class StackPaneMenubar extends StackPane {
 	}
 
 	/**
-	 * @return the text
+	 * @param tooltiptext the tooltiptext to set to the tooltip
 	 */
+	public void setTooltipText(String tooltiptext) {
+		this.tooltip.setText(tooltiptext);
+	}
+	
+	/**
+	 * @param tooltiptext the tooltiptext to set to the tooltip
+	 */
+	public void setLabelText(String tooltiptext) {
+		this.label.setText("     " + tooltiptext);
+	}
+	
 	public String getText() {
 		return tooltipText;
 	}

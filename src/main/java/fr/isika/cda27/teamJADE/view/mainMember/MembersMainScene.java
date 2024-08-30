@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.view.mainIntern;
+package fr.isika.cda27.teamJADE.view.mainMember;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,9 +8,18 @@ import java.util.regex.Pattern;
 import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
-import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
-import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
+import fr.isika.cda27.teamJADE.model.Member;
+import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
+import fr.isika.cda27.teamJADE.view.mainIntern.AddPane;
+import fr.isika.cda27.teamJADE.view.mainIntern.PrintPane;
+import fr.isika.cda27.teamJADE.view.mainIntern.QuitPane;
+import fr.isika.cda27.teamJADE.view.mainIntern.RemovePane;
+import fr.isika.cda27.teamJADE.view.mainIntern.RepetitivePane;
+import fr.isika.cda27.teamJADE.view.mainIntern.ScopePane;
+import fr.isika.cda27.teamJADE.view.mainIntern.SeeMembersPane;
+import fr.isika.cda27.teamJADE.view.mainIntern.StackPaneMenubar;
+import fr.isika.cda27.teamJADE.view.mainIntern.UpdatePane;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -29,6 +38,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -46,19 +56,21 @@ import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class CustomMainScene extends AnchorPane {
+public class MembersMainScene extends AnchorPane {
 
-	private ArrayList<Intern> list;
-	private ObservableList<Intern> observableInterns;
-	private FilteredList<Intern> filteredInterns;
-	private TableView<Intern> tableView;
+	private ArrayList<Member> list;
+	private ObservableList<Member> observableMembers;
+	private FilteredList<Member> filteredMembers;
+	private TableView<Member> tableView;
 
-	public CustomMainScene() {
+	public MembersMainScene() {
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
@@ -75,23 +87,22 @@ public class CustomMainScene extends AnchorPane {
 
 		stackPaneHelp.setMaxSize(75, 75);
 
-		stackPaneHelp.getButton().setOnAction(event -> {
-			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
-//			Scene scene = new Scene(new HelpSceneAdmin());
-			Scene scene = new Scene(new HelpSceneNotAdmin());
-			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-			stage.setScene(scene);
-		});
+//		stackPaneHelp.getButton().setOnAction(event -> {
+//			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
+//			Scene scene = new Scene(new HelpScene());
+//			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+//			stage.setScene(scene);
+//		});
 
 		// TableView
 		// données d'exemple
-		InternDao test = new InternDao();
-		this.list = new ArrayList<Intern>();
+		MemberDao test = new MemberDao();
+		this.list = new ArrayList<Member>();
 		this.list = test.sortView(0, list);
 
-		this.observableInterns = FXCollections.observableArrayList(this.list);
-		this.filteredInterns = new FilteredList<>(this.observableInterns, p -> true);
-		this.tableView = createTableView(this.filteredInterns);
+		this.observableMembers = FXCollections.observableArrayList(this.list);
+		this.filteredMembers = new FilteredList<>(this.observableMembers, p -> true);
+		this.tableView = createTableView(this.filteredMembers);
 
 		// HBox du menu
 		HBox menuHbox = new HBox();
@@ -112,25 +123,20 @@ public class CustomMainScene extends AnchorPane {
 		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
 		QuitPane quitContentVbox = new QuitPane();
 
-		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Intern>() {
-			@Override
-			public void changed(ObservableValue<? extends Intern> observableValue, Intern oldValue, Intern newValue) {
-				String[] gridPaneLabelsList = new String[5];
-
-				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getFamilyName();
-				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getFirstName();
-				gridPaneLabelsList[2] = newValue == null ? " " : newValue.getCountyString();
-				gridPaneLabelsList[3] = newValue == null ? " " : newValue.getCursus();
-				gridPaneLabelsList[4] = newValue == null ? " " : newValue.getYearInString();
-
-				removeContentVbox.setGridPane(gridPaneLabelsList);
-				updateContentVbox.getGridPaneFamilyName().setPromptText(gridPaneLabelsList[0]);
-				updateContentVbox.getGridPaneFirstName().setPromptText(gridPaneLabelsList[1]);
-				updateContentVbox.getGridPaneCounty().setPromptText(gridPaneLabelsList[2]);
-				updateContentVbox.getGridPaneCursus().setPromptText(gridPaneLabelsList[3]);
-				updateContentVbox.getGridPaneYearIn().setPromptText(gridPaneLabelsList[4]);
-			}
-		});
+		seeMembersContentVbox.setTitleLabelText("Souhaitez vous voir \nla liste des stagiaires ?");
+//		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Member>() {
+//			@Override
+//			public void changed(ObservableValue<? extends Member> observableValue, Member oldValue, Member newValue) {
+//				String[] gridPaneLabelsList = new String[5];
+//
+//				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getAlias();
+//				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getAdmin();
+//
+//				removeContentVbox.setGridPane(gridPaneLabelsList);
+//				updateContentVbox.getGridPaneFamilyName().setPromptText(gridPaneLabelsList[0]);
+//				updateContentVbox.getGridPaneFirstName().setPromptText(gridPaneLabelsList[1]);
+//			}
+//		});
 
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
@@ -144,16 +150,18 @@ public class CustomMainScene extends AnchorPane {
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
-		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_stagiaire_orange.png", "ajout_stagiaire_gris.png",
+		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_membre_orange.png", "ajout_membre_gris.png",
 				"Ajouter");
-		StackPaneMenubar removeBtn = new StackPaneMenubar("suppr_stagiaire_orange.png", "suppr_stagiaire_gris.png",
+		StackPaneMenubar removeBtn = new StackPaneMenubar("suppr_membre_orange.png", "suppr_membre_gris.png",
 				"Supprimer");
-		StackPaneMenubar updateBtn = new StackPaneMenubar("modif_stagiaire_orange.png", "modif_stagiaire_gris.png",
+		StackPaneMenubar updateBtn = new StackPaneMenubar("modif_membre_orange.png", "modif_membre_gris.png",
 				"Modifier");
 		StackPaneMenubar printBtn = new StackPaneMenubar("imprimante_orange.png", "imprimante_grise.png", "Imprimer");
-		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_membre_orange.png", "voir_membre_gris.png",
+		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_stagiaire_orange.png", "voir_stagiaire_gris.png",
 				"Membres");
-
+		seeMemberBtn.setTooltipText("Stagiaires");
+		seeMemberBtn.setLabelText("Stagiaires");
+		
 		// On crée le bouton quitter
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				SMALL_PATH_BOT, LARGE_PATH_BOT);
@@ -271,59 +279,45 @@ public class CustomMainScene extends AnchorPane {
 
 		// Search button
 		Button scopeContentValidateBtn = scopeContentVbox.getRightButton();
-		scopeContentValidateBtn.setOnAction(event -> {
-			// on récupère tous les textfield
-			String[] data = grabInfos(scopeContentVbox);
-			String familyNameFilter = data[0];
-			String firstNameFilter = data[1];
-			String countyFilter = data[2];
-			String cursusFilter = data[3];
-			String yearInFilter = data[4];
-
-			// on filtre la liste de la TableView en fonction
-			filteredInterns.setPredicate(intern -> {
-				// pour chaque textfield on doit vérifier si il n'est pas null
-				// si il ne l'est pas, on ajoute la condition au prédicat
-
-				// on return true si aucun champ n'est rempli
-				boolean filters = true;
-
-				// sinon on ajoute à chaque fois le filtre au return
-
-				if (familyNameFilter != null) {
-					filters = filters && intern.getFamilyName().toUpperCase().contains(familyNameFilter.toUpperCase());
-				}
-
-				if (firstNameFilter != null) {
-					filters = filters && intern.getFirstName().toUpperCase().contains(firstNameFilter.toUpperCase());
-				}
-
-				if (countyFilter != null) {
-					filters = filters && intern.getCountyString().toUpperCase().contains(countyFilter.toUpperCase());
-				}
-
-				if (cursusFilter != null) {
-					filters = filters && intern.getCursus().toUpperCase().contains(cursusFilter.toUpperCase());
-				}
-
-				if (yearInFilter != null) {
-					filters = filters && intern.getYearInString().toUpperCase().contains(yearInFilter.toUpperCase());
-				}
-
-				return filters;
-			});
-
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
-
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
-
-		});
+//		scopeContentValidateBtn.setOnAction(event -> {
+//			// on récupère tous les textfield
+//			String[] data = grabInfos(scopeContentVbox);
+//			String familyNameFilter = data[0];
+//			String firstNameFilter = data[1];
+//
+//			// on filtre la liste de la TableView en fonction
+//			filteredMembers.setPredicate(intern -> {
+//				// pour chaque textfield on doit vérifier si il n'est pas null
+//				// si il ne l'est pas, on ajoute la condition au prédicat
+//
+//				// on return true si aucun champ n'est rempli
+//				boolean filters = true;
+//
+//				// sinon on ajoute à chaque fois le filtre au return
+//
+//				if (familyNameFilter != null) {
+//					filters = filters && intern.getAlias().contains(familyNameFilter.toUpperCase());
+//				}
+//
+//				if (firstNameFilter != null) {
+//					filters = filters && intern.isAdmin().contains(firstNameFilter);
+//				}
+//
+//
+//				return filters;
+//			});
+//
+//			moveTransition.setDuration(DURATION_TIME);
+//			moveTransition.setNode(menuHbox);
+//			moveTransition.setToX(TOX_SMALL_MENU);
+//			moveTransition.play();
+//
+//			closeBtn.getBtnGreyImageView().setVisible(false);
+//			closeBtn.getBtnOrangeImageView().setVisible(true);
+//
+//			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+//
+//		});
 
 		// Refresh button
 		Button scopeContentCancelBtn = scopeContentVbox.getLeftButton();
@@ -334,24 +328,24 @@ public class CustomMainScene extends AnchorPane {
 		/* ADD CONTENT : configuration des boutons annuler et ajouter */
 
 		// ajouter
-		Button addContentAddBtn = addContentVbox.getRightButton();
-		addContentAddBtn.setOnAction(event -> {
-			String[] data = grabInfos(addContentVbox);
-			InternDao dao = new InternDao();
-
-			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
-
-			if (good[0] && good[1]) {
-
-				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-				ArrayList<Intern> suppr = new ArrayList<Intern>();
-				this.observableInterns.setAll(test.sortView(0, suppr));
-			} else {
-				addContentVbox.getLabelError().setVisible(true);
-			}
-
-		});
+//		Button addContentAddBtn = addContentVbox.getRightButton();
+//		addContentAddBtn.setOnAction(event -> {
+//			String[] data = grabInfos(addContentVbox);
+//			InternDao dao = new InternDao();
+//
+//			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
+//
+//			if (good[0] && good[1]) {
+//
+//				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+//						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
+//				ArrayList<Intern> suppr = new ArrayList<Intern>();
+//				this.observableMembers.setAll(test.sortView(0, suppr));
+//			} else {
+//				addContentVbox.getLabelError().setVisible(true);
+//			}
+//
+//		});
 
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
@@ -362,16 +356,15 @@ public class CustomMainScene extends AnchorPane {
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
 		// valider suppression
-		Button removeContentValidateBtn = removeContentVbox.getRightButton();
-		removeContentValidateBtn.setOnAction(event -> {
-			String[] data = grabInfos(removeContentVbox);
-			InternDao dao = new InternDao();
-			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-					Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-			ArrayList<Intern> suppr = new ArrayList<Intern>();
-			this.observableInterns.setAll(test.sortView(0, suppr));
-
-		});
+//		Button removeContentValidateBtn = removeContentVbox.getRightButton();
+//		removeContentValidateBtn.setOnAction(event -> {
+//			String[] data = grabInfos(removeContentVbox);
+//			MemberDao dao = new MemberDao();
+//			dao.delete(new Member(data[0], data[1]));
+//			ArrayList<Member> suppr = new ArrayList<Member>();
+//			this.observableMembers.setAll(test.sortView(0, suppr));
+//
+//		});
 
 		// Annuler button
 		Button removeContentCancelBtn = removeContentVbox.getLeftButton();
@@ -385,7 +378,7 @@ public class CustomMainScene extends AnchorPane {
 //		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
 //		updateContentUpdateBtn.setOnAction(event -> {
 //			String[] data = grabInfos(updateContentVbox);
-//			InternDao dao = new InternDao();
+//			MemberDao dao = new InternDao();
 //			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
 //
 //			if (good[0] && good[1]) {
@@ -420,8 +413,6 @@ public class CustomMainScene extends AnchorPane {
 			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
 		});
 		
-		
-		
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
@@ -434,8 +425,6 @@ public class CustomMainScene extends AnchorPane {
 			closeBtn.getBtnOrangeImageView().setVisible(true);
 			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
 		});
-		
-		
 	}
 
 	private String[] grabInfos(RepetitivePane Pane) {
@@ -617,33 +606,38 @@ public class CustomMainScene extends AnchorPane {
 		});
 	}
 
-	private TableView<Intern> createTableView(FilteredList<Intern> filteredInterns) {
+	private TableView<Member> createTableView(FilteredList<Member> filteredInterns) {
 
-		TableView<Intern> tableView = new TableView<>(filteredInterns);
+		TableView<Member> tableView = new TableView<>(filteredMembers);
 
 		// On met les colones
 		double columnWidth = 1025 / 5;
 
-		TableColumn<Intern, String> column1 = new TableColumn<>("Nom de famille");
-		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));
+		TableColumn<Member, String> column1 = new TableColumn<>("Nom de Famille");
+		column1.setCellValueFactory(new PropertyValueFactory<>("alias"));
 		column1.setPrefWidth(columnWidth);
-
-		TableColumn<Intern, String> column2 = new TableColumn<>("Prénom");
-		column2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
+		
+		TableColumn<Member, String> column2 = new TableColumn<>("Prénom");
+		column2.setCellValueFactory(new PropertyValueFactory<>("alias"));
 		column2.setPrefWidth(columnWidth);
-
-		TableColumn<Intern, String> column3 = new TableColumn<>("Région");
-		column3.setCellValueFactory(new PropertyValueFactory<>("county"));
+		
+		TableColumn<Member, String> column3 = new TableColumn<>("Pseudo");
+		column3.setCellValueFactory(new PropertyValueFactory<>("alias"));
 		column3.setPrefWidth(columnWidth);
-
-		TableColumn<Intern, String> column4 = new TableColumn<>("Formation suivie");
-		column4.setCellValueFactory(new PropertyValueFactory<>("cursus"));
+		
+		TableColumn<Member, String> column4 = new TableColumn<>("Mail");
+		column4.setCellValueFactory(new PropertyValueFactory<>("alias"));
 		column4.setPrefWidth(columnWidth);
 
-		TableColumn<Intern, String> column5 = new TableColumn<>("Année");
-		column5.setCellValueFactory(new PropertyValueFactory<>("yearIn"));
+		TableColumn<Member, String> column5 = new TableColumn<>("Status");
+		column5.setCellValueFactory(cellData -> {
+            boolean isAdmin = cellData.getValue().isAdmin();
+            return new SimpleStringProperty(isAdmin ? "administrateur" : "non administrateur");
+        });
 		column5.setPrefWidth(columnWidth);
 
+	
+		
 		tableView.getColumns().addAll(column1, column2, column3, column4, column5);
 
 		StackPane.setMargin(tableView, new Insets(70, 70, 70, 170));
