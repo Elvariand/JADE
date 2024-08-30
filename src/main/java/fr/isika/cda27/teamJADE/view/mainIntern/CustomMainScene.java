@@ -386,24 +386,23 @@ public class CustomMainScene extends AnchorPane {
 		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
 		updateContentUpdateBtn.setOnAction(event -> {
 			Intern oldIntern = selected;
-			System.out.println(oldIntern);
 			String[] data = grabInfos(updateContentVbox);
 			InternDao dao = new InternDao();
 			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
 
 			if (good[0] && good[1]) {
-				
-				System.out.println( (new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])).toString()) );
 
-				dao.update(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])), oldIntern);
+				dao.update(
+						new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
+								Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])),
+						oldIntern);
+
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
-				this.closeMenu(menubarVBox);
 			} else {
 				updateContentVbox.getLabelError().setVisible(true);
 			}
+			this.closeMenu(menubarVBox);
 		});
 
 		// Annuler button
@@ -412,8 +411,7 @@ public class CustomMainScene extends AnchorPane {
 			this.tableView.getSelectionModel().clearSelection();
 			refreshPane(updateContentVbox);
 		});
-		
-		
+
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
@@ -426,9 +424,7 @@ public class CustomMainScene extends AnchorPane {
 			closeBtn.getBtnOrangeImageView().setVisible(true);
 			closeMenu(menubarVBox);
 		});
-		
-		
-		
+
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
@@ -441,8 +437,7 @@ public class CustomMainScene extends AnchorPane {
 			closeBtn.getBtnOrangeImageView().setVisible(true);
 			closeMenu(menubarVBox);
 		});
-		
-		
+
 	}
 
 	private String[] grabInfos(RepetitivePane Pane) {
@@ -524,7 +519,7 @@ public class CustomMainScene extends AnchorPane {
 	}
 
 	public void closeMenu(VBox menubarVBox) {
-		
+
 		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
 		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
 		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
@@ -533,7 +528,7 @@ public class CustomMainScene extends AnchorPane {
 		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(5);
 		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
 		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
-		
+
 // On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
@@ -556,17 +551,10 @@ public class CustomMainScene extends AnchorPane {
 		setLarger(printBtn);
 		setLarger(seeMemberBtn);
 		setLarger(quitBtn);
-		
-		System.out.println("Update incoming");
+
 		InternDao internDao = new InternDao();
-		System.out.println("Hello World 1");
 		ArrayList<Intern> suppr = new ArrayList<Intern>();
-		System.out.println("Hello World 2");
-		this.observableInterns.setAll();
-		System.out.println(this.observableInterns.size());
-		System.out.println("Hello World 3");
 		this.observableInterns.setAll(internDao.sortView(0, suppr));
-		System.out.println("Hello World 4");
 	}
 
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
@@ -729,8 +717,7 @@ public class CustomMainScene extends AnchorPane {
 				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(cursus).find()) {
 			filled = false;
 		}
-		if (Pattern.compile("[\\D]").matcher(county).find()
-				|| Pattern.compile("[\\D]").matcher(yearIn).find() ) {
+		if (Pattern.compile("[\\D]").matcher(county).find() || Pattern.compile("[\\D]").matcher(yearIn).find()) {
 			areInteger = false;
 		}
 //		int countyInt = Integer.parseInt(county);

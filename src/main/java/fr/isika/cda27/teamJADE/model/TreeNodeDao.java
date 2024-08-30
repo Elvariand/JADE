@@ -45,13 +45,11 @@ public abstract class TreeNodeDao<T> {
 			this.writeInBinary(object, 0);
 			return;
 		}
-
 		String nodeKey = this.readKeyFromBinary(cursorPosition);
 
 		// Si la valeur de la clé à écrire est plus petite que
 		// celle de la clé courante lue dans le fichier binaire.
 		if (getKey(object).compareTo(nodeKey) < 0) {
-			System.out.println(getKey(object) + " < " + nodeKey);
 
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
 
@@ -81,7 +79,6 @@ public abstract class TreeNodeDao<T> {
 		// celle
 		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
 		else if (getKey(object).compareTo(nodeKey) > 0) {
-			System.out.println(getKey(object) + " > " + nodeKey);
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
@@ -110,7 +107,6 @@ public abstract class TreeNodeDao<T> {
 		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
 		// de famille de l'Intern courant lu dans le fichier binaire.
 		else {
-			System.out.println(getKey(object) + " e " + nodeKey);
 			int read = 1;
 
 			/*
@@ -143,7 +139,6 @@ public abstract class TreeNodeDao<T> {
 		return;
 
 	}
-	
 
 	/**
 	 * @param newObject
@@ -154,20 +149,11 @@ public abstract class TreeNodeDao<T> {
 			this.update(newObject, oldObject, 0);
 		} else {
 			this.delete(oldObject);
-			System.out.println("===============================================================");
-			this.sortView(0, new ArrayList<T>());
-			System.out.println("===============================================================");
-			this.readBinary();
-			System.out.println("===============================================================");
 			this.insert(newObject);
-			this.readBinary();
-			System.out.println("===============================================================");
-
 		}
 
 	}
 
-	
 	/**
 	 * @param newObject
 	 * @param oldObject
@@ -242,7 +228,6 @@ public abstract class TreeNodeDao<T> {
 
 	}
 
-	
 	/**
 	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
 	 *               binaire
@@ -256,7 +241,6 @@ public abstract class TreeNodeDao<T> {
 	public void delete(T object) {
 		this.delete(object, 0, 0, false);
 	}
-	
 
 	/**
 	 * @param intern               L'objet de type Intern que nous voulons effacer
@@ -367,8 +351,8 @@ public abstract class TreeNodeDao<T> {
 
 				// Si le Stagiaire à supprimer est une feuille et donc le seul cas où la valeur
 				// des enfants gauche et droits sont égales
-				if (this.readLeftChildFromBinary(childCursorPosition) ==
-					this.readRightChildFromBinary(childCursorPosition)) {
+				if (this.readLeftChildFromBinary(childCursorPosition) == this
+						.readRightChildFromBinary(childCursorPosition)) {
 
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par -1
@@ -385,6 +369,16 @@ public abstract class TreeNodeDao<T> {
 					// prendre la place du Stagiaire que l'on veut supprimer
 					long[] result = findSubstitute(childCursorPosition);
 					long substitute = result[0], parentSubstituteCursor = result[1];
+
+					if (childCursorPosition == 0) {
+						T bufferObject = this.readObjectFromBinary(substitute);
+						int bufferLeft = this.readLeftChildFromBinary(0);
+						int bufferRight = this.readRightChildFromBinary(0);
+						int bufferTwin = this.readTwinFromBinary(substitute);
+						this.delete(bufferObject);
+						this.writeInBinary(bufferObject, 0, bufferLeft, bufferRight, bufferTwin);
+						return;
+					}
 
 					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par la valeur de position du substitut

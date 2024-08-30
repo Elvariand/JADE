@@ -51,8 +51,8 @@ public class App extends Application {
 
 		// mainscene
 //		CustomLoginScene root = new CustomLoginScene();
-//		CustomMainScene root = new CustomMainScene();
-		MembersMainScene root = new MembersMainScene();
+		CustomMainScene root = new CustomMainScene();
+//		MembersMainScene root = new MembersMainScene();
 
 		// scene
 		Scene scene = new Scene(root);
@@ -74,14 +74,14 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 
-//		InternDao test_intern = new InternDao();
-//		test_intern.deleteBinary();
-//		test_intern.addFromDon();
-////		test_intern.sortView(0);
+		InternDao test_intern = new InternDao();
+		test_intern.deleteBinary();
+		test_intern.addFromDon();
+//		test_intern.sortView(0);
 //		System.out.println("======================");
 //		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
 //		test_intern.insert(PY);
-//		test_intern.readBinary();
+		test_intern.readBinary();
 //		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
 //		System.out.println("======================");
 //		test_intern.readBinary();
@@ -100,9 +100,8 @@ public class App extends Application {
 //		test_member.insert(User3);
 //		
 //		System.out.println("======================");
-////		test_member.sortView(0);
+//		test_member.sortView(0);
 //		test_member.readBinary();
-		
 		
 		launch();
 	}
