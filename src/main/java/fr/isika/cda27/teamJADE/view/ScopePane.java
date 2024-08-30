@@ -1,8 +1,8 @@
 package fr.isika.cda27.teamJADE.view;
 
-public class ScopeScene extends RepetitiveScene {
+public class ScopePane extends RepetitivePane {
 
-	public ScopeScene() {
+	public ScopePane() {
 		super();
 		
 		this.titleLabel.setText("Recherche avancée");

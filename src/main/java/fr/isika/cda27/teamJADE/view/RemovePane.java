@@ -11,14 +11,14 @@ import javafx.scene.text.Font;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class RemoveScene extends RepetitiveScene {
+public class RemovePane extends RepetitivePane {
 	
 
 	private Label labelError;
 	private String[] gridPaneLabelsList = {"","","","",""};
 
 
-	public RemoveScene() {
+	public RemovePane() {
 
 		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");

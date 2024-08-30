@@ -21,14 +21,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
-public class RepetitiveScene extends VBox {
+public class RepetitivePane extends VBox {
 	protected HBox buttonBox;
 	protected Button leftButton;
 	protected Button rightButton;
 	protected Label titleLabel;
 	protected GridPane gridPane;
 	
-	public RepetitiveScene() {
+	public RepetitivePane() {
 		this.setPrefSize(VBOX_WIDTH, VBOX_HEIGHT);
 		this.setAlignment(Pos.CENTER);
 		this.setTranslateX(TOX_VBOX);

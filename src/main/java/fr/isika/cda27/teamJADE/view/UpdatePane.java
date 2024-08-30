@@ -2,9 +2,9 @@ package fr.isika.cda27.teamJADE.view;
 
 
 
-public class UpdateScene extends RepetitiveScene {
+public class UpdatePane extends RepetitivePane {
 
-	public UpdateScene() {
+	public UpdatePane() {
 		super();
 
 		this.titleLabel.setText("Modification du stagiaire");

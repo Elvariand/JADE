@@ -1,8 +1,8 @@
 package fr.isika.cda27.teamJADE.view;
 
-public class SeeMembersScene extends RepetitiveScene {
+public class SeeMembersPane extends RepetitivePane {
 
-	public SeeMembersScene() {
+	public SeeMembersPane() {
 		super();
 
 		this.titleLabel.setText("Recherche avancée");

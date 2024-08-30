@@ -79,7 +79,7 @@ public abstract class TreeNodeDao<T> {
 		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
 		// celle
 		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
-		else if (getKey(object).compareTo(nodeKey)  > 0) {
+		else if (getKey(object).compareTo(nodeKey) > 0) {
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
@@ -134,14 +134,101 @@ public abstract class TreeNodeDao<T> {
 			 * fichier binaire le -1 correspondant suivant dans la liste par la valeur de la
 			 * position du Stagiaire que l'on va ajouter à la fin du fichier binaire
 			 */
-			this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + getObjectSize() + INDEX_SIZE + INDEX_SIZE);
+			this.writeIntInBinary(this.getNumberNodeInBinary(),
+					cursorPosition + getObjectSize() + INDEX_SIZE + INDEX_SIZE);
 			this.writeInBinary(object, binarySize);
 		}
 		return;
 
 	}
 
+	/**
+	 * @param newObject
+	 * @param oldObject
+	 */
+	public void update(T newObject, T oldObject) {
+		if (getKey(oldObject).compareTo(getKey(newObject)) == 0) {
+			this.update(newObject, oldObject, 0);
+		} else {
+			this.delete(oldObject);
+			this.insert(newObject);
+		}
+		
+	}
 
+	/**
+	 * @param newObject
+	 * @param oldObject
+	 * @param cursorPosition
+	 */
+	public void update(T newObject, T oldObject, long cursorPosition) {
+		long binarySize = this.getBinarySize();
+
+		// Si le fichier binaire est vide
+		if (binarySize == 0) {
+			// Alors nous écrivons le noeud au début
+			System.err.println("Erreur : La base de données est vide.");
+			return;
+		}
+
+		String nodeKey = this.readKeyFromBinary(cursorPosition);
+
+		// Si la valeur de la clé à écrire est plus petite que
+		// celle de la clé courante lue dans le fichier binaire.
+		if (getKey(oldObject).compareTo(nodeKey) < 0) {
+
+			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
+
+			if (newCursorPosition < 0) {
+				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+				return;
+
+			} else {
+				this.update(newObject, oldObject, newCursorPosition * getNodeSize());
+				return;
+			}
+		}
+
+		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
+		// celle du nom de famille du Stagiaire courant lu dans le fichier binaire.
+		else if (getKey(oldObject).compareTo(nodeKey) > 0) {
+
+			long newCursorPosition = readRightChildFromBinary(cursorPosition);
+
+			if (newCursorPosition < 0) {
+				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+				return;
+
+			} else {
+				this.update(newObject, oldObject, newCursorPosition * getNodeSize());
+				return;
+			}
+		}
+
+		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
+		// de famille de l'Intern courant lu dans le fichier binaire.
+		else {
+
+			int read = 1;
+
+			while (read > 0) {
+				// Si le Stagiaire est déjà présent
+				if (oldObject.equals(this.readObjectFromBinary(cursorPosition))) {
+					this.writeInBinary(newObject, cursorPosition);
+					return;
+				}
+				read = readTwinFromBinary(cursorPosition);
+				if (read > 0)
+					cursorPosition = read * getNodeSize();
+			}
+
+			if (read < 0 && !oldObject.equals(this.readObjectFromBinary(cursorPosition)) ) {
+				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+			}
+		}
+		return;
+
+	}
 
 	/**
 	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
@@ -297,7 +384,8 @@ public abstract class TreeNodeDao<T> {
 
 					// On transmet au substitut les valeurs des enfants du Stagiaire que l'on
 					// supprime
-					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition), substitute + getObjectSize());
+					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition),
+							substitute + getObjectSize());
 					this.writeIntInBinary(this.readRightChildFromBinary(childCursorPosition),
 							substitute + getObjectSize() + INDEX_SIZE);
 
@@ -423,10 +511,10 @@ public abstract class TreeNodeDao<T> {
 			RandomAccessFile raf = new RandomAccessFile(getBinFile(), "rw");
 
 			raf.seek(cursorPosition);
-			
+
 			// Permet pour chaque classe d'écrire les attributs spécifiques
 			writeSpecificFields(objectToAdd, raf);
-			
+
 			raf.writeInt(leftChildInt);
 			raf.writeInt(rightChildInt);
 			raf.writeInt(twinInt);
@@ -442,7 +530,7 @@ public abstract class TreeNodeDao<T> {
 	/**
 	 * 
 	 * @param object L'objet type T à ajouter dans le fichier binaire
-	 * @param raf Le RandomAccessFile 
+	 * @param raf    Le RandomAccessFile
 	 */
 	protected abstract void writeSpecificFields(T object, RandomAccessFile raf);
 
@@ -617,7 +705,6 @@ public abstract class TreeNodeDao<T> {
 	 */
 	public ArrayList<T> sortView(long cursorPosition, ArrayList<T> list) {
 
-		
 		// Si le position du curseur est négative, c'est une erreur, on ne peut rien
 		// lire et on interrompt immédiatement la fonction
 		if (cursorPosition < 0) {
@@ -650,12 +737,12 @@ public abstract class TreeNodeDao<T> {
 			sortView(this.readRightChildFromBinary(cursorPosition) * getNodeSize(), list);
 		return list;
 	}
-	
+
 	/**
 	 * Lit le fichier binaire et l'affiche dans la console
 	 */
-	protected abstract void readBinary(); 
-	
+	protected abstract void readBinary();
+
 	protected abstract int getNodeSize();
 
 	protected abstract String getKey(T object);
@@ -663,6 +750,6 @@ public abstract class TreeNodeDao<T> {
 	protected abstract String readKeyFromBinary(long cursorPosition);
 
 	protected abstract int getObjectSize();
-	
+
 	protected abstract String getBinFile();
 }

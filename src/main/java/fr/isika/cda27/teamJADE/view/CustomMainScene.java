@@ -113,15 +113,15 @@ public class CustomMainScene extends AnchorPane {
 
 		
 		// VBox avec les contenu pringipaux à gauche du menu
-		ScopeScene scopeContentVbox = new ScopeScene();
+		ScopePane scopeContentVbox = new ScopePane();
 
-		AddScene addContentVbox = new AddScene();
+		AddPane addContentVbox = new AddPane();
 
-		RemoveScene removeContentVbox = new RemoveScene();
-		UpdateScene updateContentVbox = new UpdateScene();
-		PrintScene printContentVbox = new PrintScene(tableView);
-		SeeMembersScene seeMembersContentVbox = new SeeMembersScene();
-		QuitScene quitContentVbox = new QuitScene();
+		RemovePane removeContentVbox = new RemovePane();
+		UpdatePane updateContentVbox = new UpdatePane();
+		PrintPane printContentVbox = new PrintPane(tableView);
+		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
+		QuitPane quitContentVbox = new QuitPane();
 
 		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Intern>() {
 			@Override
@@ -402,7 +402,6 @@ public class CustomMainScene extends AnchorPane {
 			dao.delete(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1), Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 			ArrayList<Intern> suppr = new ArrayList<Intern>();
 			this.observableInterns.setAll(test.sortView(0, suppr));
-			
 		});
 		
 		// Annuler button
@@ -417,7 +416,7 @@ public class CustomMainScene extends AnchorPane {
 	}
 	
 		
-	private String[] grabInfos(RepetitiveScene scene) {
+	private String[] grabInfos(RepetitivePane scene) {
 		// on récupère tous les textfield
 		String familyName = scene.getTextFamilyName();
 		String firstName = scene.getTextFirstName();
@@ -428,7 +427,7 @@ public class CustomMainScene extends AnchorPane {
 		return data;
 	}
 
-	private void refreshPane(RepetitiveScene pane) {
+	private void refreshPane(RepetitivePane pane) {
 		refresh(pane.getGridPaneFamilyName());
 		refresh(pane.getGridPaneFirstName());
 		refresh(pane.getGridPaneCounty());

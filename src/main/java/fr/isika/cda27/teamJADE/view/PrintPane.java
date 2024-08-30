@@ -49,7 +49,7 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 
 
-public class PrintScene extends RepetitiveScene {
+public class PrintPane extends RepetitivePane {
 
 	protected Button button;
 	protected TableView tableView;
@@ -58,7 +58,7 @@ public class PrintScene extends RepetitiveScene {
 	protected String saveDirectory = "";
 	protected String fileName = "";
 	
-	public PrintScene(TableView tableView) {
+	public PrintPane(TableView tableView) {
 		super();
 		
 		this.titleLabel.setText("Impression de l'annuaire");
@@ -77,7 +77,7 @@ public class PrintScene extends RepetitiveScene {
         chooseDirectoryButton.setPrefWidth(220);
         chooseDirectoryButton.setOnAction(e -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
-            File selectedDirectory = directoryChooser.showDialog((Stage)PrintScene.this.getScene().getWindow());
+            File selectedDirectory = directoryChooser.showDialog((Stage)PrintPane.this.getScene().getWindow());
             if (selectedDirectory != null) {
                 saveDirectory = selectedDirectory.getAbsolutePath();
             }

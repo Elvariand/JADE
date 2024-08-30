@@ -8,10 +8,10 @@ import javafx.scene.text.Font;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class AddScene extends RepetitiveScene {
+public class AddPane extends RepetitivePane {
 	private Label labelError;
 
-	public AddScene() {
+	public AddPane() {
 		super();
 
 		this.titleLabel.setText("Ajout d'un stagiaire");

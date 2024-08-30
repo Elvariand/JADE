@@ -93,13 +93,13 @@ public class CustomMainScene2 extends AnchorPane {
 		
 		Stage stage = ((Stage)CustomMainScene2.this.getScene().getWindow());
 		// VBox avec les contenu principaux à gauche du menu
-		ScopeScene scopeContentVbox = new ScopeScene();
-		AddScene addContentVbox = new AddScene();
-		RemoveScene removeContentVbox = new RemoveScene();
-		UpdateScene updateContentVbox = new UpdateScene();
-		PrintScene printContentVbox = new PrintScene(tableView);
-		SeeMembersScene seeMembersContentVbox = new SeeMembersScene();
-		QuitScene quitContentVbox = new QuitScene();
+		ScopePane scopeContentVbox = new ScopePane();
+		AddPane addContentVbox = new AddPane();
+		RemovePane removeContentVbox = new RemovePane();
+		UpdatePane updateContentVbox = new UpdatePane();
+		PrintPane printContentVbox = new PrintPane(tableView);
+		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
+		QuitPane quitContentVbox = new QuitPane();
 
 		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Intern>() {
 			@Override
