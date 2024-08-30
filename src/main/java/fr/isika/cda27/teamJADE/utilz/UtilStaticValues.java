@@ -200,53 +200,63 @@ public class UtilStaticValues {
 		// Member
 		public static final int MAX_CHAR_ALIAS = 31;
 		public static final int MAX_CHAR_PASSWORD = 31;
+		public static final int MAX_CHAR_FAMILYNAME = 31; 
+		public static final int MAX_CHAR_NAME = 31; 
+		public static final int MAX_CHAR_EMAIL = 40; 
 		public static final int OCTETS_TOOK_BY_ADMIN = 1;
-		public static final int MEMBER_SIZE = ((MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD)
+		public static final int MEMBER_SIZE = ((MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD + MAX_CHAR_FAMILYNAME + MAX_CHAR_NAME + MAX_CHAR_EMAIL)
 				* OCTETS_TOOK_BY_CHAR) + OCTETS_TOOK_BY_ADMIN;
 		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 	}
 
-	public static class HelpTextValues {
+public static class HelpTextValues {
 		
 		public static final String INTRODUCTION="Introduction"; 
 		public static final String INTRODUCTION_TEXT = "Cet annuaire est un outil destiné à centraliser et gérer les informations des stagiaires de manière simple et efficace." + "\n"
 				+                		"Il s'adresse aux administrateurs du centre de formation." + "\n"
 				+                 		"Une authentification à l'aide d'un nom d'utilisateur et d'un mot de passe est nécessaire pour accéder à l'annuaire." + "\n"
 				+                 		"L'annuaire est accessible sur ordinateur uniquement."; 
+		public static final String RECHERCHE = "Recherche Avancée"; 
+		public static final String RECHERCHE_TEXT = "Pour rechercher un stagiaire, il vous suffit de suivre les instructions suivantes:"+ "\n"
+		+ "		1/ Pour accéder à la page de recherche, cliquez sur l'icône 'Rechercher' (représenté par une loupe) dans la barre de menu situé à gauche de l'écran" + "\n"
+		+ " 	2/ Pour affiner votre recherche et trouver le stagiaire qui correspond à vos critères, complétez les différents filtres disponibles, à savoir le Nom de famille, et/ou le Prénom, et/ou le Département, et/ou la formation suivie, et/ou l'année d'entrée en formation"+ "\n"
+		+ " 	3/ Une fois vos critères de recherche définis, cliquez sur le bouton 'Rechercher'. Vous verrez alors une liste de stagiaires correspondant à vos filtres."; 
 		public static final String GESTION_STAGIAIRES = "Gestion des stagiaires"; 
-		public static final String AJOUT_STAGIAIRE = "Comment ajouter un stagiaire?"; 
-		public static final String AJOUT_STAGIAIRE_TEXT = "La procédure pour ajouter un stagiaire est la suivante :" + "\n"
-				+ "    1/ Cliquez sur l'icône 'Ajouter' situé dans la barre du menu à gauche de l'écran puis" + "\n"
-				+ "    2/ Complétez les champs du formulaire d'ajout : Nom de famille, Prénom, Département, Formation suivie, Année d'entrée en formation" + "\n"
-				+ "    3/ Cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n"
+		public static final String AJOUT_STAGIAIRE = "Ajouter un stagiaire"; 
+		public static final String AJOUT_STAGIAIRE_TEXT = "Pour ajouter un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n"
+				+ "    1/ Pour accéder à la page d'ajout, cliquez sur l'icône 'Ajouter' (représenté par un stagiaire avec un +) situé dans la barre du menu à gauche de l'écran puis" + "\n"
+				+ "    2/ Complétez les champs du formulaire d'ajout sans vous soucier des majuscules : Nom de famille, Prénom, Département, Formation suivie, Année d'entrée en formation" + "\n"
+				+ "    3/ Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n"
 				+ "Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
-				+ "Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."; 
-		public static final String MODIFICATION_STAGIAIRE= "Comment modifier un stagiaire?"; 
-		public static final String MODIFICATION_STAGIAIRE_TEXT = "La procédure pour modifier un stagiaire est la suivante :" + "\n" 
-				+                 		"	1/ Selectionnez le stagiaire à modifier en le selectionnant directement dans la liste puis"  + "\n"
-				+                		"	2/ Cliquez sur l'icône 'modifier' (représenté par un stagiaire tenant un stylo) situé dans la barre du menu à gauche de l'écran puis" + "\n"
-				+                 		"	3/ Modifiez le(s) champ(s) du formulaire souhaité(s)" + "\n"
-				+                 		"	4/ Cliquez sur le bouton 'Modifier' située en bas à droite pour valider la modification." + "\n" 
-				+                 		"Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
-				+                		"Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."; 
-		public static final String SUPPRESSION_STAGIAIRE = "Comment supprimer un stagaire?"; 
-		public static final String SUPRESSION_STAGAIRE_TEXT = "La procédure pour supprime un stagiaire est la suivante :" + "\n"
+				+ "Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."+ "\n"
+				+ "Le nouveau stagiaire sera automatiquement ajouté par ordre alphabétique de son nom de famille. "; 
+		public static final String MODIFICATION_STAGIAIRE= "Modifier un stagiaire"; 
+		public static final String MODIFICATION_STAGIAIRE_TEXT = "Pour modifier un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n" 
+				+ "	1/ Pour sélectionner le stagiaire à modifier, vous pouvez soit le selectionner directement dans la liste en cliquant sur la ligne correspondant au stagiaire ou alors ouvrez la page de modiciation en cliquant sur l'icône 'Modifer' (représenté par un stagiaire avec un stylo), recherchez le stagiaire à modifier à l'aide des critères de recherche proposés"  + "\n"
+				+ "	2/ Cliquez sur l'icône 'modifier' (représenté par un stagiaire tenant un stylo) situé dans la barre du menu à gauche de l'écran puis" + "\n"
+				+ "	3/ Modifiez le(s) champ(s) du formulaire souhaité(s)" + "\n"
+				+ "	4/ Cliquez sur le bouton 'Modifier' située en bas à droite pour valider la modification." + "\n" 
+				+ "Il est obligatoire de remplir tous les champs pour effectuer la modification." + "\n"
+				+ "Il est possible d'arrêter la modification à tout moment en cliquant sur le bouton 'Annuler'."; 
+		public static final String SUPPRESSION_STAGIAIRE = "Supprimer un stagaire"; 
+		public static final String SUPRESSION_STAGAIRE_TEXT = "Pour supprimer un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n"
 				+                  		"	1/ Selectionnez le stagiaire à supprimer en le selectionnant directement dans la liste" + "\n"
-				+                 		"	2/ Cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un petit moins) situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies" + "\n"
+				+                 		"	2/ Pour accéder à la page de suppression, cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un '-') situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies" + "\n"
 				+                 		"	3/ Après avoir vérifier qu'il s'agit du bon stagiaire à supprimer, cliquez sur le bouton 'Oui' ou annulez la suppression en appuyant sur le bouton 'Non'."; 
 		public static final String MEMBRES = "Espace Membres"; 
-		public static final String MEMBRES_TEXT = "L'espace membre permet de voir XXXX. Pour modifier XXX. Pour ajouter un membres, pour supprimer un membre.  Pour se déconnecter de l'annuaire, il suffit de cliquer sur l'icone 'déconnexion' situé ???"; 
+		public static final String MEMBRES_TEXT = "L'espace membre est permet de voir XXXX. Pour modifier XXX. Pour ajouter un membres, pour supprimer un membre."; 
 		public static final String IMPRESSION = "Impression"; 
 		public static final String IMPRESSION_TEXT = "Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé en bas à gauche dans la barre du menu."+ "\n"  
 				+               		"OPTIONS D'IMPRESSION" + "\n" 
 				+               		"Il possible d'exporter la liste des stagiaires en format PDF avant impression."; 
+		public static final String DECONNEXION = "Déconnexion"; 
+		public static final String DECONNEXION_TEXT="Lorsque vous avez terminez d'utiliser l'annuaire, il est nécessaire de se déconnecter en cliquant sur l'icone'Déconnecter'(représentée par un bouton éteindre). Vous serez alors rediriger vers la page de connexion. Il vous faudra de nouveau saisir votre nom d'utilisateur et mot de passe pour accéder à l'annuaire."; 
 		
 		
-		
-	
 	}
 	
 	
 }
+
 
 

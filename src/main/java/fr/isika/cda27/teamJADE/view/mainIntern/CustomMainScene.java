@@ -8,7 +8,8 @@ import java.util.regex.Pattern;
 import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
-import fr.isika.cda27.teamJADE.view.help.HelpScene;
+import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
+import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
@@ -76,7 +77,8 @@ public class CustomMainScene extends AnchorPane {
 
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
-			Scene scene = new Scene(new HelpScene());
+//			Scene scene = new Scene(new HelpSceneAdmin());
+			Scene scene = new Scene(new HelpSceneNotAdmin());
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});

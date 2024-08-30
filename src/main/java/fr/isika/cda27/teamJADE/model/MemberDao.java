@@ -18,7 +18,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 	 */
 	public void addFirstMember() {
 
-		insert(new Member("admin", "pass", true));
+		insert(new Member("admin", "pass", "test", "test", "test@isika.fr", true));
 	}
 	
 	/**
@@ -30,6 +30,9 @@ public class MemberDao extends TreeNodeDao<Member>{
 		try {
 			raf.writeChars(memberToAdd.getAliasLong());
 			raf.writeChars(memberToAdd.getPasswordLong());
+			raf.writeChars(memberToAdd.getFamilyNameLong());
+			raf.writeChars(memberToAdd.getNameLong());
+			raf.writeChars(memberToAdd.getEmailLong());
 			raf.writeBoolean(memberToAdd.isAdmin());
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -46,6 +49,9 @@ public class MemberDao extends TreeNodeDao<Member>{
 	protected Member readObjectFromBinary(long cursorPosition) {
 		String alias = "";
 		String password = "";
+		String familyName = ""; 
+		String name = ""; 
+		String email = ""; 
 		Boolean admin = false;
 
 		try {
@@ -64,6 +70,22 @@ public class MemberDao extends TreeNodeDao<Member>{
 			for (int i = 0; i < MAX_CHAR_PASSWORD; i++) {
 				password += raf.readChar();
 			}
+			// On lit tous les caractères du nom de famille du Membre incluant les espaces
+			// supplémentaires
+			for (int i = 0; i < MAX_CHAR_FAMILYNAME; i++) {
+				familyName += raf.readChar();
+			}
+			// On lit tous les caractères du prénom du Membre incluant les espaces
+						// supplémentaires
+			for (int i = 0; i < MAX_CHAR_NAME; i++) {
+				name += raf.readChar();
+			}
+			// On lit tous les caractères de l'adresse mail du Membre incluant les espaces
+						// supplémentaires
+			for (int i = 0; i < MAX_CHAR_EMAIL; i++) {
+				email += raf.readChar();
+			}
+			
 			// On lit tous les caractères d'Admin du Membre incluant les espaces
 			// supplémentaires
 			admin = raf.readBoolean();
@@ -78,7 +100,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 			// pouvoir la régler
 			e.printStackTrace();
 		}
-		return new Member(alias.trim(), password.trim(), admin);
+		return new Member(alias.trim(), password.trim(), familyName.trim(), name.trim(), email.trim() ,admin);
 	}
 
 	/**
@@ -94,7 +116,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 				int indexTwin = this.readTwinFromBinary(cursor);
 				System.out.println(
 						member.getAlias() + "\t" + member.getPassword()
-								+ "\t" + member.isAdmin() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
+								+ "\t" + member.getFamilyName() + "\t" + member.getName() + "\t" + member.getEmail() + "\t" + member.isAdmin() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
 				cursor += MEMBER_NODE_SIZE - 1;
 			}
 			raf.close();

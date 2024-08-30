@@ -1,9 +1,15 @@
 package fr.isika.cda27.teamJADE.view.login;
 
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_HEIGHT;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_WIDTH;
+
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -20,20 +26,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
-public class CustomLoginScene extends AnchorPane{
-	
-	private Member member = new Member("user", "pass");
+public class CustomLoginScene extends AnchorPane {
 
+	private Member member = new Member("user", "pass", "test", "test", "test@isika.fr", true);
+	private final int maxChars = 30;
 
 	public CustomLoginScene() {
-	
 
-		
 		// Police de texte
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
 		// AnchorPane Login
-				
+
 		this.setPrefSize(1280, 720);
 
 		// Image Fond de connexion
@@ -94,6 +98,36 @@ public class CustomLoginScene extends AnchorPane{
 		passwordField.setEffect(innerShadowPassword);
 		passwordField.setSkin(new VisiblePasswordFieldSkin(passwordField));
 
+		// Création HBox Invalide - Conditionnel
+		HBox hboxErrorChars = new HBox(15);
+		ImageView imageAttention = new ImageView(new Image("file:src/main/resources/img/logoAttention.png"));
+		imageAttention.setFitHeight(40);
+		imageAttention.setFitWidth(40);
+		imageAttention.setPreserveRatio(true);
+		Label labelErrorChars = new Label("Le nombre de caractère autorisé est dépassé");
+		labelErrorChars.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
+		labelErrorChars
+				.setStyle("-fx-font-family : 'Krona One'; " + "-fx-font-size:18px; " + "-fx-text-fill :#272727; ");
+		labelErrorChars.setStyle("-fx-alignment: center;");
+		labelErrorChars.setTextFill(GREY_COLOR);
+		hboxErrorChars.getChildren().addAll(imageInvalide, labelInvalide);
+		hboxErrorChars.setAlignment(Pos.CENTER_LEFT);
+		hboxErrorChars.setVisible(false);
+
+		passwordField.textProperty().addListener(new ChangeListener<String>() {
+
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue.length() > maxChars) {
+					passwordField.setText(newValue.substring(0, maxChars));
+					hboxErrorChars.setVisible(true);
+
+				}
+
+			}
+
+		});
+
 		vboxPassword.getChildren().addAll(labelPassword, passwordField);
 
 		// Valider via la touche Entrée, après avoir renseigné le password !
@@ -108,8 +142,7 @@ public class CustomLoginScene extends AnchorPane{
 		CustomButton btnValider = new CustomButton("Valider");
 
 		// Gestionnaire d'évènement pour le bouton Valider
-		btnValider
-				.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
+		btnValider.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
 
 //	btnValider.setDefaultButton(true); 
 
@@ -117,23 +150,20 @@ public class CustomLoginScene extends AnchorPane{
 		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, btnValider);
 		this.getChildren().addAll(fondConnexion, vboxRight);
 
-		AnchorPane.setTopAnchor(vboxRight, 30.0);
-		AnchorPane.setRightAnchor(vboxRight, 20.0);
-			}
+		AnchorPane.setTopAnchor(vboxRight, 0.0);
+		AnchorPane.setRightAnchor(vboxRight, 0.0);
+	}
 
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
 
 		if (member.authenticate(alias, password)) {
-			Stage stage = ((Stage)CustomLoginScene.this.getScene().getWindow());
-			Scene scene = new Scene(new CustomMainScene()); 
+			Stage stage = ((Stage) CustomLoginScene.this.getScene().getWindow());
+			Scene scene = new Scene(new CustomMainScene());
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		} else {
 			hboxInvalide.setVisible(true);
 		}
 	}
-
-	
-
 
 }

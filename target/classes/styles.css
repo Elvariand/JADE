@@ -83,28 +83,25 @@
     
 }
 
-
 .titled-pane > .title {
     -fx-background-color: #454443; /* Changer la couleur de fond des titres */
     -fx-text-fill: #FFFFFF; /* Changer la couleur du texte des titres */
     -fx-font-size: 18px; /* Changer la taille de la police du titre */
     -fx-background-radius: 13px;
+    -fx-padding:10px; 
  
 }
 
 .titled-pane > .content {
-    -fx-background-color: transparent; /* Changer la couleur de fond du contenu */
+    -fx-background-color: #DD734C; /* Changer la couleur de fond du contenu */
     -fx-text-fill: #272727; /* Changer la couleur du texte des titres */
-    -fx-font-size: 13px; /* Changer la taille de la police du titre */
-   
-  }
+    -fx-font-size: 12px; /* Changer la taille de la police du titre */
+ }
 
-.textarea {
-	-fx-background-color: #DD734C;	
-	-fx-text-fill: #272727;
-	-fx-font-size: 13px;
+.textarea{
+	-fx-control-inner-background:#DD734C; 
 	
-	}
+}
 
 
 
