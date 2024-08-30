@@ -23,6 +23,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
 import fr.isika.cda27.teamJADE.model.Intern;
+import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import javafx.geometry.Insets;
@@ -46,157 +47,184 @@ public class CustomPrintBox extends VBox {
 	protected BaseColor orangeColor = new BaseColor(221, 115, 76);
 	protected String saveDirectory = "";
 	protected String fileName = "";
-	
-	public CustomPrintBox (TableView tableView, Label labelError) {
-	
-	this .tableView = tableView;
-	this.setSpacing(40);
-	this.setAlignment(Pos.CENTER);
-	this.setPrefSize(BTN_BOX_WIDTH, 200);
-	
+
+	public CustomPrintBox(TableView tableView, Label labelError) {
+
+		this.tableView = tableView;
+		this.setSpacing(40);
+		this.setAlignment(Pos.CENTER);
+		this.setPrefSize(BTN_BOX_WIDTH, 200);
+
 		LocalDate currentDate = LocalDate.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
-        String formattedDate = currentDate.format(formatter);
-        
-        CustomTextField fileNameField = new CustomTextField();
-        fileNameField.setText("Table_des_stagiaires_" + formattedDate + ".pdf");
-        fileNameField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd_MM_yyyy");
+		String formattedDate = currentDate.format(formatter);
+
+		CustomTextField fileNameField = new CustomTextField();
+		fileNameField.setText("Table_des_stagiaires_" + formattedDate + ".pdf");
+		fileNameField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent; -fx-text-fill: #454443;");
-        fileNameField.setMaxWidth(540);
-        
-        CustomButton chooseDirectoryButton = new CustomButton("Dossier cible");
-        chooseDirectoryButton.setPrefWidth(220);
-        
-        // si on clique dans le fileNameField
-        fileNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue) {
-                // Le TextField a élé cliqué
-                fileNameField.setStyle(SET_BG_ORANGE_COLOR + 
-                    "-fx-background-radius: 13; " +
-                    "-fx-border-radius: 13; " +
-                    "-fx-border-color: transparent transparent #704739 transparent; " +
-                    "-fx-text-fill: #272727;"
-                );
-            }
-        });
-		
+		fileNameField.setMaxWidth(540);
+
+		CustomButton chooseDirectoryButton = new CustomButton("Dossier cible");
+		chooseDirectoryButton.setPrefWidth(220);
+
+		// si on clique dans le fileNameField
+		fileNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue) {
+				// Le TextField a élé cliqué
+				fileNameField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: transparent transparent #704739 transparent; "
+						+ "-fx-text-fill: #272727;");
+			}
+		});
+
 		chooseDirectoryButton.setOnAction(e -> {
-            DirectoryChooser directoryChooser = new DirectoryChooser();
-            File selectedDirectory = directoryChooser.showDialog((Stage)CustomPrintBox.this.getScene().getWindow());
-            if (selectedDirectory != null) {
-                saveDirectory = selectedDirectory.getAbsolutePath();
-            }
-        });
-		
+			DirectoryChooser directoryChooser = new DirectoryChooser();
+			File selectedDirectory = directoryChooser.showDialog((Stage) CustomPrintBox.this.getScene().getWindow());
+			if (selectedDirectory != null) {
+				saveDirectory = selectedDirectory.getAbsolutePath();
+			}
+		});
+
 		this.labelError = labelError;
-		this.labelError.setPadding(new Insets(50,0,0,0));
-		
+		this.labelError.setPadding(new Insets(50, 0, 0, 0));
+
 		this.exportButton = new CustomButton("Exporter");
 		exportButton.setOnAction(e -> {
-            fileName = fileNameField.getText();
-            if (saveDirectory.isEmpty() || fileName.isEmpty()) {
-            	this.labelError.setVisible(true);
-                return;
-            } else {
-            	this.labelError.setText("L'annuaire a bien été exporté");
-            	this.labelError.setVisible(true);
-            	exportToPDF(tableView);
-            }
-        });
-		
-		this.getChildren().addAll(fileNameField,chooseDirectoryButton,labelError, exportButton);
-		
+			fileName = fileNameField.getText();
+			if (saveDirectory.isEmpty() || fileName.isEmpty()) {
+				this.labelError.setVisible(true);
+				return;
+			} else {
+				this.labelError.setText("L'annuaire a bien été exporté");
+				this.labelError.setVisible(true);
+				exportToPDF(tableView);
+			}
+		});
+
+		this.getChildren().addAll(fileNameField, chooseDirectoryButton, labelError, exportButton);
+
 	}
 
-	
 	private void exportToPDF(TableView tableView) {
 		File file = new File(saveDirectory, fileName);
-        try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
-        	Document document = new Document();
-            PdfWriter.getInstance(document,fileOutputStream);
-            document.setMargins(50, 50, 50, 50);
-            
-            document.open();
+		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
+			Document document = new Document();
+			PdfWriter.getInstance(document, fileOutputStream);
+			document.setMargins(50, 50, 50, 50);
 
-            BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/KronaOne-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font titleFont = new Font(baseFont, 24, Font.BOLD);
-            
-            // ajout du titre
-            Paragraph title = new Paragraph("Liste des Stagiaires", titleFont);
-            title.setAlignment(Element.ALIGN_CENTER);
-            document.add(title);
-            
-            // retour à la ligne
-            document.add(new Paragraph("\n\n\n"));
-            
-            // ajout du soustitre
-            Font normalFont = new Font(baseFont, 14,Font.UNDERLINE);
-            Paragraph subtitle = new Paragraph("Critères de sélection :", normalFont);
-            document.add(subtitle);
-            
-            // retour à la ligne
-            document.add(new Paragraph("\n\n"));
-            
-            Font textFont = new Font(baseFont, 12);
-            // ajout des lignes de critères 
-            document.add(new Paragraph("Nom de famille : ", textFont));
-            document.add(new Paragraph("Prénom : ", textFont));
-            document.add(new Paragraph("Région : ", textFont));
-            document.add(new Paragraph("Formation suivie : ", textFont));
-            document.add(new Paragraph("Année : ", textFont));
+			document.open();
 
-            // retour à la ligne
-            document.add(new Paragraph("\n\n"));
-            
-            // ajout de la table
-            PdfPTable pdfTable = new PdfPTable(tableView.getColumns().size());
-            pdfTable.setWidthPercentage(100);
-                        
-            // table du header
-            addTableHeader(pdfTable, tableView);
+			BaseFont baseFont = BaseFont.createFont("src/main/resources/fonts/KronaOne-Regular.ttf",
+					BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+			Font titleFont = new Font(baseFont, 24, Font.BOLD);
 
-            // ajout des lignes
-            addRows(pdfTable);
+			// ajout du titre
+			Object item = tableView.getItems().get(1);
 
-            document.add(pdfTable);
-            document.close();
-            System.out.println("PDF created successfully!");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
-		
+				if (item instanceof Intern) {
+					Paragraph title = new Paragraph("Liste des Stagiaires", titleFont);
+					title.setAlignment(Element.ALIGN_CENTER);
+					document.add(title);
+
+				} else if (item instanceof Member) {
+					Paragraph title = new Paragraph("Liste des Membres", titleFont);
+					title.setAlignment(Element.ALIGN_CENTER);
+					document.add(title);
+				}
+
+			// retour à la ligne
+			document.add(new Paragraph("\n\n\n"));
+
+			// ajout du soustitre
+			Font normalFont = new Font(baseFont, 14, Font.UNDERLINE);
+			Paragraph subtitle = new Paragraph("Critères de sélection :", normalFont);
+			document.add(subtitle);
+
+			// retour à la ligne
+			document.add(new Paragraph("\n\n"));
+
+			Font textFont = new Font(baseFont, 12);
+			
+			// ajout des lignes de critères
+			if (item instanceof Intern) {
+				document.add(new Paragraph("Nom de famille : ", textFont));
+				document.add(new Paragraph("Prénom : ", textFont));
+				document.add(new Paragraph("Région : ", textFont));
+				document.add(new Paragraph("Formation suivie : ", textFont));
+				document.add(new Paragraph("Année : ", textFont));
+
+			} else if (item instanceof Member) {
+				document.add(new Paragraph("Nom de famille : ", textFont));
+				document.add(new Paragraph("Prénom : ", textFont));
+				document.add(new Paragraph("Pseudo : ", textFont));
+				document.add(new Paragraph("Mail : ", textFont));
+				document.add(new Paragraph("Status : ", textFont));
+			}
+
+			// retour à la ligne
+			document.add(new Paragraph("\n\n"));
+
+			// ajout de la table
+			PdfPTable pdfTable = new PdfPTable(tableView.getColumns().size());
+			pdfTable.setWidthPercentage(100);
+
+			// table du header
+			addTableHeader(pdfTable, tableView);
+
+			// ajout des lignes
+			addRows(pdfTable);
+
+			document.add(pdfTable);
+			document.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
+
 	private void addTableHeader(PdfPTable pdfTable, TableView<?> tableView) {
-	    for (TableColumn<?, ?> column : tableView.getColumns()) {
-	        PdfPCell header = new PdfPCell();
-	        header.setBackgroundColor(orangeColor);
-	        header.setFixedHeight(20);
-	        
-	        String columnTitle = column.getText();
-	        header.setPhrase(new Phrase(columnTitle));
-	        
-	        header.setBorderColor(borderColor);
-	        pdfTable.addCell(header);
-	    }
+		for (TableColumn<?, ?> column : tableView.getColumns()) {
+			PdfPCell header = new PdfPCell();
+			header.setBackgroundColor(orangeColor);
+			header.setFixedHeight(20);
+
+			String columnTitle = column.getText();
+			header.setPhrase(new Phrase(columnTitle));
+
+			header.setBorderColor(borderColor);
+			pdfTable.addCell(header);
+		}
 	}
 
 	private void addRows(PdfPTable pdfTable) {
-	    for (Object item : tableView.getItems()) {
-	        Intern intern = (Intern) item;
-	        
-	        pdfTable.addCell(createCell(intern.getFamilyName(), borderColor));
-	        pdfTable.addCell(createCell(intern.getFirstName(), borderColor));
-	        pdfTable.addCell(createCell(String.valueOf(intern.getCounty()), borderColor));
-	        pdfTable.addCell(createCell(intern.getCursus(), borderColor));
-	        pdfTable.addCell(createCell(String.valueOf(intern.getYearIn()), borderColor));
-	    }
+		for (Object item : tableView.getItems()) {
+
+			if (item instanceof Intern) {
+
+				Intern intern = (Intern) item;
+				pdfTable.addCell(createCell(intern.getFamilyName(), borderColor));
+				pdfTable.addCell(createCell(intern.getFirstName(), borderColor));
+				pdfTable.addCell(createCell(String.valueOf(intern.getCounty()), borderColor));
+				pdfTable.addCell(createCell(intern.getCursus(), borderColor));
+				pdfTable.addCell(createCell(String.valueOf(intern.getYearIn()), borderColor));
+
+			} else if (item instanceof Member) {
+				Member member = (Member) item;
+				pdfTable.addCell(createCell(member.getFamilyName(), borderColor));
+				pdfTable.addCell(createCell(member.getName(), borderColor));
+				pdfTable.addCell(createCell(member.getAlias(), borderColor));
+				pdfTable.addCell(createCell(member.getEmail(), borderColor));
+				pdfTable.addCell(createCell(member.getAdmin(), borderColor));
+			}
+		}
 	}
-	
-    private PdfPCell createCell(String content, BaseColor borderColor) {
-        PdfPCell cell = new PdfPCell(new Phrase(content));
-        cell.setBorderColor(borderColor);
-        cell.setBorderWidth(1); 
-        return cell;
-    }
+
+	private PdfPCell createCell(String content, BaseColor borderColor) {
+		PdfPCell cell = new PdfPCell(new Phrase(content));
+		cell.setBorderColor(borderColor);
+		cell.setBorderWidth(1);
+		return cell;
+	}
 }

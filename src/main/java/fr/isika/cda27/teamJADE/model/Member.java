@@ -133,9 +133,9 @@ public class Member {
 	 */
 	public String getAdmin() {
 		if (isAdmin()) {
-			return "true";
+			return "administrateur";
 		} else {
-			return "false";
+			return "non administrateur";
 		}
 	}
 

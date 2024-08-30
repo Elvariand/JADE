@@ -74,34 +74,34 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 
-		InternDao test_intern = new InternDao();
-		test_intern.deleteBinary();
-		test_intern.addFromDon();
-//		test_intern.sortView(0);
-		System.out.println("======================");
-		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
-		test_intern.insert(PY);
-		test_intern.readBinary();
-		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
-		System.out.println("======================");
-		test_intern.readBinary();
-
-		System.out.println("======================");
-		System.out.println("======================");
-		MemberDao test_member = new MemberDao();
-		test_member.deleteBinary();
-		Member User1 = new Member("jacqueline","mdpdedelphine","JACQUIER", "delphine","maildelphine@gmail.com" );
-		Member User2 = new Member("elChipoteur","mdpdejason","REVILLARD", "jason","mailjason@gmail.com" );
-		Member User3 = new Member("alexiadu81", "mdpdealexia","ROY", "alexia","mailalexia@gmail.com");
-		
-		test_member.addFirstMember();
-		test_member.insert(User1);
-		test_member.insert(User2);
-		test_member.insert(User3);
-		
-		System.out.println("======================");
-//		test_member.sortView(0);
-		test_member.readBinary();
+//		InternDao test_intern = new InternDao();
+//		test_intern.deleteBinary();
+//		test_intern.addFromDon();
+////		test_intern.sortView(0);
+//		System.out.println("======================");
+//		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
+//		test_intern.insert(PY);
+//		test_intern.readBinary();
+//		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
+//		System.out.println("======================");
+//		test_intern.readBinary();
+//
+//		System.out.println("======================");
+//		System.out.println("======================");
+//		MemberDao test_member = new MemberDao();
+//		test_member.deleteBinary();
+//		Member User1 = new Member("jacqueline","mdpdedelphine","JACQUIER", "delphine","maildelphine@gmail.com" );
+//		Member User2 = new Member("elChipoteur","mdpdejason","REVILLARD", "jason","mailjason@gmail.com" );
+//		Member User3 = new Member("alexiadu81", "mdpdealexia","ROY", "alexia","mailalexia@gmail.com");
+//		
+//		test_member.addFirstMember();
+//		test_member.insert(User1);
+//		test_member.insert(User2);
+//		test_member.insert(User3);
+//		
+//		System.out.println("======================");
+////		test_member.sortView(0);
+//		test_member.readBinary();
 		
 		
 		launch();
