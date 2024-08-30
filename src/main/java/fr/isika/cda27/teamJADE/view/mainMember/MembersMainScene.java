@@ -10,8 +10,10 @@ import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
+import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
 import fr.isika.cda27.teamJADE.view.mainIntern.AddPane;
+import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
 import fr.isika.cda27.teamJADE.view.mainIntern.PrintPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.QuitPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.RemovePane;
@@ -87,12 +89,13 @@ public class MembersMainScene extends AnchorPane {
 
 		stackPaneHelp.setMaxSize(75, 75);
 
-//		stackPaneHelp.getButton().setOnAction(event -> {
-//			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
-//			Scene scene = new Scene(new HelpScene());
-//			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
-//			stage.setScene(scene);
-//		});
+		stackPaneHelp.getButton().setOnAction(event -> {
+			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
+//			Scene scene = new Scene(new HelpSceneAdmin(new MembersMainScene()));
+			Scene scene = new Scene(new HelpSceneNotAdmin(new MembersMainScene()));
+			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
+			stage.setScene(scene);
+		});
 
 		// TableView
 		// données d'exemple
@@ -614,11 +617,11 @@ public class MembersMainScene extends AnchorPane {
 		double columnWidth = 1025 / 5;
 
 		TableColumn<Member, String> column1 = new TableColumn<>("Nom de Famille");
-		column1.setCellValueFactory(new PropertyValueFactory<>("alias"));
+		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));
 		column1.setPrefWidth(columnWidth);
 		
 		TableColumn<Member, String> column2 = new TableColumn<>("Prénom");
-		column2.setCellValueFactory(new PropertyValueFactory<>("alias"));
+		column2.setCellValueFactory(new PropertyValueFactory<>("name"));
 		column2.setPrefWidth(columnWidth);
 		
 		TableColumn<Member, String> column3 = new TableColumn<>("Pseudo");
@@ -626,7 +629,7 @@ public class MembersMainScene extends AnchorPane {
 		column3.setPrefWidth(columnWidth);
 		
 		TableColumn<Member, String> column4 = new TableColumn<>("Mail");
-		column4.setCellValueFactory(new PropertyValueFactory<>("alias"));
+		column4.setCellValueFactory(new PropertyValueFactory<>("email"));
 		column4.setPrefWidth(columnWidth);
 
 		TableColumn<Member, String> column5 = new TableColumn<>("Status");

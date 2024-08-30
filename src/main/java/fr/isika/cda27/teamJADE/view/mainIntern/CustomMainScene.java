@@ -11,6 +11,7 @@ import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
+import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -77,8 +78,8 @@ public class CustomMainScene extends AnchorPane {
 
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
-//			Scene scene = new Scene(new HelpSceneAdmin());
-			Scene scene = new Scene(new HelpSceneNotAdmin());
+//			Scene scene = new Scene(new HelpSceneAdmin(new CustomMainScene()));
+			Scene scene = new Scene(new HelpSceneNotAdmin(new CustomMainScene()));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
@@ -103,9 +104,7 @@ public class CustomMainScene extends AnchorPane {
 
 		// VBox avec les contenu pringipaux à gauche du menu
 		ScopePane scopeContentVbox = new ScopePane();
-
 		AddPane addContentVbox = new AddPane();
-
 		RemovePane removeContentVbox = new RemovePane();
 		UpdatePane updateContentVbox = new UpdatePane();
 		PrintPane printContentVbox = new PrintPane(tableView);

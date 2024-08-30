@@ -88,9 +88,9 @@ public class App extends Application {
 		System.out.println("======================");
 		MemberDao test_member = new MemberDao();
 		test_member.deleteBinary();
-		Member User1 = new Member("jacqueline","mdpdedelphine","JACQUIER", "delphine","maildedelphine@gmail.com" );
-		Member User2 = new Member("elChipoteur","mdpdejason","REVILLARD", "jason","maildejason@gmail.com" );
-		Member User3 = new Member("alexiadu81", "mdpdealexia","ROY", "alexia","maildealexia@gmail.com");
+		Member User1 = new Member("jacqueline","mdpdedelphine","JACQUIER", "delphine","maildelphine@gmail.com" );
+		Member User2 = new Member("elChipoteur","mdpdejason","REVILLARD", "jason","mailjason@gmail.com" );
+		Member User3 = new Member("alexiadu81", "mdpdealexia","ROY", "alexia","mailalexia@gmail.com");
 		
 		test_member.addFirstMember();
 		test_member.insert(User1);

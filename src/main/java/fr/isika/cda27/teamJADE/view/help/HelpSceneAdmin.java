@@ -26,10 +26,13 @@ public class HelpSceneAdmin extends AnchorPane {
 
 	private TitledPane pane;
 	private TextArea textArea;
+	private AnchorPane rootForReturnBtn;
 
-	public HelpSceneAdmin() {
+	public HelpSceneAdmin(AnchorPane rootForReturnBtn) {
 		this.setPrefSize(1280, 720);
 
+		this.rootForReturnBtn = rootForReturnBtn;
+		
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
 		// 	Création des éléments de l'accordeon
@@ -76,7 +79,7 @@ public class HelpSceneAdmin extends AnchorPane {
 		// Action du bouton Retour : retourne à la mainScene
 		btnRetourHelp.setOnAction(event -> {
 			Stage stage = ((Stage) HelpSceneAdmin.this.getScene().getWindow());
-			Scene scene = new Scene(new CustomMainScene());
+			Scene scene = new Scene(rootForReturnBtn);
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
