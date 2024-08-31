@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
+import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
@@ -30,6 +31,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -38,7 +40,11 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -137,8 +143,6 @@ public class CustomMainScene extends AnchorPane {
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
 //		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
-//		menubarVBox.setStyle("-fx-border-color: green;");
-//		menubarVBox.setStyle("-fx-background-color: transparent; -fx-border-color: green; -fx-border-width: 5;");
 
 		// On crée la croix du haut
 
@@ -254,14 +258,6 @@ public class CustomMainScene extends AnchorPane {
 				rotateTransition.play();
 
 			} else {
-				// sinon on ferme
-				moveTransition.setDuration(DURATION_TIME);
-				moveTransition.setNode(menuHbox);
-				moveTransition.setToX(TOX_SMALL_MENU);
-				moveTransition.play();
-
-				closeBtn.getBtnGreyImageView().setVisible(false);
-				closeBtn.getBtnOrangeImageView().setVisible(true);
 
 				closeMenu(menubarVBox);
 
@@ -314,14 +310,6 @@ public class CustomMainScene extends AnchorPane {
 				return filters;
 			});
 
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
-
 			closeMenu(menubarVBox);
 
 		});
@@ -359,6 +347,24 @@ public class CustomMainScene extends AnchorPane {
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
 		});
+		
+		
+		// Les actions en écrivant
+		Label[] addContentErrorLabels = this.getPaneErrorLabel(addContentVbox);
+		TextField[] addContentTextFields = this.getPaneTextField(addContentVbox);
+		String[] types = {"name","name","int","cursus","int"};
+		
+		for (int i = 0; i < addContentTextFields.length; i++) {
+			this.actionOnTyping((CustomTextField) addContentTextFields[i], addContentErrorLabels[i], types[i]);
+			addContentTextFields[i].setOnKeyReleased(event -> {
+				boolean[] good = areAllFieldsCorrectlyFilled(addContentVbox);
+				if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+					addContentAddBtn.setDisable(false);
+				} else {
+					addContentAddBtn.setDisable(true);
+				}
+			});
+		}
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
@@ -390,7 +396,7 @@ public class CustomMainScene extends AnchorPane {
 			InternDao dao = new InternDao();
 			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
 
-			if (good[0] && good[1]) {
+			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
 
 				dao.update(
 						new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
@@ -399,10 +405,10 @@ public class CustomMainScene extends AnchorPane {
 
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
+				this.closeMenu(menubarVBox);
 			} else {
 				updateContentVbox.getLabelError().setVisible(true);
 			}
-			this.closeMenu(menubarVBox);
 		});
 
 		// Annuler button
@@ -415,31 +421,61 @@ public class CustomMainScene extends AnchorPane {
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
 			closeMenu(menubarVBox);
 		});
 
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
 			closeMenu(menubarVBox);
 		});
 
 	}
 
+private void actionOnTyping(CustomTextField tf, Label error, String type) {
+	tf.setOnKeyPressed(event -> {
+		if(tf.getText().length() <= 1) return;
+		switch (type) {
+		case "name":
+			if (isStringNameCorrect(tf)) {
+				error.setVisible(false);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			} else {
+				error.setVisible(true);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+			}
+			break;
+		case "cursus":
+			if (isStringCursusCorrect(tf)) {
+				error.setVisible(false);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			} else {
+				error.setVisible(true);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+			}
+			break;
+		case "int":
+			if (isStringIntCorrect(tf)) {
+				error.setVisible(false);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+			} else {
+				error.setVisible(true);
+				tf.setBorder(new Border(new BorderStroke(
+						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+			}
+			break;
+		default:
+			System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" ou \"int\" . ");
+			break;
+		}
+	});
+}
+	
 	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield
 		String familyName = Pane.getTextFamilyName().trim();
@@ -458,6 +494,19 @@ public class CustomMainScene extends AnchorPane {
 		refresh(pane.getGridPaneCounty());
 		refresh(pane.getGridPaneCursus());
 		refresh(pane.getGridPaneYearIn());
+	}
+
+	private TextField[] getPaneTextField(RepetitivePane pane) {
+		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneFirstName(), pane.getGridPaneCounty(),
+				pane.getGridPaneCursus(), pane.getGridPaneYearIn() };
+		return tf;
+	}
+
+	private Label[] getPaneErrorLabel(RepetitivePane pane) {
+
+		Label[] labels = { pane.getFamilyNameErrorLabel(), pane.getFirstNameErrorLabel(), pane.getCountyErrorLabel(),
+				pane.getCursusErrorLabel(), pane.getYearInErrorLabel() };
+		return labels;
 	}
 
 	private void refresh(TextField textField) {
@@ -529,6 +578,15 @@ public class CustomMainScene extends AnchorPane {
 		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
 		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
 
+		TranslateTransition moveTransition = new TranslateTransition();
+
+		moveTransition.setDuration(DURATION_TIME);
+		moveTransition.setNode(menubarVBox.getParent());
+		moveTransition.setToX(TOX_SMALL_MENU);
+		moveTransition.play();
+
+		closeBtn.getBtnGreyImageView().setVisible(false);
+		closeBtn.getBtnOrangeImageView().setVisible(true);
 // On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
@@ -696,37 +754,31 @@ public class CustomMainScene extends AnchorPane {
 	}
 
 	private boolean[] areAllFieldsCorrectlyFilled(RepetitivePane scene) {
-		boolean filled = true;
-		boolean areInteger = true;
 
-		String familyName = scene.getTextFamilyName().trim();
-		String firstName = scene.getTextFirstName().trim();
-		String county = scene.getTextCounty().trim();
-		String cursus = scene.getTextCursus().trim();
-		String yearIn = scene.getTextYearIn().trim();
-
-		if (familyName.length() == 0 || firstName.length() == 0 || cursus.length() == 0 || county.length() == 0
-				|| yearIn.length() == 0) {
-			filled = false;
-			boolean[] tab = { filled, areInteger };
-			return tab;
-		}
-
-		if (Pattern.compile("[^(\\p{L}-\\s)]").matcher(familyName).find()
-				|| Pattern.compile("[^(\\p{L}-\\s)]").matcher(firstName).find()
-				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(cursus).find()) {
-			filled = false;
-		}
-		if (Pattern.compile("[\\D]").matcher(county).find() || Pattern.compile("[\\D]").matcher(yearIn).find()) {
-			areInteger = false;
-		}
-//		int countyInt = Integer.parseInt(county);
-//		int yearInInt = Integer.parseInt(yearIn);
-//		if (countyInt > 0 && countyInt < 1000 && yearInInt > 1950 && yearInInt < 3000) {
-//			areInteger = false;
-//		}
-		boolean[] tab = { filled, areInteger };
+		boolean[] tab = { isStringNameCorrect((CustomTextField) scene.getGridPaneFamilyName()),
+				isStringNameCorrect((CustomTextField) scene.getGridPaneFirstName()),
+				isStringIntCorrect((CustomTextField) scene.getGridPaneCounty()),
+				isStringCursusCorrect((CustomTextField) scene.getGridPaneCursus()),
+				isStringIntCorrect((CustomTextField) scene.getGridPaneYearIn()) };
 		return tab;
+	}
+
+	private boolean isStringNameCorrect(CustomTextField field) {
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[^(\\p{L}-\\s)]").matcher(text).find()
+				|| text.length() > field.getMaxChars());
+	}
+
+	private boolean isStringCursusCorrect(CustomTextField field) {
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(text).find()
+				|| text.length() > field.getMaxChars());
+	}
+
+	private boolean isStringIntCorrect(CustomTextField field) {
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[\\D)]").matcher(text).find()
+				|| text.length() > field.getMaxChars());
 	}
 
 	private String getCurrentColor(SVGPath svgPath) {

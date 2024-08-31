@@ -15,11 +15,12 @@ public class UpdatePane extends RepetitivePane {
 		super();
 
 		this.titleLabel.setText("Modification du stagiaire");
-		this.titleLabel.setPadding(new Insets(20,0,0,0));
+//		this.titleLabel.setPadding(new Insets(20,0,0,0));
 		
 		this.leftButton.setText("Annuler");
 
 		this.rightButton.setText("Modifier");
+		this.rightButton.setDisable(true);
 
 		
 		this.labelError = new Label("Veuillez entrer tous les champs afin de modifier le stagiaire");

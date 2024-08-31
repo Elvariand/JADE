@@ -66,8 +66,8 @@ public class HelpSceneNotAdmin extends AnchorPane {
 				paneImpression, paneDeconnexion};
 
 		for (int i = 0; i < accordionPanes.length; i++) {
-			accordionPanes[i].setBorder(new Border(new BorderStroke(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(10, 0, 10, 0)) ) );
-			accordionPanes[i].setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 16px; -fx-text-fill : #FFFFFF; -fx-background-color: #454443; -fx-padding: 10px; -fx-background-radius: 13px; -fx-margin: 20px");
+			accordionPanes[i].setBorder(new Border(new BorderStroke(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(0, 0, 0, 0)) ) );
+			accordionPanes[i].setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 16px; -fx-text-fill : #FFFFFF; -fx-padding: 10px; -fx-background-radius: 13px; -fx-margin: 20");
 		}	
 
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
@@ -106,7 +106,7 @@ public class HelpSceneNotAdmin extends AnchorPane {
 		VBox vboxHelp = new VBox(30);
 		
 		vboxHelp.getChildren().addAll(bienvenue, accordionHelp, hboxBtnRetourHelp);
-		vboxHelp.setStyle("-fx-background-color:#272727");
+		vboxHelp.setStyle("-fx-background-color:#272727; -fx-background-radius: 13px;");
 		vboxHelp.setAlignment(Pos.CENTER);
 		 vboxHelp.setMinSize(1280, 720); 
 		 vboxHelp.setPrefSize(1280, 720); 
@@ -114,7 +114,7 @@ public class HelpSceneNotAdmin extends AnchorPane {
 
 		StackPane StackPaneHelp = new StackPane();
 		StackPaneHelp.setPrefSize(1280, 720);
-		StackPaneHelp.setStyle("-fx-background-color: #272727;");
+		StackPaneHelp.setStyle("-fx-background-color: #272727; -fx-background-radius: 13px;");
 		StackPaneHelp.getChildren().addAll(vboxHelp);
 
 		this.getChildren().add(StackPaneHelp);

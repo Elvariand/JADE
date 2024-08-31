@@ -58,7 +58,17 @@ public class UtilStaticValues {
 
 	public static class MenuVboxValues {
 
-		public static final String[] LABEL_TEXTS = { "Nom de famille", "Prénom", "Région", "Formation suivie", "Année" };
+
+		public static final String[] LABEL_TEXTS = { "Nom de famille", "Prénom", "Région", "Formation suivie",
+				"Année" };
+		public static final String LABEL_ERROR_FAM_NAME = "Cet espace est limité à 30 caractères. Seuls les lettres avec ou sans accent, les traits d'union et les espaces sont autorisés.";
+		public static final String LABEL_ERROR_FIRST_NAME = "Cet espace est limité à 30 caractères. Seuls les lettres avec ou sans accent, les traits d'union et les espaces sont autorisés.";
+		public static final String LABEL_ERROR_COUNTY = "Cet espace est limité à 3 caractères. Seuls les chiffres sont autorisés.";
+		public static final String LABEL_ERROR_CURSUS = "Cet espace est limité à 10 caractères. Seuls les lettres avec ou sans accent, les espaces et les chiffres sont autorisés.";
+		public static final String LABEL_ERROR_YEARIN = "Cet espace est limité à 4 caractères. Seuls les chiffres sont autorisés.";
+		public static final String[] LABEL_ERRORS = { LABEL_ERROR_FAM_NAME, LABEL_ERROR_FIRST_NAME, LABEL_ERROR_COUNTY,
+				LABEL_ERROR_CURSUS, LABEL_ERROR_YEARIN };
+
 
 		public static final String[] LABEL_TEXTS_MEMBERS = { "Nom de famille", "Prénom", "Pseudo", "Mail", "Administrateur"};
 		
@@ -78,7 +88,7 @@ public class UtilStaticValues {
 		public static final int COL1_WIDTH = 270;
 		public static final int COL2_WIDTH = 408;
 		public static final int ROW_HEIGHT = 50;
-		public static final int NBR_OF_LINES = 5;
+		public static final int NBR_OF_LINES = 10;
 
 		public static final int LABEL_ERROR_WIDTH = 680;
 		public static final int LABEL_ERROR_HEIGHT = 50;
@@ -87,7 +97,7 @@ public class UtilStaticValues {
 			// GridPane
 			GridPane gridPane = new GridPane();
 			gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
-			gridPane.setVgap(15);
+			gridPane.setVgap(10);
 			gridPane.setHgap(10);
 
 			// marges pour le GridPane
@@ -106,23 +116,48 @@ public class UtilStaticValues {
 			// lignes du GridPane
 			for (int i = 0; i < NBR_OF_LINES; i++) {
 				RowConstraints rowConstraints = new RowConstraints();
-				rowConstraints.setPrefHeight(ROW_HEIGHT);
+
+				if (i % 2 == 1) {
+					rowConstraints.setPrefHeight(ROW_HEIGHT / 2);
+					// labels des erreurs
+					Label labelError = new Label(LABEL_ERRORS[i / 2]);
+					labelError.setFont(Font.font("Krona One", 8));
+					labelError.setTextFill(GREY_COLOR);
+					labelError.setMaxWidth(COL2_WIDTH);
+					labelError.setMinHeight(25);
+					labelError.setWrapText(true);
+					labelError.setVisible(false);
+
+					GridPane.setMargin(labelError, new Insets(0, 0, 20, 0));
+
+					gridPane.add(labelError, 1, i);
+
+				} else {
+
+					rowConstraints.setPrefHeight(CustomTextFieldValues.TF_HEIGHT + 5);
+
+					// texte de droite
+					CustomTextField textField = new CustomTextField();
+					if (i == 2) {
+						textField.setMaxChars(3);
+					} else if (i == 3) {
+						textField.setMaxChars(10);
+					} else if (i == 4) {
+						textField.setMaxChars(4);
+					}
+
+					GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
+					
+					// label
+					Label label = new Label(LABEL_TEXTS[i / 2]);
+					label.setFont(Font.font("Krona One", 16));
+					label.setTextFill(GREY_COLOR);
+					GridPane.setMargin(label, new Insets(0, 30, 0, 40));
+
+					gridPane.add(label, 0, i);
+					gridPane.add(textField, 1, i);
+				}
 				gridPane.getRowConstraints().add(rowConstraints);
-
-				// label
-				Label label = new Label(LABEL_TEXTS[i]);
-				label.setFont(Font.font("Krona One", 16));
-				label.setTextFill(GREY_COLOR);
-				GridPane.setMargin(label, new Insets(0, 30, 0, 40));
-
-				// texte de droite
-				CustomTextField textField = new CustomTextField();
-
-				GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
-
-				// ajouter tout au GridPane
-				gridPane.add(label, 0, i);
-				gridPane.add(textField, 1, i);
 			}
 
 			return gridPane;
@@ -261,65 +296,69 @@ public class UtilStaticValues {
 		// Member
 		public static final int MAX_CHAR_ALIAS = 31;
 		public static final int MAX_CHAR_PASSWORD = 31;
-		public static final int MAX_CHAR_FAMILYNAME = 31; 
-		public static final int MAX_CHAR_NAME = 31; 
-		public static final int MAX_CHAR_EMAIL = 40; 
+		public static final int MAX_CHAR_FAMILYNAME = 31;
+		public static final int MAX_CHAR_NAME = 31;
+		public static final int MAX_CHAR_EMAIL = 40;
 		public static final int OCTETS_TOOK_BY_ADMIN = 1;
-		public static final int MEMBER_SIZE = ((MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD + MAX_CHAR_FAMILYNAME + MAX_CHAR_NAME + MAX_CHAR_EMAIL)
-				* OCTETS_TOOK_BY_CHAR) + OCTETS_TOOK_BY_ADMIN;
+		public static final int MEMBER_SIZE = ((MAX_CHAR_ALIAS + MAX_CHAR_PASSWORD + MAX_CHAR_FAMILYNAME + MAX_CHAR_NAME
+				+ MAX_CHAR_EMAIL) * OCTETS_TOOK_BY_CHAR) + OCTETS_TOOK_BY_ADMIN;
 		public static final int MEMBER_NODE_SIZE = MEMBER_SIZE + INDEX_SIZE + INDEX_SIZE + INDEX_SIZE;
 	}
 
-public static class HelpTextValues {
-		
-		public static final String INTRODUCTION="Introduction"; 
-		public static final String INTRODUCTION_TEXT = "Cet annuaire est un outil destiné à centraliser et gérer les informations des stagiaires de manière simple et efficace." + "\n"
-				+                		"Il s'adresse aux administrateurs du centre de formation." + "\n"
-				+                 		"Une authentification à l'aide d'un nom d'utilisateur et d'un mot de passe est nécessaire pour accéder à l'annuaire." + "\n"
-				+                 		"L'annuaire est accessible sur ordinateur uniquement."; 
-		public static final String RECHERCHE = "Recherche Avancée"; 
-		public static final String RECHERCHE_TEXT = "Pour rechercher un stagiaire, il vous suffit de suivre les instructions suivantes:"+ "\n"
-		+ "		1/ Pour accéder à la page de recherche, cliquez sur l'icône 'Rechercher' (représenté par une loupe) dans la barre de menu situé à gauche de l'écran" + "\n"
-		+ " 	2/ Pour affiner votre recherche et trouver le stagiaire qui correspond à vos critères, complétez les différents filtres disponibles, à savoir le Nom de famille, et/ou le Prénom, et/ou le Département, et/ou la formation suivie, et/ou l'année d'entrée en formation"+ "\n"
-		+ " 	3/ Une fois vos critères de recherche définis, cliquez sur le bouton 'Rechercher'. Vous verrez alors une liste de stagiaires correspondant à vos filtres."; 
-		public static final String GESTION_STAGIAIRES = "Gestion des stagiaires"; 
-		public static final String AJOUT_STAGIAIRE = "Ajouter un stagiaire"; 
-		public static final String AJOUT_STAGIAIRE_TEXT = "Pour ajouter un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n"
-				+ "    1/ Pour accéder à la page d'ajout, cliquez sur l'icône 'Ajouter' (représenté par un stagiaire avec un +) situé dans la barre du menu à gauche de l'écran puis" + "\n"
-				+ "    2/ Complétez les champs du formulaire d'ajout sans vous soucier des majuscules : Nom de famille, Prénom, Département, Formation suivie, Année d'entrée en formation" + "\n"
-				+ "    3/ Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n"
-				+ "Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
-				+ "Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'."+ "\n"
-				+ "Le nouveau stagiaire sera automatiquement ajouté par ordre alphabétique de son nom de famille. "; 
-		public static final String MODIFICATION_STAGIAIRE= "Modifier un stagiaire"; 
-		public static final String MODIFICATION_STAGIAIRE_TEXT = "Pour modifier un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n" 
-				+ "	1/ Pour sélectionner le stagiaire à modifier, vous pouvez soit le selectionner directement dans la liste en cliquant sur la ligne correspondant au stagiaire ou alors ouvrez la page de modiciation en cliquant sur l'icône 'Modifer' (représenté par un stagiaire avec un stylo), recherchez le stagiaire à modifier à l'aide des critères de recherche proposés"  + "\n"
-				+ "	2/ Cliquez sur l'icône 'modifier' (représenté par un stagiaire tenant un stylo) situé dans la barre du menu à gauche de l'écran puis" + "\n"
-				+ "	3/ Modifiez le(s) champ(s) du formulaire souhaité(s)" + "\n"
-				+ "	4/ Cliquez sur le bouton 'Modifier' située en bas à droite pour valider la modification." + "\n" 
+	public static class HelpTextValues {
+
+		public static final String INTRODUCTION = "Introduction";
+		public static final String INTRODUCTION_TEXT = "Cet annuaire est un outil destiné à centraliser et gérer les informations des stagiaires de manière simple et efficace."
+				+ "\n" + "Il s'adresse aux administrateurs du centre de formation." + "\n"
+				+ "Une authentification à l'aide d'un nom d'utilisateur et d'un mot de passe est nécessaire pour accéder à l'annuaire."
+				+ "\n" + "L'annuaire est accessible sur ordinateur uniquement.";
+		public static final String RECHERCHE = "Recherche Avancée";
+		public static final String RECHERCHE_TEXT = "Pour rechercher un stagiaire, il vous suffit de suivre les instructions suivantes:"
+				+ "\n"
+				+ "		1/ Pour accéder à la page de recherche, cliquez sur l'icône 'Rechercher' (représenté par une loupe) dans la barre de menu situé à gauche de l'écran"
+				+ "\n"
+				+ " 	2/ Pour affiner votre recherche et trouver le stagiaire qui correspond à vos critères, complétez les différents filtres disponibles, à savoir le Nom de famille, et/ou le Prénom, et/ou le Département, et/ou la formation suivie, et/ou l'année d'entrée en formation"
+				+ "\n"
+				+ " 	3/ Une fois vos critères de recherche définis, cliquez sur le bouton 'Rechercher'. Vous verrez alors une liste de stagiaires correspondant à vos filtres.";
+		public static final String GESTION_STAGIAIRES = "Gestion des stagiaires";
+		public static final String AJOUT_STAGIAIRE = "Ajouter un stagiaire";
+		public static final String AJOUT_STAGIAIRE_TEXT = "Pour ajouter un stagiaire, il vous suffit de suivre les instructions suivantes :"
+				+ "\n"
+				+ "    1/ Pour accéder à la page d'ajout, cliquez sur l'icône 'Ajouter' (représenté par un stagiaire avec un +) situé dans la barre du menu à gauche de l'écran puis"
+				+ "\n"
+				+ "    2/ Complétez les champs du formulaire d'ajout sans vous soucier des majuscules : Nom de famille, Prénom, Département, Formation suivie, Année d'entrée en formation"
+				+ "\n"
+				+ "    3/ Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout."
+				+ "\n" + "Il est obligatoire de remplir tous les champs pour effectuer l'ajout." + "\n"
+				+ "Il est possible d'arrêter l'ajout à tout moment en cliquant sur le bouton 'Annuler'." + "\n"
+				+ "Le nouveau stagiaire sera automatiquement ajouté par ordre alphabétique de son nom de famille. ";
+		public static final String MODIFICATION_STAGIAIRE = "Modifier un stagiaire";
+		public static final String MODIFICATION_STAGIAIRE_TEXT = "Pour modifier un stagiaire, il vous suffit de suivre les instructions suivantes :"
+				+ "\n"
+				+ "	1/ Pour sélectionner le stagiaire à modifier, vous pouvez soit le selectionner directement dans la liste en cliquant sur la ligne correspondant au stagiaire ou alors ouvrez la page de modiciation en cliquant sur l'icône 'Modifer' (représenté par un stagiaire avec un stylo), recherchez le stagiaire à modifier à l'aide des critères de recherche proposés"
+				+ "\n"
+				+ "	2/ Cliquez sur l'icône 'modifier' (représenté par un stagiaire tenant un stylo) situé dans la barre du menu à gauche de l'écran puis"
+				+ "\n" + "	3/ Modifiez le(s) champ(s) du formulaire souhaité(s)" + "\n"
+				+ "	4/ Cliquez sur le bouton 'Modifier' située en bas à droite pour valider la modification." + "\n"
 				+ "Il est obligatoire de remplir tous les champs pour effectuer la modification." + "\n"
-				+ "Il est possible d'arrêter la modification à tout moment en cliquant sur le bouton 'Annuler'."; 
-		public static final String SUPPRESSION_STAGIAIRE = "Supprimer un stagaire"; 
-		public static final String SUPRESSION_STAGAIRE_TEXT = "Pour supprimer un stagiaire, il vous suffit de suivre les instructions suivantes :" + "\n"
-				+                  		"	1/ Selectionnez le stagiaire à supprimer en le selectionnant directement dans la liste" + "\n"
-				+                 		"	2/ Pour accéder à la page de suppression, cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un '-') situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies" + "\n"
-				+                 		"	3/ Après avoir vérifier qu'il s'agit du bon stagiaire à supprimer, cliquez sur le bouton 'Oui' ou annulez la suppression en appuyant sur le bouton 'Non'."; 
-		public static final String MEMBRES = "Espace Membres"; 
+				+ "Il est possible d'arrêter la modification à tout moment en cliquant sur le bouton 'Annuler'.";
+		public static final String SUPPRESSION_STAGIAIRE = "Supprimer un stagaire";
+		public static final String SUPRESSION_STAGAIRE_TEXT = "Pour supprimer un stagiaire, il vous suffit de suivre les instructions suivantes :"
+				+ "\n" + "	1/ Selectionnez le stagiaire à supprimer en le selectionnant directement dans la liste"
+				+ "\n"
+				+ "	2/ Pour accéder à la page de suppression, cliquez sur l'icône 'supprimer' (représenté par un stagiaire avec un '-') situé dans la barre du menu à gauche de l'écran. Les informations du stagiaires sont automatiquement remplies"
+				+ "\n"
+				+ "	3/ Après avoir vérifier qu'il s'agit du bon stagiaire à supprimer, cliquez sur le bouton 'Oui' ou annulez la suppression en appuyant sur le bouton 'Non'.";
+		public static final String MEMBRES = "Espace Membres";
 		public static final String MEMBRES_TEXT = "L'espace membre permet d'afficher la liste des membres ainsi que les informations associées, à savoir le nom, prénom, pseudonyme, adresse mail et le statut conférant des droits d'accès différents. "
-				+ "Pour ajouter un membre, cliquez sur l'icône 'Ajouter' (représenté par un membre avec un +) puis complétez tous les champs du du formulaire d'ajout. Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout." + "\n" +
-				"Pour supprimer un membre, "; 
-		public static final String IMPRESSION = "Impression"; 
-		public static final String IMPRESSION_TEXT = "Il faut d'abord imprimer Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé dans la barre du menu à gauche de l'écran"+ "\n"  
-				+               		"OPTIONS D'IMPRESSION" + "\n" 
-				+               		"."; 
-		public static final String DECONNEXION = "Déconnexion"; 
-		public static final String DECONNEXION_TEXT="Lorsque vous avez terminez d'utiliser l'annuaire, il est nécessaire de se déconnecter en cliquant sur l'icone'Déconnecter'(représentée par un bouton éteindre). Vous serez alors rediriger vers la page de connexion. Il vous faudra de nouveau saisir votre nom d'utilisateur et mot de passe pour accéder à l'annuaire."; 
-		
-		
+				+ "Pour ajouter un membre, cliquez sur l'icône 'Ajouter' (représenté par un membre avec un +) puis complétez tous les champs du du formulaire d'ajout. Après vérification des informations saisies, cliquez sur le bouton 'Ajouter' située en bas à droite pour valider l'ajout."
+				+ "\n" + "Pour supprimer un membre, ";
+		public static final String IMPRESSION = "Impression";
+		public static final String IMPRESSION_TEXT = "Il faut d'abord imprimer Accès à la fonctionnalité : Pour imprimer la liste des stagiaires, cliquez sur l'icône impression (représenté par une imprimante) situé dans la barre du menu à gauche de l'écran"
+				+ "\n" + "OPTIONS D'IMPRESSION" + "\n" + ".";
+		public static final String DECONNEXION = "Déconnexion";
+		public static final String DECONNEXION_TEXT = "Lorsque vous avez terminez d'utiliser l'annuaire, il est nécessaire de se déconnecter en cliquant sur l'icone'Déconnecter'(représentée par un bouton éteindre). Vous serez alors rediriger vers la page de connexion. Il vous faudra de nouveau saisir votre nom d'utilisateur et mot de passe pour accéder à l'annuaire.";
+
 	}
-	
-	
+
 }
-
-
-

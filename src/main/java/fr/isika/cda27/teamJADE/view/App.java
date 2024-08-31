@@ -79,7 +79,7 @@ public class App extends Application {
 //		System.out.println("======================");
 //		Intern PY = new Intern("ROIGNANT", "Pierre-Yves", 77, "AI 95", 2015);
 //		test_intern.insert(PY);
-		test_intern.readBinary();
+//		test_intern.readBinary();
 //		test_intern.delete(new Intern("CHAVENEAU", "Kim Anh", 92, "ATOD 22", 2014));
 //		System.out.println("======================");
 //		test_intern.readBinary();

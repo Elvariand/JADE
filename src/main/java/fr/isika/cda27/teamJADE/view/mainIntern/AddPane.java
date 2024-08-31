@@ -17,12 +17,12 @@ public class AddPane extends RepetitivePane {
 		this.titleLabel.setText("Ajout d'un stagiaire");
 
 
-		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
+//		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
 
 		this.leftButton.setText("Annuler");
 
 		this.rightButton.setText("Ajouter");
-
+		this.rightButton.setDisable(true);
 		
 		this.labelError = new Label("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
 		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
@@ -48,6 +48,4 @@ public class AddPane extends RepetitivePane {
 	public void setLabelError(Label labelError) {
 		this.labelError = labelError;
 	}
-
-
 }

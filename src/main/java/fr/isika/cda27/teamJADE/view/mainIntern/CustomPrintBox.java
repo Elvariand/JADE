@@ -60,6 +60,7 @@ public class CustomPrintBox extends VBox {
 		String formattedDate = currentDate.format(formatter);
 
 		CustomTextField fileNameField = new CustomTextField();
+		fileNameField.setMaxChars(200);
 		fileNameField.setText("Table_des_stagiaires_" + formattedDate + ".pdf");
 		fileNameField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent; -fx-text-fill: #454443;");
