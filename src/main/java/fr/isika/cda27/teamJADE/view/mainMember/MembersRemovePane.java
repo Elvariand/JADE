@@ -134,7 +134,7 @@ public class MembersRemovePane extends RepetitivePane {
 		gridPane.getColumnConstraints().add(col2Constraints);
 
 		// lignes du GridPane
-		for (int i = 0; i < NBR_OF_LINES; i++) {
+		for (int i = 0; i < 5; i++) {
 			RowConstraints rowConstraints = new RowConstraints();
 			rowConstraints.setPrefHeight(50);
 			gridPane.getRowConstraints().add(rowConstraints);

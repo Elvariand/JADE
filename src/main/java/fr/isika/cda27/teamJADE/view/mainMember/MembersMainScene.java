@@ -186,7 +186,7 @@ public class MembersMainScene extends AnchorPane {
 		// On ajoute la croix (invisible pour le moment)
 		menubarVBox.getChildren().add(closeBtn);
 		// On ajoute tous les boutons dans le VBox
-		menubarVBox.getChildren().addAll(scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn);
+		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
 
@@ -457,6 +457,7 @@ public class MembersMainScene extends AnchorPane {
 		});
 
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
+		// Annuler button
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
 			closeMenu(menuHbox);
