@@ -137,33 +137,34 @@ public class CustomPrintBox extends VBox {
 			document.add(new Paragraph("\n\n\n"));
 
 			// ajout du soustitre
-			Font normalFont = new Font(baseFont, 14, Font.UNDERLINE);
-			Paragraph subtitle = new Paragraph("Critères de sélection :", normalFont);
-			document.add(subtitle);
+//			Font normalFont = new Font(baseFont, 14, Font.UNDERLINE);
+//			Paragraph subtitle = new Paragraph("Critères de sélection :", normalFont);
+//			document.add(subtitle);
+//
+//			// retour à la ligne
+//			document.add(new Paragraph("\n\n"));
 
-			// retour à la ligne
-			document.add(new Paragraph("\n\n"));
-
-			Font textFont = new Font(baseFont, 12);
-			
-			// ajout des lignes de critères
-			if (item instanceof Intern) {
-				document.add(new Paragraph("Nom de famille : ", textFont));
-				document.add(new Paragraph("Prénom : ", textFont));
-				document.add(new Paragraph("Région : ", textFont));
-				document.add(new Paragraph("Formation suivie : ", textFont));
-				document.add(new Paragraph("Année : ", textFont));
-
-			} else if (item instanceof Member) {
-				document.add(new Paragraph("Nom de famille : ", textFont));
-				document.add(new Paragraph("Prénom : ", textFont));
-				document.add(new Paragraph("Pseudo : ", textFont));
-				document.add(new Paragraph("Mail : ", textFont));
-				document.add(new Paragraph("Status : ", textFont));
-			}
-
-			// retour à la ligne
-			document.add(new Paragraph("\n\n"));
+			/* SI ON A LE TEMPS */
+//			Font textFont = new Font(baseFont, 12);
+//			
+//			// ajout des lignes de critères
+//			if (item instanceof Intern) {
+//				document.add(new Paragraph("Nom de famille : ", textFont));
+//				document.add(new Paragraph("Prénom : ", textFont));
+//				document.add(new Paragraph("Région : ", textFont));
+//				document.add(new Paragraph("Formation suivie : ", textFont));
+//				document.add(new Paragraph("Année : ", textFont));
+//
+//			} else if (item instanceof Member) {
+//				document.add(new Paragraph("Nom de famille : ", textFont));
+//				document.add(new Paragraph("Prénom : ", textFont));
+//				document.add(new Paragraph("Pseudo : ", textFont));
+//				document.add(new Paragraph("Mail : ", textFont));
+//				document.add(new Paragraph("Status : ", textFont));
+//			}
+//
+//			// retour à la ligne
+//			document.add(new Paragraph("\n\n"));
 
 			// ajout de la table
 			PdfPTable pdfTable = new PdfPTable(tableView.getColumns().size());

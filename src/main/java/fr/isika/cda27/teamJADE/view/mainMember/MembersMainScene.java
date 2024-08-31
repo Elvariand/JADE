@@ -71,6 +71,7 @@ public class MembersMainScene extends AnchorPane {
 	private ObservableList<Member> observableMembers;
 	private FilteredList<Member> filteredMembers;
 	private TableView<Member> tableView;
+	private Member selected;
 
 	public MembersMainScene() {
 		// AnchorPane
@@ -99,9 +100,9 @@ public class MembersMainScene extends AnchorPane {
 
 		// TableView
 		// données d'exemple
-		MemberDao test = new MemberDao();
+		MemberDao memberDao = new MemberDao();
 		this.list = new ArrayList<Member>();
-		this.list = test.sortView(0, list);
+		this.list = memberDao.sortView(0, list);
 
 		this.observableMembers = FXCollections.observableArrayList(this.list);
 		this.filteredMembers = new FilteredList<>(this.observableMembers, p -> true);
@@ -116,30 +117,44 @@ public class MembersMainScene extends AnchorPane {
 		menuHbox.setTranslateX(TOX_SMALL_MENU);
 
 		// VBox avec les contenu pringipaux à gauche du menu
-		ScopePane scopeContentVbox = new ScopePane();
+		MembersScopePane scopeContentVbox = new MembersScopePane();
 
-		AddPane addContentVbox = new AddPane();
+		MembersAddPane addContentVbox = new MembersAddPane();
 
-		RemovePane removeContentVbox = new RemovePane();
-		UpdatePane updateContentVbox = new UpdatePane();
+		MembersRemovePane removeContentVbox = new MembersRemovePane();
+		MembersUpdatePane updateContentVbox = new MembersUpdatePane();
 		PrintPane printContentVbox = new PrintPane(tableView);
 		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
 		QuitPane quitContentVbox = new QuitPane();
 
+		// On change le Label du titre de seeMembersContentVbox
 		seeMembersContentVbox.setTitleLabelText("Souhaitez vous voir \nla liste des stagiaires ?");
-//		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Member>() {
-//			@Override
-//			public void changed(ObservableValue<? extends Member> observableValue, Member oldValue, Member newValue) {
-//				String[] gridPaneLabelsList = new String[5];
-//
-//				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getAlias();
-//				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getAdmin();
-//
-//				removeContentVbox.setGridPane(gridPaneLabelsList);
-//				updateContentVbox.getGridPaneFamilyName().setPromptText(gridPaneLabelsList[0]);
-//				updateContentVbox.getGridPaneFirstName().setPromptText(gridPaneLabelsList[1]);
-//			}
-//		});
+
+		// On récupère les données de la ligne sélectionnée dans la TableView
+		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Member>() {
+			@Override
+			public void changed(ObservableValue<? extends Member> observableValue, Member oldValue, Member newValue) {
+				String[] gridPaneLabelsList = new String[5];
+				selected = newValue;
+				
+				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getFamilyName();
+				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getName();
+				gridPaneLabelsList[2] = newValue == null ? " " : newValue.getAlias();
+				gridPaneLabelsList[3] = newValue == null ? " " : newValue.getEmail();
+
+				gridPaneLabelsList[4] = newValue == null ? " " : newValue.getAdmin();
+
+				removeContentVbox.setGridPane(gridPaneLabelsList);
+				updateContentVbox.getGridPaneFamilyName().setText(gridPaneLabelsList[0]);
+				updateContentVbox.getGridPaneName().setText(gridPaneLabelsList[1]);
+				updateContentVbox.getGridPaneAlias().setText(gridPaneLabelsList[2]);
+				updateContentVbox.getGridPaneEmail().setText(gridPaneLabelsList[3]);
+				if(newValue!=null) {
+				updateContentVbox.setRadioButton(newValue.isAdmin());
+				updateContentVbox.getPasswordField().setText(newValue.getPassword());
+				}
+			}
+		});
 
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
@@ -153,8 +168,7 @@ public class MembersMainScene extends AnchorPane {
 
 		// On crée les autres boutons
 		StackPaneMenubar scopeBtn = new StackPaneMenubar("loupe_orange.png", "loupe_grise.png", "Rechercher");
-		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_membre_orange.png", "ajout_membre_gris.png",
-				"Ajouter");
+		StackPaneMenubar addBtn = new StackPaneMenubar("ajout_membre_orange.png", "ajout_membre_gris.png", "Ajouter");
 		StackPaneMenubar removeBtn = new StackPaneMenubar("suppr_membre_orange.png", "suppr_membre_gris.png",
 				"Supprimer");
 		StackPaneMenubar updateBtn = new StackPaneMenubar("modif_membre_orange.png", "modif_membre_gris.png",
@@ -164,7 +178,7 @@ public class MembersMainScene extends AnchorPane {
 				"Membres");
 		seeMemberBtn.setTooltipText("Stagiaires");
 		seeMemberBtn.setLabelText("Stagiaires");
-		
+
 		// On crée le bouton quitter
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				SMALL_PATH_BOT, LARGE_PATH_BOT);
@@ -264,16 +278,8 @@ public class MembersMainScene extends AnchorPane {
 
 			} else {
 				// sinon on ferme
-				moveTransition.setDuration(DURATION_TIME);
-				moveTransition.setNode(menuHbox);
-				moveTransition.setToX(TOX_SMALL_MENU);
-				moveTransition.play();
 
-				closeBtn.getBtnGreyImageView().setVisible(false);
-				closeBtn.getBtnOrangeImageView().setVisible(true);
-
-				closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn,
-						quitBtn);
+				closeMenu(menuHbox);
 
 			}
 		});
@@ -282,92 +288,122 @@ public class MembersMainScene extends AnchorPane {
 
 		// Search button
 		Button scopeContentValidateBtn = scopeContentVbox.getRightButton();
-//		scopeContentValidateBtn.setOnAction(event -> {
-//			// on récupère tous les textfield
-//			String[] data = grabInfos(scopeContentVbox);
-//			String familyNameFilter = data[0];
-//			String firstNameFilter = data[1];
-//
-//			// on filtre la liste de la TableView en fonction
-//			filteredMembers.setPredicate(intern -> {
-//				// pour chaque textfield on doit vérifier si il n'est pas null
-//				// si il ne l'est pas, on ajoute la condition au prédicat
-//
-//				// on return true si aucun champ n'est rempli
-//				boolean filters = true;
-//
-//				// sinon on ajoute à chaque fois le filtre au return
-//
-//				if (familyNameFilter != null) {
-//					filters = filters && intern.getAlias().contains(familyNameFilter.toUpperCase());
-//				}
-//
-//				if (firstNameFilter != null) {
-//					filters = filters && intern.isAdmin().contains(firstNameFilter);
-//				}
-//
-//
-//				return filters;
-//			});
-//
-//			moveTransition.setDuration(DURATION_TIME);
-//			moveTransition.setNode(menuHbox);
-//			moveTransition.setToX(TOX_SMALL_MENU);
-//			moveTransition.play();
-//
-//			closeBtn.getBtnGreyImageView().setVisible(false);
-//			closeBtn.getBtnOrangeImageView().setVisible(true);
-//
-//			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
-//
-//		});
+
+		scopeContentValidateBtn.setOnAction(event -> {
+			// on récupère tous les textfield
+			String[] data = grabInfos(scopeContentVbox);
+			boolean isAdminBtnSelected = scopeContentVbox.isAdminSelected();
+			boolean isNotAdminBtnSelected = scopeContentVbox.isNotAdminSelected();
+
+			String familyNameFilter = data[0];
+			String nameFilter = data[1];
+			String aliasFilter = data[2];
+			String emailFilter = data[3];
+
+			// on filtre la liste de la TableView en fonction
+			filteredMembers.setPredicate(intern -> {
+
+				// pour chaque textfield on doit vérifier si il n'est pas null
+				// si il ne l'est pas, on ajoute la condition au prédicat
+
+				// on return true si aucun champ n'est rempli
+				boolean filters = true;
+
+				// sinon on ajoute à chaque fois le filtre au return
+
+				if (familyNameFilter != null) {
+					filters = filters && intern.getFamilyName().toUpperCase().contains(familyNameFilter.toUpperCase());
+				}
+
+				if (nameFilter != null) {
+					filters = filters && intern.getName().toUpperCase().contains(nameFilter.toUpperCase());
+				}
+
+				if (aliasFilter != null) {
+					filters = filters && intern.getAlias().contains(aliasFilter);
+				}
+
+				if (emailFilter != null) {
+					filters = filters && intern.getEmail().contains(emailFilter);
+				}
+
+				if (isAdminBtnSelected) {
+					filters = filters && intern.isAdmin();
+				} else if (isNotAdminBtnSelected) {
+					filters = filters && !intern.isAdmin();
+				}
+
+				return filters;
+			});
+
+
+			closeMenu(menuHbox);
+
+		});
 
 		// Refresh button
 		Button scopeContentCancelBtn = scopeContentVbox.getLeftButton();
 		scopeContentCancelBtn.setOnAction(event -> {
 			refreshPane(scopeContentVbox);
+			scopeContentVbox.refreshRadioButtons();
 		});
 
 		/* ADD CONTENT : configuration des boutons annuler et ajouter */
 
 		// ajouter
-//		Button addContentAddBtn = addContentVbox.getRightButton();
-//		addContentAddBtn.setOnAction(event -> {
-//			String[] data = grabInfos(addContentVbox);
-//			InternDao dao = new InternDao();
-//
-//			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
-//
-//			if (good[0] && good[1]) {
-//
-//				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-//						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-//				ArrayList<Intern> suppr = new ArrayList<Intern>();
-//				this.observableMembers.setAll(test.sortView(0, suppr));
-//			} else {
-//				addContentVbox.getLabelError().setVisible(true);
-//			}
-//
-//		});
+		Button addContentAddBtn = addContentVbox.getRightButton();
+		addContentAddBtn.setOnAction(event -> {
+			String[] data = grabInfos(addContentVbox);
+			String passwordData = addContentVbox.getTextPasswordField();
+			MemberDao dao = new MemberDao();
+
+			boolean good = this.areAllFieldsCorrectlyFilled(addContentVbox);
+			boolean isAdminBtnSelected = scopeContentVbox.isAdminSelected();
+
+			if (good) {
+				dao.insert(new Member(data[2], passwordData, data[0].toUpperCase(),
+						data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], isAdminBtnSelected));
+				ArrayList<Member> suppr = new ArrayList<Member>();
+				this.observableMembers.setAll(memberDao.sortView(0, suppr));
+			} else {
+				addContentVbox.getLabelError().setVisible(true);
+			}
+
+			closeMenu(menuHbox);
+		});
 
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
+			addContentVbox.refreshRadioButtons();
 		});
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
 		// valider suppression
-//		Button removeContentValidateBtn = removeContentVbox.getRightButton();
-//		removeContentValidateBtn.setOnAction(event -> {
-//			String[] data = grabInfos(removeContentVbox);
-//			MemberDao dao = new MemberDao();
-//			dao.delete(new Member(data[0], data[1]));
-//			ArrayList<Member> suppr = new ArrayList<Member>();
-//			this.observableMembers.setAll(test.sortView(0, suppr));
-//
-//		});
+		Button removeContentValidateBtn = removeContentVbox.getRightButton();
+		removeContentValidateBtn.setOnAction(event -> {
+			String[] data = grabRemoveInfos(removeContentVbox);
+			boolean admin;
+			if (data[4].equals("administrateur")) {
+				admin = true;
+			} else {
+				admin = false;
+			}
+			Member selectedMember = this.tableView.getSelectionModel().getSelectedItem();
+			String password = selectedMember.getPassword();
+
+			MemberDao dao = new MemberDao();
+
+			dao.delete(new Member(data[2], password, data[0].toUpperCase(),
+					data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], admin));
+
+			ArrayList<Member> suppr = new ArrayList<Member>();
+			this.observableMembers.setAll(memberDao.sortView(0, suppr));
+
+			closeMenu(menuHbox);
+		});
 
 		// Annuler button
 		Button removeContentCancelBtn = removeContentVbox.getLeftButton();
@@ -377,23 +413,35 @@ public class MembersMainScene extends AnchorPane {
 
 		/* UPDATE CONTENT : configuration des boutons annuler et valider */
 
-		// valider mise à jour
-//		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
-//		updateContentUpdateBtn.setOnAction(event -> {
-//			String[] data = grabInfos(updateContentVbox);
-//			MemberDao dao = new InternDao();
-//			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
-//
-//			if (good[0] && good[1]) {
-//
-//				dao.update(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
-//						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
-//				ArrayList<Intern> suppr = new ArrayList<Intern>();
-//				this.observableInterns.setAll(test.sortView(0, suppr));
-//			} else {
-//				updateContentVbox.getLabelError().setVisible(true);
-//			}
-//		});
+		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
+		updateContentUpdateBtn.setOnAction(event -> {
+			Member oldMember = selected;
+//			Member oldMember = this.tableView.getSelectionModel().getSelectedItem();
+			System.out.println("-------------------" + oldMember);
+			String[] data = grabInfos(updateContentVbox);
+			String password = updateContentVbox.getTextPasswordField();
+			MemberDao dao = new MemberDao();
+			
+			boolean isAdmin = updateContentVbox.isAdminSelected();
+//			updateContentVbox.setRadioButton(isAdmin);
+			boolean good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
+			
+			
+			if (good) {
+
+				dao.update(
+						new Member(data[2], password, data[0].toUpperCase(),
+								data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], updateContentVbox.isAdminSelected()),
+						oldMember);
+
+				this.tableView.getSelectionModel().clearSelection();
+				refreshPane(updateContentVbox);
+			} else {
+				System.err.println("erreur");
+				updateContentVbox.getLabelError().setVisible(true);
+			}
+			closeMenu(menuHbox);
+		});
 
 		// Annuler button
 		Button updateContentCancelBtn = updateContentVbox.getLeftButton();
@@ -401,53 +449,51 @@ public class MembersMainScene extends AnchorPane {
 			this.tableView.getSelectionModel().clearSelection();
 			refreshPane(updateContentVbox);
 		});
-		
-		
+
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+			closeMenu(menuHbox);
 		});
-		
+
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
-			moveTransition.setDuration(DURATION_TIME);
-			moveTransition.setNode(menuHbox);
-			moveTransition.setToX(TOX_SMALL_MENU);
-			moveTransition.play();
-
-			closeBtn.getBtnGreyImageView().setVisible(false);
-			closeBtn.getBtnOrangeImageView().setVisible(true);
-			closeMenu(menubarVBox, closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+			closeMenu(menuHbox);
 		});
 	}
 
-	private String[] grabInfos(RepetitivePane Pane) {
+	private String[] grabRemoveInfos(MembersRemovePane Pane) {
 		// on récupère tous les textfield
-		String familyName = Pane.getTextFamilyName();
-		String firstName = Pane.getTextFirstName();
-		String county = Pane.getTextCounty();
-		String cursus = Pane.getTextCursus();
-		String yearIn = Pane.getTextYearIn();
+		String familyName = Pane.getTextFamilyName().trim();
+		String name = Pane.getTextFirstName().trim();
+		String alias = Pane.getTextCounty().trim();
+		String email = Pane.getTextCursus().trim();
+		String admin = Pane.getTextYearIn().trim();
 
-		String[] data = { familyName, firstName, county, cursus, yearIn };
+		String[] data = { familyName, name, alias, email, admin };
 		return data;
 	}
 
-	private void refreshPane(RepetitivePane pane) {
+	private String[] grabInfos(MembersRepetitivePane Pane) {
+		// on récupère tous les textfield
+		String familyName = Pane.getTextFamilyName();
+		String name = Pane.getTextName();
+		String alias = Pane.getTextAlias();
+		String email = Pane.getTextEmail();
+
+		String[] data = { familyName, name, alias, email };
+		return data;
+	}
+
+	private void refreshPane(MembersRepetitivePane pane) {
 		refresh(pane.getGridPaneFamilyName());
-		refresh(pane.getGridPaneFirstName());
-		refresh(pane.getGridPaneCounty());
-		refresh(pane.getGridPaneCursus());
-		refresh(pane.getGridPaneYearIn());
+		refresh(pane.getGridPaneName());
+		refresh(pane.getGridPaneAlias());
+		refresh(pane.getGridPaneEmail());
+
+		// on coche radiobutton false par défault
+		pane.setRadioButton(false);
 	}
 
 	private void refresh(TextField textField) {
@@ -508,9 +554,83 @@ public class MembersMainScene extends AnchorPane {
 
 	}
 
-	public void closeMenu(VBox menubarVBox, StackPaneMenubar closeBtn, StackPaneMenubar scopeBtn,
-			StackPaneMenubar addBtn, StackPaneMenubar removeBtn, StackPaneMenubar updateBtn, StackPaneMenubar printBtn,
-			StackPaneMenubar seeMemberBtn, StackPaneMenubar quitBtn) {
+//	private void configureButtonAction(StackPaneMenubar buttonClicked, MembersRepetitivePane mainContentToShow, HBox menuHbox,
+//			List<StackPaneMenubar> otherButtons) {
+//		buttonClicked.getButton().setOnAction(event -> {
+//
+//			// On remplace le contenu de la HBox
+//			menuHbox.getChildren().set(0, mainContentToShow);
+//
+//			// On rend les boutons du contenu en bouton par défaut (ceux qui réagissent
+//			// quand one appuie sur Entrée et échap)
+//			mainContentToShow.getLeftButton().setCancelButton(true);
+//			mainContentToShow.getRightButton().setDefaultButton(true);
+//
+//			VBox menubarVBox = (VBox) menuHbox.getChildren().get(1);
+//
+//			TranslateTransition moveTransition = new TranslateTransition(Duration.millis(500), menuHbox);
+//			moveTransition.setToX(TOX_LARGE_MENU);
+//			moveTransition.play();
+//
+//			// on fait apparaitre la croix et disparaitre la fleche
+//			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
+//			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
+//
+//			// on diminue tous les boutons
+//			setSmaller(buttonClicked);
+//			setSmaller(otherButtons.get(1));
+//			setSmaller(otherButtons.get(2));
+//			setSmaller(otherButtons.get(3));
+//			setSmaller(otherButtons.get(4));
+//			setSmaller(otherButtons.get(5));
+//			setSmaller(otherButtons.get(6));
+//
+//			// On set maxwidth de la menubarVBox à 100
+//			menubarVBox.setPrefWidth(100);
+//			menubarVBox.setTranslateX(200);
+//			otherButtons.get(0).setTranslateX(0);
+//
+//			// on passe tous les boutons à gris
+//			changeToGrey(otherButtons.get(1));
+//			changeToGrey(otherButtons.get(2));
+//			changeToGrey(otherButtons.get(3));
+//			changeToGrey(otherButtons.get(4));
+//			changeToGrey(otherButtons.get(5));
+//			changeToGrey(otherButtons.get(6));
+//
+//			// on met à jour la couleur du bouton cliqué en orange
+//			changeToOrange(buttonClicked);
+//
+//		});
+//
+//		addHoverEffect(buttonClicked);
+//		
+//	}
+
+	public void closeMenu(HBox menuHbox) {
+		TranslateTransition moveTransition = new TranslateTransition();
+		
+		moveTransition.setDuration(DURATION_TIME);
+		moveTransition.setNode(menuHbox);
+		moveTransition.setToX(TOX_SMALL_MENU);
+		moveTransition.play();
+		
+		VBox menubarVBox = (VBox)(menuHbox.getChildren().get(1));
+		
+		
+		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
+		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
+		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
+		StackPaneMenubar removeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(3);
+		StackPaneMenubar updateBtn = (StackPaneMenubar) menubarVBox.getChildren().get(4);
+		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(5);
+		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
+		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
+
+
+		closeBtn.getBtnGreyImageView().setVisible(false);
+		closeBtn.getBtnOrangeImageView().setVisible(true);
+		
 // On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
@@ -533,6 +653,10 @@ public class MembersMainScene extends AnchorPane {
 		setLarger(printBtn);
 		setLarger(seeMemberBtn);
 		setLarger(quitBtn);
+
+		MemberDao memberDao = new MemberDao();
+		ArrayList<Member> suppr = new ArrayList<Member>();
+		this.observableMembers.setAll(memberDao.sortView(0, suppr));
 	}
 
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
@@ -619,28 +743,26 @@ public class MembersMainScene extends AnchorPane {
 		TableColumn<Member, String> column1 = new TableColumn<>("Nom de Famille");
 		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));
 		column1.setPrefWidth(columnWidth);
-		
+
 		TableColumn<Member, String> column2 = new TableColumn<>("Prénom");
 		column2.setCellValueFactory(new PropertyValueFactory<>("name"));
 		column2.setPrefWidth(columnWidth);
-		
+
 		TableColumn<Member, String> column3 = new TableColumn<>("Pseudo");
 		column3.setCellValueFactory(new PropertyValueFactory<>("alias"));
 		column3.setPrefWidth(columnWidth);
-		
+
 		TableColumn<Member, String> column4 = new TableColumn<>("Mail");
 		column4.setCellValueFactory(new PropertyValueFactory<>("email"));
 		column4.setPrefWidth(columnWidth);
 
 		TableColumn<Member, String> column5 = new TableColumn<>("Status");
 		column5.setCellValueFactory(cellData -> {
-            boolean isAdmin = cellData.getValue().isAdmin();
-            return new SimpleStringProperty(isAdmin ? "administrateur" : "non administrateur");
-        });
+			boolean isAdmin = cellData.getValue().isAdmin();
+			return new SimpleStringProperty(isAdmin ? "administrateur" : "non administrateur");
+		});
 		column5.setPrefWidth(columnWidth);
 
-	
-		
 		tableView.getColumns().addAll(column1, column2, column3, column4, column5);
 
 		StackPane.setMargin(tableView, new Insets(70, 70, 70, 170));
@@ -678,35 +800,31 @@ public class MembersMainScene extends AnchorPane {
 		timeline.play();
 	}
 
-	private boolean[] areAllFieldsCorrectlyFilled(RepetitivePane scene) {
+	private boolean areAllFieldsCorrectlyFilled(MembersRepetitivePane pane) {
 		boolean filled = true;
-		boolean areInteger = true;
 
-		String familyName = scene.getTextFamilyName().trim();
-		String firstName = scene.getTextFirstName().trim();
-		String county = scene.getTextCounty().trim();
-		String cursus = scene.getTextCursus().trim();
-		String yearIn = scene.getTextYearIn().trim();
+		String familyName = pane.getTextFamilyName().trim();
+		String name = pane.getTextName().trim();
+		String alias = pane.getTextAlias().trim();
+		String email = pane.getTextEmail().trim();
+		String password = pane.getTextPasswordField().trim();
 
-		if (familyName.length() == 0 || firstName.length() == 0 || cursus.length() == 0 || county.length() == 0
-				|| yearIn.length() == 0) {
+		System.out.println(familyName+" "+name+" "+alias+" "+email+" "+password);
+		if (familyName.length() == 0 || name.length() == 0 || alias.length() == 0 || email.length() == 0
+				|| password.length() == 0) {
 			filled = false;
-			boolean[] tab = { filled, areInteger };
-			return tab;
+			return filled;
 		}
 
 		if (Pattern.compile("[^(\\p{L}-\\s)]").matcher(familyName).find()
-				|| Pattern.compile("[^(\\p{L}-\\s)]").matcher(firstName).find()
-				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(cursus).find()) {
+				|| Pattern.compile("[^(\\p{L}-\\s)]").matcher(name).find()
+				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(alias).find()
+				|| Pattern.compile("[^(\\p{L}-\\s\\d@.)]").matcher(email).find()
+				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(password).find()) {
 			filled = false;
 		}
-		int countyInt = Integer.parseInt(county);
-		int yearInInt = Integer.parseInt(yearIn);
-		if (countyInt > 0 && countyInt < 1000 && yearInInt > 1950 && yearInInt < 3000) {
-			areInteger = false;
-		}
-		boolean[] tab = { filled, areInteger };
-		return tab;
+
+		return filled;
 	}
 
 	private String getCurrentColor(SVGPath svgPath) {

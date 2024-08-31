@@ -300,7 +300,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (countyFilter != null) {
-					filters = filters && intern.getCountyString().toUpperCase().contains(countyFilter.toUpperCase());
+					filters = filters && intern.getCountyString().contains(countyFilter);
 				}
 
 				if (cursusFilter != null) {
@@ -308,7 +308,7 @@ public class CustomMainScene extends AnchorPane {
 				}
 
 				if (yearInFilter != null) {
-					filters = filters && intern.getYearInString().toUpperCase().contains(yearInFilter.toUpperCase());
+					filters = filters && intern.getYearInString().contains(yearInFilter);
 				}
 
 				return filters;

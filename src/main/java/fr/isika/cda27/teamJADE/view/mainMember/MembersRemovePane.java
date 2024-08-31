@@ -1,4 +1,4 @@
-package fr.isika.cda27.teamJADE.view.mainIntern;
+package fr.isika.cda27.teamJADE.view.mainMember;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
@@ -9,16 +9,18 @@ import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
+
+import fr.isika.cda27.teamJADE.view.mainIntern.RepetitivePane;
+
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class RemovePane extends RepetitivePane {
+public class MembersRemovePane extends RepetitivePane {
 	
 
 	private Label labelError;
-	private String[] gridPaneLabelsList = {"","","","",""};
+	private String[] gridPaneLabelsList = {"","","","","",""};
 
-
-	public RemovePane() {
+	public MembersRemovePane() {
 
 		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");

@@ -132,7 +132,7 @@ public class Member {
 	 * @return the admin
 	 */
 	public String getAdmin() {
-		if (isAdmin()) {
+		if (this.isAdmin()) {
 			return "administrateur";
 		} else {
 			return "non administrateur";

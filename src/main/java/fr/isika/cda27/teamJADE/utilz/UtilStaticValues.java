@@ -58,9 +58,10 @@ public class UtilStaticValues {
 
 	public static class MenuVboxValues {
 
-		public static final String[] LABEL_TEXTS = { "Nom de famille", "Prénom", "Région", "Formation suivie",
-				"Année" };
+		public static final String[] LABEL_TEXTS = { "Nom de famille", "Prénom", "Région", "Formation suivie", "Année" };
 
+		public static final String[] LABEL_TEXTS_MEMBERS = { "Nom de famille", "Prénom", "Pseudo", "Mail", "Administrateur"};
+		
 		public static final int VBOX_WIDTH = 690;
 		public static final int VBOX_HEIGHT = 720;
 		public static final int TOX_VBOX = 200;
@@ -124,6 +125,66 @@ public class UtilStaticValues {
 				gridPane.add(textField, 1, i);
 			}
 
+			return gridPane;
+		}
+		
+		public static GridPane createFormGridPaneMembers() {
+			// GridPane
+			GridPane gridPane = new GridPane();
+			gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
+			gridPane.setVgap(15);
+			gridPane.setHgap(10);
+
+			// marges pour le GridPane
+			VBox.setMargin(gridPane, new Insets(0, 20, 0, 20));
+
+			// première colonne
+			ColumnConstraints col1Constraints = new ColumnConstraints();
+			col1Constraints.setPrefWidth(COL1_WIDTH);
+			gridPane.getColumnConstraints().add(col1Constraints);
+
+			// deuxième colonne
+			ColumnConstraints col2Constraints = new ColumnConstraints();
+			col2Constraints.setPrefWidth(COL2_WIDTH);
+			gridPane.getColumnConstraints().add(col2Constraints);
+
+			// lignes du GridPane
+			for (int i = 0; i < 4; i++) {
+				RowConstraints rowConstraints = new RowConstraints();
+				rowConstraints.setPrefHeight(ROW_HEIGHT);
+				gridPane.getRowConstraints().add(rowConstraints);
+
+				// label
+				Label label = new Label(LABEL_TEXTS_MEMBERS[i]);
+				label.setFont(Font.font("Krona One", 16));
+				label.setTextFill(GREY_COLOR);
+				GridPane.setMargin(label, new Insets(0, 30, 0, 40));
+
+				// texte de droite
+				CustomTextField textField = new CustomTextField();
+
+				GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
+
+				// ajouter tout au GridPane
+				gridPane.add(label, 0, i);
+				gridPane.add(textField, 1, i);
+			}
+			
+			RowConstraints rowConstraints = new RowConstraints();
+			rowConstraints.setPrefHeight(ROW_HEIGHT);
+			gridPane.getRowConstraints().add(rowConstraints);
+			// label
+			Label label = new Label(LABEL_TEXTS_MEMBERS[4]);
+			label.setFont(Font.font("Krona One", 16));
+			label.setTextFill(GREY_COLOR);
+			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
+			
+			// à droite on met les radioboutons
+			CustomRadioButton radioBtnHbox = new CustomRadioButton();
+			// ajouter tout au GridPane
+			gridPane.add(label, 0, 4);
+			gridPane.add(radioBtnHbox, 1, 4);
+			
 			return gridPane;
 		}
 	}
