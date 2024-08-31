@@ -3,7 +3,7 @@ package fr.isika.cda27.teamJADE.view.login;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_HEIGHT;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_WIDTH;
-
+import fr.isika.cda27.teamJADE.model.MemberDao; 
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
@@ -28,7 +28,7 @@ import javafx.stage.Stage;
 
 public class CustomLoginScene extends AnchorPane {
 
-	private Member member = new Member("user", "pass", "test", "test", "test@isika.fr", true);
+	private MemberDao memberDao = new MemberDao();
 	private final int maxChars = 30;
 
 	public CustomLoginScene() {
@@ -172,15 +172,19 @@ public class CustomLoginScene extends AnchorPane {
 	}
 
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
-
-		if (member.authenticate(alias, password)) {
+		Member member = memberDao.findByAlias(alias, password);
+		System.out.println(member);
+		// si member non null alors on affiche la mainScene
+		if (member!=null) {
 			Stage stage = ((Stage) CustomLoginScene.this.getScene().getWindow());
-			Scene scene = new Scene(new CustomMainScene());
+			Scene scene = new Scene(new CustomMainScene(member));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		} else {
 			hboxInvalide.setVisible(true);
 		}
 	}
+
+	
 
 }

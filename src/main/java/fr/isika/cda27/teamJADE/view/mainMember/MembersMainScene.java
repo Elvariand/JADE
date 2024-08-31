@@ -73,7 +73,10 @@ public class MembersMainScene extends AnchorPane {
 	private TableView<Member> tableView;
 	private Member selected;
 
-	public MembersMainScene() {
+	public MembersMainScene(Member connectedMember) {
+
+		boolean showAdminView = connectedMember.isAdmin();
+
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
@@ -93,7 +96,7 @@ public class MembersMainScene extends AnchorPane {
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
 //			Scene scene = new Scene(new HelpSceneAdmin(new MembersMainScene()));
-			Scene scene = new Scene(new HelpSceneNotAdmin(new MembersMainScene()));
+			Scene scene = new Scene(new HelpSceneNotAdmin(new MembersMainScene(connectedMember)));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
@@ -124,7 +127,7 @@ public class MembersMainScene extends AnchorPane {
 		MembersRemovePane removeContentVbox = new MembersRemovePane();
 		MembersUpdatePane updateContentVbox = new MembersUpdatePane();
 		PrintPane printContentVbox = new PrintPane(tableView);
-		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
+		SeeMembersPane seeMembersContentVbox = new SeeMembersPane(connectedMember);
 		QuitPane quitContentVbox = new QuitPane();
 
 		// On change le Label du titre de seeMembersContentVbox
@@ -136,7 +139,7 @@ public class MembersMainScene extends AnchorPane {
 			public void changed(ObservableValue<? extends Member> observableValue, Member oldValue, Member newValue) {
 				String[] gridPaneLabelsList = new String[5];
 				selected = newValue;
-				
+
 				gridPaneLabelsList[0] = newValue == null ? " " : newValue.getFamilyName();
 				gridPaneLabelsList[1] = newValue == null ? " " : newValue.getName();
 				gridPaneLabelsList[2] = newValue == null ? " " : newValue.getAlias();
@@ -149,9 +152,9 @@ public class MembersMainScene extends AnchorPane {
 				updateContentVbox.getGridPaneName().setText(gridPaneLabelsList[1]);
 				updateContentVbox.getGridPaneAlias().setText(gridPaneLabelsList[2]);
 				updateContentVbox.getGridPaneEmail().setText(gridPaneLabelsList[3]);
-				if(newValue!=null) {
-				updateContentVbox.setRadioButton(newValue.isAdmin());
-				updateContentVbox.getPasswordField().setText(newValue.getPassword());
+				if (newValue != null) {
+					updateContentVbox.setRadioButton(newValue.isAdmin());
+					updateContentVbox.getPasswordField().setText(newValue.getPassword());
 				}
 			}
 		});
@@ -187,6 +190,19 @@ public class MembersMainScene extends AnchorPane {
 		menubarVBox.getChildren().add(closeBtn);
 		// On ajoute tous les boutons dans le VBox
 		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
+
+		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn
+		// invisibles
+		if (!showAdminView) {
+			// on rend l'image invisible pour les 3 boutons
+			removeBtn.getBtnOrangeImageView().setVisible(false);
+			removeBtn.getBtnGreyImageView().setVisible(false);
+			updateBtn.getBtnOrangeImageView().setVisible(false);
+			updateBtn.getBtnGreyImageView().setVisible(false);
+			seeMemberBtn.getBtnOrangeImageView().setVisible(false);
+			seeMemberBtn.getBtnGreyImageView().setVisible(false);
+		}
+
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
 
@@ -336,7 +352,6 @@ public class MembersMainScene extends AnchorPane {
 				return filters;
 			});
 
-
 			closeMenu(menuHbox);
 
 		});
@@ -421,18 +436,16 @@ public class MembersMainScene extends AnchorPane {
 			String[] data = grabInfos(updateContentVbox);
 			String password = updateContentVbox.getTextPasswordField();
 			MemberDao dao = new MemberDao();
-			
+
 			boolean isAdmin = updateContentVbox.isAdminSelected();
 //			updateContentVbox.setRadioButton(isAdmin);
 			boolean good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
-			
-			
+
 			if (good) {
 
-				dao.update(
-						new Member(data[2], password, data[0].toUpperCase(),
-								data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], updateContentVbox.isAdminSelected()),
-						oldMember);
+				dao.update(new Member(data[2], password, data[0].toUpperCase(),
+						data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3],
+						updateContentVbox.isAdminSelected()), oldMember);
 
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
@@ -610,15 +623,14 @@ public class MembersMainScene extends AnchorPane {
 
 	public void closeMenu(HBox menuHbox) {
 		TranslateTransition moveTransition = new TranslateTransition();
-		
+
 		moveTransition.setDuration(DURATION_TIME);
 		moveTransition.setNode(menuHbox);
 		moveTransition.setToX(TOX_SMALL_MENU);
 		moveTransition.play();
-		
-		VBox menubarVBox = (VBox)(menuHbox.getChildren().get(1));
-		
-		
+
+		VBox menubarVBox = (VBox) (menuHbox.getChildren().get(1));
+
 		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
 		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
 		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
@@ -628,10 +640,9 @@ public class MembersMainScene extends AnchorPane {
 		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
 		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
 
-
 		closeBtn.getBtnGreyImageView().setVisible(false);
 		closeBtn.getBtnOrangeImageView().setVisible(true);
-		
+
 // On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
@@ -810,7 +821,7 @@ public class MembersMainScene extends AnchorPane {
 		String email = pane.getTextEmail().trim();
 		String password = pane.getTextPasswordField().trim();
 
-		System.out.println(familyName+" "+name+" "+alias+" "+email+" "+password);
+		System.out.println(familyName + " " + name + " " + alias + " " + email + " " + password);
 		if (familyName.length() == 0 || name.length() == 0 || alias.length() == 0 || email.length() == 0
 				|| password.length() == 0) {
 			filled = false;

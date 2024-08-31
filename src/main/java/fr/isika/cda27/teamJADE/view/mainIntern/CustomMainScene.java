@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
+import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
@@ -67,7 +68,10 @@ public class CustomMainScene extends AnchorPane {
 	private TableView<Intern> tableView;
 	private Intern selected;
 
-	public CustomMainScene() {
+	public CustomMainScene(Member connectedMember) {
+		
+		boolean showAdminView = connectedMember.isAdmin();
+		
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
@@ -86,8 +90,13 @@ public class CustomMainScene extends AnchorPane {
 
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
-//			Scene scene = new Scene(new HelpSceneAdmin(new CustomMainScene()));
-			Scene scene = new Scene(new HelpSceneNotAdmin(new CustomMainScene()));
+			Scene scene;
+			// Si on est admin
+			if(showAdminView) {
+			scene = new Scene(new HelpSceneAdmin(new CustomMainScene(connectedMember)));
+			}else {
+			scene = new Scene(new HelpSceneNotAdmin(new CustomMainScene(connectedMember)));
+			}
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
@@ -116,7 +125,7 @@ public class CustomMainScene extends AnchorPane {
 		RemovePane removeContentVbox = new RemovePane();
 		UpdatePane updateContentVbox = new UpdatePane();
 		PrintPane printContentVbox = new PrintPane(tableView);
-		SeeMembersPane seeMembersContentVbox = new SeeMembersPane();
+		SeeMembersPane seeMembersContentVbox = new SeeMembersPane(connectedMember);
 		QuitPane quitContentVbox = new QuitPane();
 
 		tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Intern>() {
@@ -168,6 +177,25 @@ public class CustomMainScene extends AnchorPane {
 		menubarVBox.getChildren().add(closeBtn);
 		// On ajoute tous les boutons dans le VBox
 		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
+		
+		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn invisibles
+		if(!showAdminView) {
+			// on rend l'image invisible pour les 3 boutons
+			removeBtn.getBtnOrangeImageView().setVisible(false);
+			removeBtn.getBtnGreyImageView().setVisible(false);
+			updateBtn.getBtnOrangeImageView().setVisible(false);
+			updateBtn.getBtnGreyImageView().setVisible(false);
+			seeMemberBtn.getBtnOrangeImageView().setVisible(false);
+			seeMemberBtn.getBtnGreyImageView().setVisible(false);
+			// on rend les label invisibles
+			removeBtn.getLabel().setVisible(false);
+			updateBtn.getLabel().setVisible(false);
+			seeMemberBtn.getLabel().setVisible(false);
+			// on enleve le tooltip
+//			removeBtn.getTooltip().sette
+		}
+		
+		
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
 
@@ -222,13 +250,16 @@ public class CustomMainScene extends AnchorPane {
 		 */
 
 		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
 		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig);
+		
+		// Si on est admin alors on configure l'action des boutons
+		if(showAdminView) {
 		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
 		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
 		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
 		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
-
+		}
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
 

@@ -49,10 +49,10 @@ public class App extends Application {
 	@Override
 	public void start(Stage stage) {
 
-	
+	Member member = new Member("alexia", "mdp","ROY", "alexia","mailalexia@gmail.com");
 
 //		CustomLoginScene root = new CustomLoginScene();
-		CustomMainScene root = new CustomMainScene();
+		CustomMainScene root = new CustomMainScene(member);
 //		MembersMainScene root = new MembersMainScene();
 
 

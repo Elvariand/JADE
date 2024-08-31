@@ -175,5 +175,101 @@ public class MemberDao extends TreeNodeDao<Member>{
 	protected String getBinFile() {
 		return App.getMemberBinFile();
 	}
+	
+	
+	
+	// Trouver le Pseudo
+	public Member findByAlias(String alias, String password) {
+		Member member = findByAlias(alias, password, 0);
+		return member;
+	}
+	
+	public Member findByAlias(String alias, String password, long cursorPosition) {
+
+		long binarySize = this.getBinarySize();
+
+		// Si le fichier binaire est vide
+		if (binarySize == 0) {
+			// Alors on return
+			System.out.println("Fichier binaire vide");
+			return null;
+		}
+		String nodeKey = this.readKeyFromBinary(cursorPosition);
+
+		// Si la valeur du Pseudo est plus petite que
+		// celle du Pseudo courant dans le fichier binaire.
+		if (alias.compareTo(nodeKey) < 0) {
+
+			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
+
+			// Si il n'y a pas de fils gauche, c'est donc que l'information sur le fichier
+			// binaire vaut -1
+			if (newCursorPosition < 0) {
+
+				/*
+				 * Dans ce cas ça veut dire que le Pseudo entré n'existe pas dans le fichier
+				 */
+				System.out.println("Aucune correspondance trouvée 1");
+				return null;
+
+				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
+				// position correspondante dans le fichier binaire
+				// et nous relançons une recherche.
+			} else {
+				this.findByAlias(alias, password, newCursorPosition * getNodeSize());
+				
+			}
+		}
+
+		// Si la valeur du Pseudo est plus grande que
+		// celle du Pseudo courant lu dans le fichier binaire.
+		else if (alias.compareTo(nodeKey) > 0) {
+
+			long newCursorPosition = readRightChildFromBinary(cursorPosition);
+
+			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier
+			// binaire vaut -1
+			if (newCursorPosition < 0) {
+
+				/*
+				 * Dans ce cas ça veut dire que le Pseudo entré n'existe pas dans le fichier
+				 */
+				System.out.println("Aucune correspondance trouvée 2");
+				return null;
+
+				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
+				// position correspondante dans le fichier binaire
+				// et nous relançons une recherche.
+			} else {
+				this.findByAlias(alias, password, newCursorPosition * getNodeSize());
+				
+			}
+		}
+
+		// Si la valeur du Pseudo entrée est égale à celle du Pseudo
+		// courant lu dans le fichier binaire, alors on regarde si il y a des doublons
+		else {
+			int read = 1;
+
+			/*
+			 * Pour le fichier binaire nous cherchons maintenant le mdp
+			 */
+			while (read > 0) {
+				// Si le mdp est égal au mdp du membre courant
+				if (password.equals(this.readObjectFromBinary(cursorPosition).getPassword())) {
+					System.out.println("Le mdp à été trouvé 1 !");
+					Member member = this.readObjectFromBinary(cursorPosition);
+					return member;
+				}
+				read = readTwinFromBinary(cursorPosition);
+				if (read > 0)
+					cursorPosition = read * getNodeSize();
+			}
+		}
+			System.out.println("Le mdp à été trouvé 2 !");
+			Member member = this.readObjectFromBinary(cursorPosition);
+			return member;
+
+	}
 }
 

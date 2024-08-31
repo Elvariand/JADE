@@ -1,5 +1,6 @@
 package fr.isika.cda27.teamJADE.view.mainIntern;
 
+import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.view.login.CustomLoginScene;
 import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
 import javafx.scene.Parent;
@@ -8,9 +9,11 @@ import javafx.stage.Stage;
 
 public class SeeMembersPane extends RepetitivePane {
 
-	public SeeMembersPane() {
-		super();
+	Member connectedMember;
 
+	public SeeMembersPane(Member connectedMember) {
+		super();
+		this.connectedMember = connectedMember;
 		this.titleLabel.setText("Souhaitez vous voir \nla liste des membres ?");
 
 		this.gridPane.setManaged(false);
@@ -27,11 +30,11 @@ public class SeeMembersPane extends RepetitivePane {
 			Scene newScene;
 			// Si root est une instance de CustomMainScene on passe à MembersMainScene
 			if (root instanceof CustomMainScene) {
-				newScene = new Scene(new MembersMainScene());
+				newScene = new Scene(new MembersMainScene(connectedMember));
 
-			// sinon on passe à CustomMainScene
+				// sinon on passe à CustomMainScene
 			} else {
-				newScene = new Scene(new CustomMainScene());
+				newScene = new Scene(new CustomMainScene(connectedMember));
 			}
 
 			Stage stage = ((Stage) SeeMembersPane.this.getScene().getWindow());
