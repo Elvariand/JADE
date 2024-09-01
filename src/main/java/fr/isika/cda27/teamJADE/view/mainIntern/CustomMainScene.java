@@ -169,6 +169,24 @@ public class CustomMainScene extends AnchorPane {
 		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_membre_orange.png", "voir_membre_gris.png",
 				"Membres");
 
+		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn invisibles
+		if(!showAdminView) {
+			// on passe btnContainer en pos 0
+			removeBtn.getChildren().remove(1); 
+			removeBtn.getChildren().add(0, removeBtn.getBtnContainer());
+			
+			updateBtn.getChildren().remove(1); 
+			updateBtn.getChildren().add(0, updateBtn.getBtnContainer());
+			
+			seeMemberBtn.getChildren().remove(1); 
+			seeMemberBtn.getChildren().add(0, seeMemberBtn.getBtnContainer());
+			
+			// on enleve le tooltip
+			removeBtn.getButton().setTooltip(null);
+			updateBtn.getButton().setTooltip(null);
+			seeMemberBtn.getButton().setTooltip(null);
+		}
+		
 		// On crée le bouton quitter
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				SMALL_PATH_BOT, LARGE_PATH_BOT);
@@ -178,22 +196,6 @@ public class CustomMainScene extends AnchorPane {
 		// On ajoute tous les boutons dans le VBox
 		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
 		
-		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn invisibles
-		if(!showAdminView) {
-			// on rend l'image invisible pour les 3 boutons
-			removeBtn.getBtnOrangeImageView().setVisible(false);
-			removeBtn.getBtnGreyImageView().setVisible(false);
-			updateBtn.getBtnOrangeImageView().setVisible(false);
-			updateBtn.getBtnGreyImageView().setVisible(false);
-			seeMemberBtn.getBtnOrangeImageView().setVisible(false);
-			seeMemberBtn.getBtnGreyImageView().setVisible(false);
-			// on rend les label invisibles
-			removeBtn.getLabel().setVisible(false);
-			updateBtn.getLabel().setVisible(false);
-			seeMemberBtn.getLabel().setVisible(false);
-			// on enleve le tooltip
-//			removeBtn.getTooltip().sette
-		}
 		
 		
 		// On ajoute le bouton quitter
@@ -222,17 +224,14 @@ public class CustomMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn, removeBtn, updateBtn, printBtn,
-				seeMemberBtn, quitBtn);
+		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn,  printBtn, quitBtn, removeBtn, updateBtn,seeMemberBtn);
 
-		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn, removeBtn, updateBtn, printBtn,
-				seeMemberBtn, quitBtn);
+		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn,  printBtn, quitBtn,removeBtn, updateBtn,seeMemberBtn);
 
 		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
 				seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				seeMemberBtn, quitBtn);
+		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, quitBtn, removeBtn, updateBtn,seeMemberBtn);
 
 		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
 				seeMemberBtn, quitBtn);
@@ -240,8 +239,7 @@ public class CustomMainScene extends AnchorPane {
 		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
 				printBtn, quitBtn);
 
-		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				printBtn, seeMemberBtn);
+		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn,	printBtn, removeBtn, updateBtn,seeMemberBtn);
 
 		/*
 		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
@@ -249,18 +247,18 @@ public class CustomMainScene extends AnchorPane {
 		 * autres boutons
 		 */
 
-		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
-		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig);
+		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig,showAdminView);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig,showAdminView);
+		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig,showAdminView);
 		
 		// Si on est admin alors on configure l'action des boutons
 		if(showAdminView) {
-		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
-		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
-		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
+		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig,showAdminView);
+		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig,showAdminView);
+		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig,showAdminView);
 		}
 		
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig,showAdminView);
 		
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
@@ -292,7 +290,7 @@ public class CustomMainScene extends AnchorPane {
 
 			} else {
 
-				closeMenu(menubarVBox);
+				closeMenu(menubarVBox,showAdminView);
 
 			}
 		});
@@ -343,7 +341,7 @@ public class CustomMainScene extends AnchorPane {
 				return filters;
 			});
 
-			closeMenu(menubarVBox);
+			closeMenu(menubarVBox,showAdminView);
 
 		});
 
@@ -438,7 +436,7 @@ public class CustomMainScene extends AnchorPane {
 
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
-				this.closeMenu(menubarVBox);
+				this.closeMenu(menubarVBox, showAdminView);
 			} else {
 				updateContentVbox.getLabelError().setVisible(true);
 			}
@@ -454,13 +452,13 @@ public class CustomMainScene extends AnchorPane {
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
-			closeMenu(menubarVBox);
+			closeMenu(menubarVBox,showAdminView);
 		});
 
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
-			closeMenu(menubarVBox);
+			closeMenu(menubarVBox,showAdminView);
 		});
 
 	}
@@ -547,7 +545,7 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 	}
 
 	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
-			List<StackPaneMenubar> otherButtons) {
+			List<StackPaneMenubar> otherButtons, boolean showAdminView) {
 
 		buttonClicked.getButton().setOnAction(event -> {
 
@@ -574,9 +572,17 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 			setSmaller(otherButtons.get(1));
 			setSmaller(otherButtons.get(2));
 			setSmaller(otherButtons.get(3));
+			
+			// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
+			if(!showAdminView) {
+			setSmallerNotAdminCase(otherButtons.get(4));
+			setSmallerNotAdminCase(otherButtons.get(5));
+			setSmallerNotAdminCase(otherButtons.get(6));
+			} else {
 			setSmaller(otherButtons.get(4));
 			setSmaller(otherButtons.get(5));
 			setSmaller(otherButtons.get(6));
+			}
 
 			// On set maxwidth de la menubarVBox à 100
 			menubarVBox.setPrefWidth(100);
@@ -587,9 +593,18 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 			changeToGrey(otherButtons.get(1));
 			changeToGrey(otherButtons.get(2));
 			changeToGrey(otherButtons.get(3));
-			changeToGrey(otherButtons.get(4));
-			changeToGrey(otherButtons.get(5));
-			changeToGrey(otherButtons.get(6));
+			
+			// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
+			if(!showAdminView) {
+				changeToGreyNotAdminCase(otherButtons.get(4));
+				changeToGreyNotAdminCase(otherButtons.get(5));
+				changeToGreyNotAdminCase(otherButtons.get(6));
+			} else {
+				changeToGrey(otherButtons.get(4));
+				changeToGrey(otherButtons.get(5));
+				changeToGrey(otherButtons.get(6));
+				
+			}
 
 			// on met à jour la couleur du bouton cliqué en orange
 			changeToOrange(buttonClicked);
@@ -600,14 +615,14 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 
 	}
 
-	public void closeMenu(VBox menubarVBox) {
+	public void closeMenu(VBox menubarVBox, boolean showAdminView) {
 
 		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
 		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
-		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
-		StackPaneMenubar removeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(3);
-		StackPaneMenubar updateBtn = (StackPaneMenubar) menubarVBox.getChildren().get(4);
-		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(5);
+		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
+		StackPaneMenubar addBtn = (StackPaneMenubar) menubarVBox.getChildren().get(3);
+		StackPaneMenubar removeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(4);
+		StackPaneMenubar updateBtn = (StackPaneMenubar) menubarVBox.getChildren().get(5);
 		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
 		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
 
@@ -628,20 +643,34 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 // Changer la couleur des boutons en orange
 		changeToOrange(scopeBtn);
 		changeToOrange(addBtn);
-		changeToOrange(removeBtn);
-		changeToOrange(updateBtn);
 		changeToOrange(printBtn);
-		changeToOrange(seeMemberBtn);
 		changeToOrange(quitBtn);
+		
+		if(!showAdminView) {
+		changeToOrangeNotAdminCase(seeMemberBtn);
+		changeToOrangeNotAdminCase(removeBtn);
+		changeToOrangeNotAdminCase(updateBtn);
+		} else {
+			changeToOrange(seeMemberBtn);
+			changeToOrange(removeBtn);
+			changeToOrange(updateBtn);
+		}
 
 // Agrandir tous les boutons
 		setLarger(scopeBtn);
 		setLarger(addBtn);
-		setLarger(removeBtn);
-		setLarger(updateBtn);
 		setLarger(printBtn);
-		setLarger(seeMemberBtn);
 		setLarger(quitBtn);
+		
+		if(!showAdminView) {
+		setLargerNotAdminCase(removeBtn);
+		setLargerNotAdminCase(updateBtn);
+		setLargerNotAdminCase(seeMemberBtn);
+		} else {
+			setLarger(removeBtn);
+			setLarger(updateBtn);
+			setLarger(seeMemberBtn);
+		}
 
 		InternDao internDao = new InternDao();
 		ArrayList<Intern> suppr = new ArrayList<Intern>();
@@ -663,6 +692,22 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 //		stackPaneMenubar.getBtnContainer().setMaxWidth(100);
 
 	}
+	
+	private void setSmallerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
+		changeToOrangeNotAdminCase(stackPaneMenubar);
+		
+		// on change la taille du bouton à 100
+		stackPaneMenubar.getButton().setPrefSize(BTN_SMALL_WIDTH, BTN_HEIGHT);
+		stackPaneMenubar.getButton().setTranslateX(TOX_SMALL_BTN);
+		
+		// on remplace largeSvg par smallSvg
+		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getSmallSvgPath());
+		
+		// on enlève le children leftSubcontainer de la HBox
+		stackPaneMenubar.getBtnContainer().getChildren().remove(stackPaneMenubar.getLeftSubcontainer());
+//		stackPaneMenubar.getBtnContainer().setMaxWidth(100);
+		
+	}
 
 	private void setLarger(StackPaneMenubar stackPaneMenubar) {
 		// on change la taille du bouton à 300
@@ -677,6 +722,21 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 		stackPaneMenubar.getChildren().set(0, stackPaneMenubar.getLargeSvgPath());
 		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getBtnContainer());
 
+	}
+	
+	private void setLargerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
+		// on change la taille du bouton à 300
+		stackPaneMenubar.getButton().setPrefSize(BTN_LARGE_WIDTH, BTN_HEIGHT);
+		stackPaneMenubar.getBtnContainer().setMaxWidth(300);
+		
+		// on met le LeftSubcontainer en 0 de la HBox et le rightSubcontainer en 1
+		stackPaneMenubar.getBtnContainer().getChildren().set(0, stackPaneMenubar.getLeftSubcontainer());
+		stackPaneMenubar.getBtnContainer().getChildren().add(1, stackPaneMenubar.getRightSubcontainer());
+		
+		// on fait remplace smallSvg par LargeSvg
+		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getLargeSvgPath());
+		stackPaneMenubar.getChildren().set(0, stackPaneMenubar.getBtnContainer());
+		
 	}
 
 	private void addHoverEffect(StackPaneMenubar buttonSP) {
@@ -727,7 +787,7 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 		TableView<Intern> tableView = new TableView<>(filteredInterns);
 
 		// On met les colones
-		double columnWidth = 1005 / 5;
+		double columnWidth = 1000 / 5;
 
 		TableColumn<Intern, String> column1 = new TableColumn<>("Nom de famille");
 		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));
@@ -765,12 +825,28 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 		button.getBtnOrangeImageView().setVisible(false);
 		button.getBtnGreyImageView().setVisible(true);
 	}
+	private void changeToOrangeNotAdminCase(StackPaneMenubar button) {
+		// on change la couleur du SVGPath
+		applyColorTransition((SVGPath) button.getChildren().get(1), ORANGE_COLOR);
+		((SVGPath) button.getChildren().get(1)).setFill(ORANGE_COLOR);
+		
+		button.getBtnOrangeImageView().setVisible(false);
+		button.getBtnGreyImageView().setVisible(true);
+	}
 
 	private void changeToGrey(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(0), GREY_COLOR);
 		((SVGPath) button.getChildren().get(0)).setFill(GREY_COLOR);
 
+		button.getBtnOrangeImageView().setVisible(true);
+		button.getBtnGreyImageView().setVisible(false);
+	}
+	private void changeToGreyNotAdminCase(StackPaneMenubar button) {
+		// on change la couleur du SVGPath
+		applyColorTransition((SVGPath) button.getChildren().get(1), GREY_COLOR);
+		((SVGPath) button.getChildren().get(1)).setFill(GREY_COLOR);
+		
 		button.getBtnOrangeImageView().setVisible(true);
 		button.getBtnGreyImageView().setVisible(false);
 	}

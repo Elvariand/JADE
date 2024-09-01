@@ -77,8 +77,8 @@ public class StackPaneMenubar extends StackPane {
 
 		if (!tooltipText.equals("fleche")) {
 			this.tooltip = new Tooltip(this.tooltipText);
-			Tooltip.install(button, tooltip);
 			tooltip.setShowDelay(Duration.seconds(0.1));
+			button.setTooltip(tooltip);
 
 			this.largeSvgPath = new SVGPath();
 			largeSvgPath.setContent(svgLargePath);
