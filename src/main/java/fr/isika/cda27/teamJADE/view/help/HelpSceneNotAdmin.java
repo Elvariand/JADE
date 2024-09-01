@@ -14,6 +14,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
@@ -49,32 +50,30 @@ public class HelpSceneNotAdmin extends AnchorPane {
 		CustomPaneHelp paneIntroduction = new CustomPaneHelp(INTRODUCTION, INTRODUCTION_TEXT);
 		CustomPaneHelp paneRecherche = new CustomPaneHelp(RECHERCHE, RECHERCHE_TEXT);
 		CustomPaneHelp paneAjoutStagiaire = new CustomPaneHelp(AJOUT_STAGIAIRE, AJOUT_STAGIAIRE_TEXT);
-		CustomPaneHelp paneMembres = new CustomPaneHelp(MEMBRES, MEMBRES_TEXT);
+//		CustomPaneHelp paneMembres = new CustomPaneHelp(MEMBRES, MEMBRES_TEXT);
 		CustomPaneHelp paneImpression = new CustomPaneHelp(IMPRESSION, IMPRESSION_TEXT);
 		CustomPaneHelp paneDeconnexion = new CustomPaneHelp(DECONNEXION, DECONNEXION_TEXT);
 
 		
 		// On crée l'accordeon 
 		Accordion accordionHelp = new Accordion();
-		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneAjoutStagiaire, paneMembres,
+		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneAjoutStagiaire,
 				paneImpression, paneDeconnexion);
-    	accordionHelp.setMinSize(fixedWidth, fixedHeight); 
-    	accordionHelp.setPrefSize(fixedWidth, fixedHeight); 
-    	accordionHelp.setMaxSize(fixedWidth, fixedHeight);
+		accordionHelp.setStyle("-fx-background-color: #272727;"); 
     	
-    	CustomPaneHelp[] accordionPanes = {paneIntroduction, paneRecherche, paneAjoutStagiaire, paneMembres,
-				paneImpression, paneDeconnexion};
-
-		for (int i = 0; i < accordionPanes.length; i++) {
-			accordionPanes[i].setBorder(new Border(new BorderStroke(Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, BorderStrokeStyle.SOLID, BorderStrokeStyle.NONE, CornerRadii.EMPTY, BorderWidths.FULL, new Insets(0, 0, 0, 0)) ) );
-			accordionPanes[i].setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 16px; -fx-text-fill : #FFFFFF; -fx-padding: 10px; -fx-background-radius: 13px; -fx-margin: 20");
-		}	
+		ScrollPane scrollPane = new ScrollPane(accordionHelp);
+    	scrollPane.setPrefHeight(500);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        
+//    	CustomPaneHelp[] accordionPanes = {paneIntroduction, paneRecherche, paneAjoutStagiaire, paneImpression, paneDeconnexion};
 
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
 		bienvenue.setStyle(
 				"-fx-font-family : 'Krona One'; -fx-font-size : 24px; -fx-text-fill : 'FFFFFF';");
 		bienvenue.setAlignment(Pos.CENTER);
-		bienvenue.setPadding(new Insets(30, 0, 0, 0)); 
+		bienvenue.setPadding(new Insets(0, 0, 30, 0)); 
+		
 		//Création du bouton Retour 
 		HBox hboxBtnRetourHelp = new HBox();
 		Button btnRetourHelp = new Button("Retour");
@@ -84,9 +83,8 @@ public class HelpSceneNotAdmin extends AnchorPane {
 				"-fx-background-color: #DD734C; -fx-background-radius: 13; fx-text-fill : '#272727'; -fx-font-family : 'Krona One'; -fx-font-size : 18px;");
 		btnRetourHelp.setEffect(INNER_SHADOW_WHITE);
 		hboxBtnRetourHelp.setAlignment(Pos.BOTTOM_RIGHT);
-		hboxBtnRetourHelp.setPadding(new Insets(0, 75, 0, 0)); 
 		hboxBtnRetourHelp.getChildren().add(btnRetourHelp);
-		
+		VBox.setMargin(hboxBtnRetourHelp,new Insets(0,10,0,0));
 
 		// Hover Effect sur le bouton Retour
 		btnRetourHelp.setOnMouseEntered(e -> btnRetourHelp.setStyle(
@@ -104,17 +102,16 @@ public class HelpSceneNotAdmin extends AnchorPane {
 
 		// Mettre l'Accordion dans une VBox pour l'ajuster dans la scène
 		VBox vboxHelp = new VBox(30);
-		
-		vboxHelp.getChildren().addAll(bienvenue, accordionHelp, hboxBtnRetourHelp);
+		vboxHelp.setPrefSize(900, 720);
+		vboxHelp.getChildren().addAll(bienvenue, scrollPane, hboxBtnRetourHelp);
 		vboxHelp.setStyle("-fx-background-color:#272727; -fx-background-radius: 13px;");
 		vboxHelp.setAlignment(Pos.CENTER);
-		 vboxHelp.setMinSize(1280, 720); 
-		 vboxHelp.setPrefSize(1280, 720); 
-		 vboxHelp.setMaxSize(1280, 720); 
 
+		// Création de la StackPane qui contient la VBox
 		StackPane StackPaneHelp = new StackPane();
 		StackPaneHelp.setPrefSize(1280, 720);
-		StackPaneHelp.setStyle("-fx-background-color: #272727; -fx-background-radius: 13px;");
+		StackPaneHelp.setPadding(new Insets(30,20,30,30));
+		StackPaneHelp.setStyle("-fx-background-color: #272727;");
 		StackPaneHelp.getChildren().addAll(vboxHelp);
 
 		this.getChildren().add(StackPaneHelp);

@@ -1,11 +1,11 @@
-/* styles.css */
+/********************     TableView     ********************/
 	
 
 .table-view {
     -fx-background-color: #454443;
 	-fx-background-radius: 13px;
 	-fx-text-background-color: #C6C6C6;
-	-fx-padding:0 10px 0 10px;
+	-fx-padding:0 10px 10px 10px;
 }
 
 .table-view .column-header {
@@ -77,33 +77,105 @@
 
 }
 
+
+/********************     Accordion     ********************/
+
+
 .accordion {
-    -fx-background-color: null; /* Changer la couleur de fond de l'accordéon */
-    -fx-padding: 10px; /* Ajouter un padding autour de l'accordéon */
-    
+    -fx-spacing: 20px;
 }
 
+.accordion > .titled-pane {
+    -fx-padding: 0 10px 20px 0;
+}
+.titled-pane {
+	-fx-text-fill : #FFFFFF;
+}
+	
 .titled-pane > .title {
-    -fx-background-color: #454443; /* Changer la couleur de fond des titres */
-    -fx-text-fill: #FFFFFF; /* Changer la couleur du texte des titres */
-    -fx-font-size: 18px; /* Changer la taille de la police du titre */
+    -fx-font-family: 'Krona One'; 
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+    -fx-background-color: #454443;
     -fx-background-radius: 13px;
-    -fx-padding:10px; 
- 
+    -fx-padding: 15px;
 }
 
 .titled-pane > .content {
-    -fx-background-color: #DD734C; /* Changer la couleur de fond du contenu */
-    -fx-text-fill: #272727; /* Changer la couleur du texte des titres */
-    -fx-font-size: 12px; /* Changer la taille de la police du titre */
- }
-
-.textarea{
-	-fx-control-inner-background:#DD734C; 
-	
+    -fx-background-color: #DD734C;
+    -fx-background-radius: 13px; 
+    -fx-padding: 10px;       
+    -fx-border-color: transparent; 
+	-fx-margin-bottom: 20px;
 }
 
+.text-area {
+    -fx-background-color: #DD734C; 
+    -fx-text-fill: #272727;       
+    -fx-padding: 10px;            
+    -fx-border-radius: 13px;     
+    -fx-background-radius: 13px;  
+    -fx-font-size: 14px;         
+    -fx-font-family: 'Krona One';  
+}
 
+.text-area .content {
+    -fx-background-color: #DD734C; 
+}
 
+.text-area .scroll-pane {
+    -fx-background-color: #DD734C; 
+    -fx-background-radius: 13px;  
+    -fx-border-color: transparent;
+}
 
+.text-area .viewport {
+    -fx-background-color: #DD734C; 
+    -fx-background-radius: 13px; 
+}
 
+.text-area .scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #DD734C;
+}
+
+.text-area .scroll-pane .corner,
+.text-area .scroll-pane .content,
+.text-area .scroll-pane .scroll-bar {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .scroll-bar .increment-button,
+.text-area .scroll-pane .scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+	-fx-background-image: none; 
+}
+
+/********************     Accordion     ********************/
+
+.scroll-pane{
+	-fx-background-color: #272727;
+	-fx-border-color: #272727;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-opacity: 0;
+    -fx-padding: 2;
+}
+
+.scroll-bar:vertical .thumb{
+	-fx-background-color: #454443;
+}
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: transparent;
+}

@@ -258,8 +258,10 @@ public class CustomMainScene extends AnchorPane {
 		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
 		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
 		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
 		}
+		
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
+		
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
 
@@ -725,7 +727,7 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 		TableView<Intern> tableView = new TableView<>(filteredInterns);
 
 		// On met les colones
-		double columnWidth = 1025 / 5;
+		double columnWidth = 1005 / 5;
 
 		TableColumn<Intern, String> column1 = new TableColumn<>("Nom de famille");
 		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));

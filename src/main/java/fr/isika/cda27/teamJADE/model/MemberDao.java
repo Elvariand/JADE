@@ -216,7 +216,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 				// position correspondante dans le fichier binaire
 				// et nous relançons une recherche.
 			} else {
-				this.findByAlias(alias, password, newCursorPosition * getNodeSize());
+				return this.findByAlias(alias, password, newCursorPosition * getNodeSize());
 				
 			}
 		}
@@ -241,7 +241,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 				// position correspondante dans le fichier binaire
 				// et nous relançons une recherche.
 			} else {
-				this.findByAlias(alias, password, newCursorPosition * getNodeSize());
+				return this.findByAlias(alias, password, newCursorPosition * getNodeSize());
 				
 			}
 		}
@@ -255,10 +255,10 @@ public class MemberDao extends TreeNodeDao<Member>{
 			 * Pour le fichier binaire nous cherchons maintenant le mdp
 			 */
 			while (read > 0) {
+				Member member = this.readObjectFromBinary(cursorPosition);
 				// Si le mdp est égal au mdp du membre courant
 				if (password.equals(this.readObjectFromBinary(cursorPosition).getPassword())) {
 					System.out.println("Le mdp à été trouvé 1 !");
-					Member member = this.readObjectFromBinary(cursorPosition);
 					return member;
 				}
 				read = readTwinFromBinary(cursorPosition);
@@ -266,9 +266,8 @@ public class MemberDao extends TreeNodeDao<Member>{
 					cursorPosition = read * getNodeSize();
 			}
 		}
-			System.out.println("Le mdp à été trouvé 2 !");
-			Member member = this.readObjectFromBinary(cursorPosition);
-			return member;
+			System.out.println("Aucune correspondance trouvée 3 !");
+			return null;
 
 	}
 }

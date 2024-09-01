@@ -750,7 +750,7 @@ public class MembersMainScene extends AnchorPane {
 		TableView<Member> tableView = new TableView<>(filteredMembers);
 
 		// On met les colones
-		double columnWidth = 1025 / 5;
+		double columnWidth = 1005 / 5;
 
 		TableColumn<Member, String> column1 = new TableColumn<>("Nom de Famille");
 		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));

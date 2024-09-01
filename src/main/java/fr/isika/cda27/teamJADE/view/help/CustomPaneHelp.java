@@ -1,12 +1,17 @@
 package fr.isika.cda27.teamJADE.view.help;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class CustomPaneHelp extends TitledPane {
@@ -24,30 +29,35 @@ public class CustomPaneHelp extends TitledPane {
 		
 		
 		this.setText(paneTitle); 
-		this.setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 16px; -fx-text-fill : #FFFFFF; -fx-background-color: #454443; -fx-padding: 10px; -fx-background-radius: 13px;");
 		
 		TextArea textArea = new TextArea(paneText); 
-		textArea.setWrapText(true); 
-		textArea.textProperty().addListener(new ChangeListener<String>() {
-	            @Override
-	            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-	                // Ajuster la hauteur du TextArea en fonction de son contenu
-	                textArea.setPrefHeight(calculateTextAreaHeight(textArea));
-	                
-	            }
-	        });
+		textArea.setWrapText(true);
+		textArea.setEditable(false);
 		
-		this.setContent(textArea); 
-		this.getContent().setStyle("-fx-font-family : 'Krona One'; -fx-font-size: 12px; -fx-text-fill : #272727; -fx-background-color: #DD734C; -fx-control-inner-background:#DD734C; -fx-padding: 10px; -fx-background-radius: 13px;");
-		
-
+		double heightTA = calculateTextAreaHeight(paneText);
+		textArea.setMinHeight(heightTA);
+         
+        
+        this.setContent(textArea);
 	}
-	  
-	 private double calculateTextAreaHeight(TextArea textArea) {
-	        // Taille de la ligne et du nombre de lignes
-	        int numberOfLines = textArea.getText().split("\n").length;
-	        double lineHeight = textArea.getFont().getSize() + 2; // Ajouter un petit padding
-	        return numberOfLines * lineHeight + 20; // 20 pixels de padding supplémentaire
-	    }
+	
+	private double calculateTextAreaHeight(String paneText) {
+        double lineHeight = 25; 
+        int chunkSize = 100; 
+        List<String> chunks = splitString(paneText, chunkSize);
+        int numberOfLines = chunks.size();
+        return lineHeight * numberOfLines;
+    }
+	
+	public static List<String> splitString(String text, int chunkSize) {
+		List<String> chunks = new ArrayList<>();
+        
+        int length = text.length();
+        for (int i = 0; i < length; i += chunkSize) {
+            chunks.add(text.substring(i, Math.min(length, i + chunkSize)));
+        }
+        
+        return chunks;
+    }
 
 }
