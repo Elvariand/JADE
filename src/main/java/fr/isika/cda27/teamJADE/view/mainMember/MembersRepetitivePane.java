@@ -207,6 +207,8 @@ public class MembersRepetitivePane extends RepetitivePane {
 		radioButton.getFalseBtn().setSelected(false);
 	}
 	
-	
+	public CustomRadioButton getCustomRadioButton() {
+		return(CustomRadioButton) (this.gridPane.getChildren().get(9));
+	}
 
 }

@@ -9,11 +9,13 @@ import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
+import fr.isika.cda27.teamJADE.utilz.CustomRadioButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
 import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
+import fr.isika.cda27.teamJADE.view.mainMember.MembersRepetitivePane;
 import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -365,37 +367,10 @@ public class CustomMainScene extends AnchorPane {
 			refreshPane(addContentVbox);
 		});
 		
-		/*
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-	 *     JASON FACTORISE CA CE SOIR ///////////////////////////////////////////////////////////
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 * 
-		 */
 		
 		// Les actions en écrivant
-		Label[] addContentErrorLabels = this.getPaneErrorLabel(addContentVbox);
-		TextField[] addContentTextFields = this.getPaneTextField(addContentVbox);
-		String[] types = {"name","name","int","cursus","int"};
-		
-		for (int i = 0; i < addContentTextFields.length; i++) {
-			this.actionOnTyping((CustomTextField) addContentTextFields[i], addContentErrorLabels[i], types[i]);
-			addContentTextFields[i].setOnKeyPressed(event -> {
-				boolean[] good = areAllFieldsCorrectlyFilled(addContentVbox);
-				if (good[0] && good[1] && good[2] && good[3] && good[4]) {
-					addContentAddBtn.setDisable(false);
-				} else {
-					addContentAddBtn.setDisable(true);
-				}
-			});
-		}
+		this.actionOnTyping(addContentVbox);
+
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
@@ -463,47 +438,150 @@ public class CustomMainScene extends AnchorPane {
 
 	}
 
-private void actionOnTyping(CustomTextField tf, Label error, String type) {
-	tf.setOnKeyReleased(event -> {
-		switch (type) {
-		case "name":
-			if (isStringNameCorrect(tf)) {
-				error.setVisible(false);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: transparent transparent #704739 transparent;");
+private void actionOnTypingMembers(MembersRepetitivePane pane) {
+	Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
+	TextField[] paneTextFields = this.getPaneTextField(pane);
+	Button paneRightBtn  = pane.getRightButton();
+	String[] types = new String[6];
+	CustomRadioButton crb = pane.getCustomRadioButton();
+
+		types[0] = "name";
+		types[1] = "name";
+		types[2] = "name";
+		types[3] = "mail";
+		types[4] = "admin";
+		types[5] = "password";
+
+	
+	
+	for (int i = 0; i < paneTextFields.length; i++) {
+		CustomTextField tf = (CustomTextField) paneTextFields[i];
+		Label error = paneErrorLabels[i];
+		String type = types[i];
+		
+		tf.setOnKeyReleased(event -> {
+			
+			boolean[] good = areAllFieldsCorrectlyFilled(pane);
+			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+				paneRightBtn.setDisable(false);
 			} else {
-				error.setVisible(true);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: red;");
+				paneRightBtn.setDisable(true);
 			}
-			break;
-		case "cursus":
-			if (isStringCursusCorrect(tf)) {
-				error.setVisible(false);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: transparent transparent #704739 transparent;");
+
+			switch (type) {
+				case "name":
+					if (isStringNameCorrect(tf)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
+				case "mail":
+					if (isStringMailCorrect(tf)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
+				case "admin":
+					if (isBooleanAdminCorrect(crb)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
+				case "password":
+					if (isStringPasswordCorrect(tf)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
+				case "skip":
+					break;
+				default:
+					System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" \"int\" \"skip\" \"mail\" \"admin\"  ou \"password\" . ");
+				break;
+			}
+		});
+	}
+}
+
+private void actionOnTyping(RepetitivePane pane) {
+	Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
+	TextField[] paneTextFields = this.getPaneTextField(pane);
+	Button paneRightBtn  = pane.getRightButton();
+	String[] types = {"name", "name", "int", "cursus", "int", "skip"};
+	
+	for (int i = 0; i < paneTextFields.length; i++) {
+		CustomTextField tf = (CustomTextField) paneTextFields[i];
+		Label error = paneErrorLabels[i];
+		String type = types[i];
+		tf.setOnKeyReleased(event -> {
+			
+			boolean[] good = areAllFieldsCorrectlyFilled(pane);
+			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+				paneRightBtn.setDisable(false);
 			} else {
-				error.setVisible(true);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: red;");
+				paneRightBtn.setDisable(true);
 			}
-			break;
-		case "int":
-			if (isStringIntCorrect(tf)) {
-				error.setVisible(false);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: transparent transparent #704739 transparent;");
-			} else {
-				error.setVisible(true);
-				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-						+ "-fx-border-color: red;");
+			
+			switch (type) {
+			case "name":
+				if (isStringNameCorrect(tf)) {
+					error.setVisible(false);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: transparent transparent #704739 transparent;");
+				} else {
+					error.setVisible(true);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: red;");
+				}
+				break;
+			case "cursus":
+				if (isStringCursusCorrect(tf)) {
+					error.setVisible(false);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: transparent transparent #704739 transparent;");
+				} else {
+					error.setVisible(true);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: red;");
+				}
+				break;
+			case "int":
+				if (isStringIntCorrect(tf)) {
+					error.setVisible(false);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: transparent transparent #704739 transparent;");
+				} else {
+					error.setVisible(true);
+					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+							+ "-fx-border-color: red;");
+				}
+				break;
+			default:
+				System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" ou \"int\" . ");
+				break;
 			}
-			break;
-		default:
-			System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" ou \"int\" . ");
-			break;
-		}
-	});
+		});
+	}
 }
 	
 	private String[] grabInfos(RepetitivePane Pane) {
@@ -529,6 +607,12 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 	private TextField[] getPaneTextField(RepetitivePane pane) {
 		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneFirstName(), pane.getGridPaneCounty(),
 				pane.getGridPaneCursus(), pane.getGridPaneYearIn() };
+		return tf;
+	}
+	
+	private TextField[] getMemberPaneTextField(MembersRepetitivePane pane) {
+		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneName(), pane.getGridPaneAlias(),
+				pane.getGridPaneEmail(), pane.getGridPaneEmail(), pane.getPasswordField() };
 		return tf;
 	}
 
@@ -879,11 +963,28 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s\\d]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
+	
+	private boolean isStringPasswordCorrect(CustomTextField field) {
+		String text = field.getText().trim();
+		return !(text.length() <= 4 || Pattern.compile("[\"\\/<>]").matcher(text).find()
+				|| text.length() > field.getMaxChars());
+	}
 
 	private boolean isStringIntCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
+	}
+	
+	private boolean isStringMailCorrect(CustomTextField field) {
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || (text.contains("@") && text.contains("."))
+				|| text.length() > field.getMaxChars());
+	}
+	
+	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
+		String toggle = field.getToggleGroup().getSelectedToggle().getUserData().toString();
+		return (toggle.equals("true") || toggle.equals("false"));
 	}
 
 	private String getCurrentColor(SVGPath svgPath) {

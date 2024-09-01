@@ -10,16 +10,20 @@ public class CustomRadioButton extends HBox {
 
 	private RadioButton trueBtn;
 	private RadioButton falseBtn;
+	private ToggleGroup toggleGroup;
 	
 	CustomRadioButton () {
 		this.trueBtn = new RadioButton("oui");
 		this.falseBtn = new RadioButton("non");
 		
+		this.trueBtn.setUserData("true");
+		this.falseBtn.setUserData("false");
+		
 		this.setAlignment(Pos.CENTER);
 		this.setPrefWidth(400);
 		this.setSpacing(100);
 		
-		ToggleGroup toggleGroup = new ToggleGroup();
+		this.toggleGroup = new ToggleGroup();
 		trueBtn.setToggleGroup(toggleGroup);
 		falseBtn.setToggleGroup(toggleGroup);
 		
@@ -52,6 +56,20 @@ public class CustomRadioButton extends HBox {
 
 	public void setFalseBtn(RadioButton falseBtn) {
 		this.falseBtn = falseBtn;
+	}
+
+	/**
+	 * @return the toggleGroup
+	 */
+	public ToggleGroup getToggleGroup() {
+		return toggleGroup;
+	}
+
+	/**
+	 * @param toggleGroup the toggleGroup to set
+	 */
+	public void setToggleGroup(ToggleGroup toggleGroup) {
+		this.toggleGroup = toggleGroup;
 	}
 	
 	
