@@ -9,6 +9,7 @@ import com.itextpdf.text.BaseColor;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
+import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -27,7 +28,7 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 
 public class PrintPane extends RepetitivePane {
 
-	private Label labelError;
+	private FadingErrorLabel labelError;
 	protected Button button;
 	protected TableView tableView;
 	protected BaseColor borderColor = new BaseColor(39, 39, 39);
@@ -46,7 +47,7 @@ public class PrintPane extends RepetitivePane {
 //		this.gridPane.setManaged(false);
 //		this.gridPane.setVisible(false);
 		
-		this.labelError = new Label("Veuilez sélectionner un dossier cible");
+		this.labelError = new FadingErrorLabel("Veuilez sélectionner un dossier cible");
 		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		this.labelError.setFont(Font.font("Krona One", 14));
 		this.labelError.setStyle("-fx-alignment: center;");

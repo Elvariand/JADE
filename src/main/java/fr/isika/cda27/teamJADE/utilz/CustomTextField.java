@@ -17,7 +17,6 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class CustomTextField extends TextField {
 
-	private InnerShadow innerShadow;
 	private int MaxChars = 30;
 	private HBox hboxError; 
 
@@ -75,18 +74,4 @@ public class CustomTextField extends TextField {
 		this.hboxError = hboxError;
 	}
 
-	/**
-	 * @return the innerShadow
-	 */
-	public InnerShadow getInnerShadow() {
-		return innerShadow;
-	}
-
-	/**
-	 * @param innerShadow the innerShadow to set
-	 */
-	public void setInnerShadow(InnerShadow innerShadow) {
-		this.innerShadow = innerShadow;
-		this.setEffect(innerShadow);
-	}
 }

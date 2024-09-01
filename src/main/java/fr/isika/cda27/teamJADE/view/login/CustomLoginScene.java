@@ -3,7 +3,7 @@ package fr.isika.cda27.teamJADE.view.login;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_HEIGHT;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_WIDTH;
-import fr.isika.cda27.teamJADE.model.MemberDao; 
+import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
@@ -37,11 +37,9 @@ public class CustomLoginScene extends AnchorPane {
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
 		// AnchorPane Login
-
 		this.setPrefSize(1280, 720);
 
 		// Image Fond de connexion
-
 		ImageView fondConnexion = new ImageView("file:src/main/resources/img/fondConnexion.png");
 		fondConnexion.setFitWidth(1280);
 		fondConnexion.setFitHeight(720);
@@ -79,7 +77,6 @@ public class CustomLoginScene extends AnchorPane {
 
 		// Création VBox Password
 		VBox vboxPassword = new VBox(5);
-//		vboxPassword.setPadding(new Insets(0, 0, 20, 0));
 		Label labelPassword = new Label("Mot de passe");
 		labelPassword.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 16px; -fx-text-fill :#272727; ");
 
@@ -112,42 +109,49 @@ public class CustomLoginScene extends AnchorPane {
 		hboxErrorChars.getChildren().addAll(imageAttention, labelErrorChars);
 		hboxErrorChars.setAlignment(Pos.CENTER_LEFT);
 		hboxErrorChars.setVisible(false);
+		
 		aliasField.setHboxError(hboxErrorChars); 
 		
-		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le nom
-		// d'utilisateur
-//		aliasField.textProperty().addListener(new ChangeListener<String>() {
-//		@Override
-//		public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-//		System.out.println(newValue);
-//			if (newValue.length() > maxChars) {
-//				aliasField.setText(newValue.substring(0, maxChars));
-//				hboxErrorChars.setVisible(true);
-//				
-//			}
-//		}
-//
-//	});
-
-		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le mot de passe
+		// Ajout des éléments 
+		vboxAlias.getChildren().addAll(labelAlias, aliasField);
+		vboxPassword.getChildren().addAll(labelPassword, passwordField);
+	
+		
+		
+		
+		
+		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le mot de passe et le nom d'utilisateur
 		passwordField.textProperty().addListener(new ChangeListener<String>() {
-
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if (newValue.length() > maxChars) {
 					passwordField.setText(newValue.substring(0, maxChars));
-					hboxErrorChars.setVisible(true);
 				}
-
+				checkIfError(hboxErrorChars, aliasField.getText(), newValue); 
 			}
-
 		});
+		aliasField.textProperty().addListener(new ChangeListener<String>() {
+		    @Override
+		    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+		        if (newValue.length() > maxChars) {
+		            aliasField.setText(newValue.substring(0, maxChars)); 
+		        }
+		        checkIfError(hboxErrorChars, newValue, passwordField.getText()); 
+		    }
+		});
+
+
 		
-
-
-		vboxAlias.getChildren().addAll(labelAlias, aliasField);
-		vboxPassword.getChildren().addAll(labelPassword, passwordField);
-
+		// Création bouton Valider
+		CustomButton btnValider = new CustomButton("Valider");
+		
+		// Gestionnaire d'évènement pour le bouton Valider
+		btnValider.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
+		
+		vboxRight.setAlignment(Pos.CENTER);
+		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, hboxErrorChars,
+				btnValider);
+		
 		// Valider via la touche Entrée, après avoir renseigné le password !
 		passwordField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
@@ -155,27 +159,29 @@ public class CustomLoginScene extends AnchorPane {
 			}
 		});
 
-		// Création bouton Valider
-
-		CustomButton btnValider = new CustomButton("Valider");
-
-		// Gestionnaire d'évènement pour le bouton Valider
-		btnValider.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
-
-		vboxRight.setAlignment(Pos.CENTER);
-		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, hboxErrorChars,
-				btnValider);
+		
 		this.getChildren().addAll(fondConnexion, vboxRight);
 
 		AnchorPane.setTopAnchor(vboxRight, 30.0);
 		AnchorPane.setRightAnchor(vboxRight, 30.0);
 	}
 
+	public void checkIfError(HBox hboxErrorChars, String alias, String password) {
+	    boolean aliasTooLong = alias.length() > maxChars-1;
+	    boolean passwordTooLong = password.length() > maxChars-1;
+
+	    if (aliasTooLong || passwordTooLong) {
+	        hboxErrorChars.setVisible(true);
+	    } else {
+	        hboxErrorChars.setVisible(false);
+	    }
+	}
+	
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
 		Member member = memberDao.findByAlias(alias, password);
 		System.out.println(member);
 		// si member non null alors on affiche la mainScene
-		if (member!=null) {
+		if (member != null) {
 			Stage stage = ((Stage) CustomLoginScene.this.getScene().getWindow());
 			Scene scene = new Scene(new CustomMainScene(member));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
@@ -184,7 +190,5 @@ public class CustomLoginScene extends AnchorPane {
 			hboxInvalide.setVisible(true);
 		}
 	}
-
-	
 
 }

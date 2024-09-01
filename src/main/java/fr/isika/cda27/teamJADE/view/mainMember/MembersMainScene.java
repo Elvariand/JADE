@@ -10,6 +10,7 @@ import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
+import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
 import fr.isika.cda27.teamJADE.view.mainIntern.AddPane;
@@ -380,18 +381,17 @@ public class MembersMainScene extends AnchorPane {
 						data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], isAdminBtnSelected));
 				ArrayList<Member> suppr = new ArrayList<Member>();
 				this.observableMembers.setAll(memberDao.sortView(0, suppr));
+				refreshPane(addContentVbox);
+				closeMenu(menuHbox);
 			} else {
-				addContentVbox.getLabelError().setVisible(true);
+				addContentVbox.getLabelError().show();
 			}
 
-			closeMenu(menuHbox);
 		});
-
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
-			addContentVbox.refreshRadioButtons();
 		});
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
@@ -505,9 +505,9 @@ public class MembersMainScene extends AnchorPane {
 		refresh(pane.getGridPaneName());
 		refresh(pane.getGridPaneAlias());
 		refresh(pane.getGridPaneEmail());
-
-		// on coche radiobutton false par défault
-		pane.setRadioButton(false);
+		refresh(pane.getPasswordField());
+		// on décoche les radiobutton
+		pane.refreshRadioButtons();
 	}
 
 	private void refresh(TextField textField) {

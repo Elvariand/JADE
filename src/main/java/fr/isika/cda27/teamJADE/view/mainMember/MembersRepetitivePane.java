@@ -166,6 +166,14 @@ public class MembersRepetitivePane extends RepetitivePane {
 
 	}
 
+	public PasswordField getPasswordField() {
+		return ((PasswordField) gridPane.getChildren().get(11));
+	}
+	
+	public String getTextPasswordField() {
+		return ((PasswordField) gridPane.getChildren().get(11)).getText();
+	}
+	
 	public boolean isAdminSelected() {
 		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(9));
 		if (radioButton.isTrueBtnSelected()) {
@@ -199,12 +207,6 @@ public class MembersRepetitivePane extends RepetitivePane {
 		radioButton.getFalseBtn().setSelected(false);
 	}
 	
-	public PasswordField getPasswordField() {
-		return passwordField;
-	}
 	
-	public String getTextPasswordField() {
-		return passwordField.getText();
-	}
 
 }

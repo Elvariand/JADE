@@ -26,6 +26,7 @@ import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
+import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -39,7 +40,7 @@ import javafx.stage.Stage;
 
 public class CustomPrintBox extends VBox {
 
-	private Label labelError;
+	private FadingErrorLabel labelError;
 	protected CustomButton exportButton;
 	protected CustomButton chooseDirectoryButton;
 	protected TableView tableView;
@@ -48,7 +49,7 @@ public class CustomPrintBox extends VBox {
 	protected String saveDirectory = "";
 	protected String fileName = "";
 
-	public CustomPrintBox(TableView tableView, Label labelError) {
+	public CustomPrintBox(TableView tableView, FadingErrorLabel labelError) {
 
 		this.tableView = tableView;
 		this.setSpacing(40);
@@ -61,7 +62,15 @@ public class CustomPrintBox extends VBox {
 
 		CustomTextField fileNameField = new CustomTextField();
 		fileNameField.setMaxChars(200);
-		fileNameField.setText("Table_des_stagiaires_" + formattedDate + ".pdf");
+		
+		Object item = tableView.getItems().get(1);
+
+		if (item instanceof Intern) {
+			fileNameField.setText("Table_des_stagiaires_" + formattedDate + ".pdf");
+
+		} else if (item instanceof Member) {
+			fileNameField.setText("Table_des_membres_" + formattedDate + ".pdf");
+		}
 		fileNameField.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 				+ "-fx-border-color: transparent transparent #704739 transparent; -fx-text-fill: #454443;");
 		fileNameField.setMaxWidth(540);
@@ -94,11 +103,11 @@ public class CustomPrintBox extends VBox {
 		exportButton.setOnAction(e -> {
 			fileName = fileNameField.getText();
 			if (saveDirectory.isEmpty() || fileName.isEmpty()) {
-				this.labelError.setVisible(true);
+				this.labelError.show();
 				return;
 			} else {
 				this.labelError.setText("L'annuaire a bien été exporté");
-				this.labelError.setVisible(true);
+				this.labelError.show();
 				exportToPDF(tableView);
 			}
 		});

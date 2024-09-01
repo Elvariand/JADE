@@ -70,7 +70,7 @@ public class UtilStaticValues {
 				LABEL_ERROR_CURSUS, LABEL_ERROR_YEARIN };
 
 
-		public static final String[] LABEL_TEXTS_MEMBERS = { "Nom de famille", "Prénom", "Pseudo", "Mail", "Administrateur"};
+		public static final String[] LABEL_TEXTS_MEMBERS = { "Nom de famille", "Prénom", "Pseudo", "Mail", "Administrateur", "Mot de passe"};
 		
 		public static final int VBOX_WIDTH = 690;
 		public static final int VBOX_HEIGHT = 720;
@@ -160,6 +160,7 @@ public class UtilStaticValues {
 				gridPane.getRowConstraints().add(rowConstraints);
 			}
 
+			gridPane.setPadding(new Insets(0,0,40,0));
 			return gridPane;
 		}
 		
@@ -205,20 +206,38 @@ public class UtilStaticValues {
 				gridPane.add(textField, 1, i);
 			}
 			
-			RowConstraints rowConstraints = new RowConstraints();
-			rowConstraints.setPrefHeight(ROW_HEIGHT);
-			gridPane.getRowConstraints().add(rowConstraints);
+			// Ligne 5
+			RowConstraints rowConstraints5 = new RowConstraints();
+			rowConstraints5.setPrefHeight(ROW_HEIGHT);
+			gridPane.getRowConstraints().add(rowConstraints5);
 			// label
-			Label label = new Label(LABEL_TEXTS_MEMBERS[4]);
-			label.setFont(Font.font("Krona One", 16));
-			label.setTextFill(GREY_COLOR);
-			GridPane.setMargin(label, new Insets(0, 30, 0, 40));
-			
+			Label label5 = new Label(LABEL_TEXTS_MEMBERS[4]);
+			label5.setFont(Font.font("Krona One", 16));
+			label5.setTextFill(GREY_COLOR);
+			GridPane.setMargin(label5, new Insets(0, 30, 0, 40));
 			// à droite on met les radioboutons
 			CustomRadioButton radioBtnHbox = new CustomRadioButton();
 			// ajouter tout au GridPane
-			gridPane.add(label, 0, 4);
+			gridPane.add(label5, 0, 4);
 			gridPane.add(radioBtnHbox, 1, 4);
+			
+			// Ligne 6
+			RowConstraints rowConstraints6 = new RowConstraints();
+			rowConstraints6.setPrefHeight(ROW_HEIGHT);
+			gridPane.getRowConstraints().add(rowConstraints6);
+			// label
+			Label label6 = new Label(LABEL_TEXTS_MEMBERS[5]);
+			label6.setFont(Font.font("Krona One", 16));
+			label6.setTextFill(GREY_COLOR);
+			GridPane.setMargin(label6, new Insets(0, 30, 0, 40));
+			// à droite on met le PasswordField
+			CustomPasswordField passwordField = new CustomPasswordField();
+			GridPane.setMargin(passwordField, new Insets(0, 40, 0, 0));
+			
+			// ajouter tout au GridPane
+			gridPane.add(label6, 0, 5);
+			gridPane.add(passwordField, 1, 5);
+			
 			
 			return gridPane;
 		}

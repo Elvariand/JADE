@@ -140,7 +140,7 @@ public class MembersRemovePane extends RepetitivePane {
 			gridPane.getRowConstraints().add(rowConstraints);
 
 			// label
-			Label label = new Label("             " + LABEL_TEXTS[i]);
+			Label label = new Label("             " + LABEL_TEXTS_MEMBERS[i]);
 			label.setFont(Font.font("Krona One", 16));
 			label.setTextFill(GREY_COLOR);
 			GridPane.setMargin(label, new Insets(0, 30, 0, 40));

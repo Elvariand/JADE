@@ -41,10 +41,8 @@ public class MembersUpdatePane extends MembersRepetitivePane {
 		this.labelError.setTextFill(GREY_COLOR);
 		this.labelError.setVisible(false);
 
-		this.getChildren().addAll(labelError);
+		this.getChildren().add(labelError);
 
-		super.getChildren().set(2, getPasswordField());
-		super.getChildren().add(getButtonBox());
 	}
 
 	/**
