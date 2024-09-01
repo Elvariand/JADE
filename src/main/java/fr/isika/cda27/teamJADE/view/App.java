@@ -51,8 +51,8 @@ public class App extends Application {
 
 	Member member = new Member("alexia", "mdp","ROY", "alexia","mailalexia@gmail.com");
 
-//		CustomLoginScene root = new CustomLoginScene();
-		CustomMainScene root = new CustomMainScene(member);
+		CustomLoginScene root = new CustomLoginScene();
+//		CustomMainScene root = new CustomMainScene(member);
 //		MembersMainScene root = new MembersMainScene();
 
 

@@ -224,41 +224,27 @@ public class CustomMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn,  printBtn, quitBtn, removeBtn, updateBtn,seeMemberBtn);
+		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
 
-		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn,  printBtn, quitBtn,removeBtn, updateBtn,seeMemberBtn);
-
-		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, quitBtn, removeBtn, updateBtn,seeMemberBtn);
-
-		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				printBtn, quitBtn);
-
-		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn,	printBtn, removeBtn, updateBtn,seeMemberBtn);
 
 		/*
 		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
 		 * bouton cliqué 2) le contenu à afficher 3) la HBox du menu 4) la liste des
 		 * autres boutons
 		 */
-
-		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig,showAdminView);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig,showAdminView);
-		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig,showAdminView);
+		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, listMenuBtn,showAdminView);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, listMenuBtn,showAdminView);
+		configureButtonAction(addBtn, addContentVbox, menuHbox, listMenuBtn,showAdminView);
 		
 		// Si on est admin alors on configure l'action des boutons
 		if(showAdminView) {
-		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig,showAdminView);
-		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig,showAdminView);
-		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig,showAdminView);
+		configureButtonAction(removeBtn, removeContentVbox, menuHbox, listMenuBtn,showAdminView);
+		configureButtonAction(updateBtn, updateContentVbox, menuHbox, listMenuBtn,showAdminView);
+		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, listMenuBtn,showAdminView);
 		}
 		
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig,showAdminView);
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, listMenuBtn,showAdminView);
+
 		
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
@@ -379,6 +365,20 @@ public class CustomMainScene extends AnchorPane {
 			refreshPane(addContentVbox);
 		});
 		
+		/*
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+	 *     JASON FACTORISE CA CE SOIR ///////////////////////////////////////////////////////////
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 * 
+		 */
 		
 		// Les actions en écrivant
 		Label[] addContentErrorLabels = this.getPaneErrorLabel(addContentVbox);
@@ -387,7 +387,7 @@ public class CustomMainScene extends AnchorPane {
 		
 		for (int i = 0; i < addContentTextFields.length; i++) {
 			this.actionOnTyping((CustomTextField) addContentTextFields[i], addContentErrorLabels[i], types[i]);
-			addContentTextFields[i].setOnKeyReleased(event -> {
+			addContentTextFields[i].setOnKeyPressed(event -> {
 				boolean[] good = areAllFieldsCorrectlyFilled(addContentVbox);
 				if (good[0] && good[1] && good[2] && good[3] && good[4]) {
 					addContentAddBtn.setDisable(false);
@@ -464,40 +464,39 @@ public class CustomMainScene extends AnchorPane {
 	}
 
 private void actionOnTyping(CustomTextField tf, Label error, String type) {
-	tf.setOnKeyPressed(event -> {
-		if(tf.getText().length() <= 1) return;
+	tf.setOnKeyReleased(event -> {
 		switch (type) {
 		case "name":
 			if (isStringNameCorrect(tf)) {
 				error.setVisible(false);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: transparent transparent #704739 transparent;");
 			} else {
 				error.setVisible(true);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: red;");
 			}
 			break;
 		case "cursus":
 			if (isStringCursusCorrect(tf)) {
 				error.setVisible(false);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: transparent transparent #704739 transparent;");
 			} else {
 				error.setVisible(true);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: red;");
 			}
 			break;
 		case "int":
 			if (isStringIntCorrect(tf)) {
 				error.setVisible(false);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.TRANSPARENT,BorderStrokeStyle.NONE,CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: transparent transparent #704739 transparent;");
 			} else {
 				error.setVisible(true);
-				tf.setBorder(new Border(new BorderStroke(
-						Color.RED,BorderStrokeStyle.SOLID,CornerRadii.EMPTY, BorderWidths.FULL)));
+				tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+						+ "-fx-border-color: red;");
 			}
 			break;
 		default:
@@ -545,8 +544,14 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 	}
 
 	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
-			List<StackPaneMenubar> otherButtons, boolean showAdminView) {
+			List<StackPaneMenubar> listButtons, boolean showAdminView) {
 
+
+		List<StackPaneMenubar> otherButtons = new ArrayList<StackPaneMenubar>();
+		otherButtons.addAll(listButtons);
+		otherButtons.remove(buttonClicked);
+		System.out.println(otherButtons);
+		
 		buttonClicked.getButton().setOnAction(event -> {
 
 			// On remplace le contenu de la HBox
@@ -567,44 +572,35 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
 			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
 
-			// on diminue tous les boutons
+			// on diminue tous lee bouton cliqué
 			setSmaller(buttonClicked);
-			setSmaller(otherButtons.get(1));
-			setSmaller(otherButtons.get(2));
-			setSmaller(otherButtons.get(3));
+
 			
-			// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
-			if(!showAdminView) {
-			setSmallerNotAdminCase(otherButtons.get(4));
-			setSmallerNotAdminCase(otherButtons.get(5));
-			setSmallerNotAdminCase(otherButtons.get(6));
+			if(showAdminView) {
+				for (int i = 1; i < 7; i++) {
+					// on diminue tous les boutons
+					setSmaller(otherButtons.get(i));
+					
+					// on passe tous les boutons à gris
+					changeToGrey(otherButtons.get(i));	
+				}			
 			} else {
-			setSmaller(otherButtons.get(4));
-			setSmaller(otherButtons.get(5));
-			setSmaller(otherButtons.get(6));
+				for (int i = 1; i < 4; i++) {
+					setSmaller(otherButtons.get(i));
+					changeToGrey(otherButtons.get(i));	
+				}			
+				// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
+				for (int i = 4; i < 7; i++) {
+					setSmallerNotAdminCase(otherButtons.get(i));
+					changeToGreyNotAdminCase(otherButtons.get(i));	
+				}			
+				
 			}
 
 			// On set maxwidth de la menubarVBox à 100
 			menubarVBox.setPrefWidth(100);
 			menubarVBox.setTranslateX(200);
 			otherButtons.get(0).setTranslateX(0);
-
-			// on passe tous les boutons à gris
-			changeToGrey(otherButtons.get(1));
-			changeToGrey(otherButtons.get(2));
-			changeToGrey(otherButtons.get(3));
-			
-			// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
-			if(!showAdminView) {
-				changeToGreyNotAdminCase(otherButtons.get(4));
-				changeToGreyNotAdminCase(otherButtons.get(5));
-				changeToGreyNotAdminCase(otherButtons.get(6));
-			} else {
-				changeToGrey(otherButtons.get(4));
-				changeToGrey(otherButtons.get(5));
-				changeToGrey(otherButtons.get(6));
-				
-			}
 
 			// on met à jour la couleur du bouton cliqué en orange
 			changeToOrange(buttonClicked);
@@ -874,19 +870,19 @@ private void actionOnTyping(CustomTextField tf, Label error, String type) {
 
 	private boolean isStringNameCorrect(CustomTextField field) {
 		String text = field.getText().trim();
-		return !(text.length() <= 0 || Pattern.compile("[^(\\p{L}-\\s)]").matcher(text).find()
+		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
 	private boolean isStringCursusCorrect(CustomTextField field) {
 		String text = field.getText().trim();
-		return !(text.length() <= 0 || Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(text).find()
+		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s\\d]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
 	private boolean isStringIntCorrect(CustomTextField field) {
 		String text = field.getText().trim();
-		return !(text.length() <= 0 || Pattern.compile("[\\D)]").matcher(text).find()
+		return !(text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 

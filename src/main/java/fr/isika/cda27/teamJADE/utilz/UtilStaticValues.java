@@ -138,11 +138,11 @@ public class UtilStaticValues {
 
 					// texte de droite
 					CustomTextField textField = new CustomTextField();
-					if (i == 2) {
+					if (i/2 == 2) {
 						textField.setMaxChars(3);
-					} else if (i == 3) {
+					} else if (i/2 == 3) {
 						textField.setMaxChars(10);
-					} else if (i == 4) {
+					} else if (i/2 == 4) {
 						textField.setMaxChars(4);
 					}
 
