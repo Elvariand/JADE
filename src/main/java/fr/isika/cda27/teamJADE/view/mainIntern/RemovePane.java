@@ -33,6 +33,7 @@ public class RemovePane extends RepetitivePane {
 		this.leftButton.setText("Non");
 
 		this.rightButton.setText("Oui");
+		this.rightButton.setDisable(true);
 
 
 		this.labelError = new Label("Veuilez sélectionner un stagiaire à supprimer");

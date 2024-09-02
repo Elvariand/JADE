@@ -69,6 +69,7 @@ public class CustomMainScene extends AnchorPane {
 	private FilteredList<Intern> filteredInterns;
 	private TableView<Intern> tableView;
 	private Intern selected;
+	private boolean showAdminView;
 
 	public CustomMainScene(Member connectedMember) {
 		
@@ -148,6 +149,8 @@ public class CustomMainScene extends AnchorPane {
 				updateContentVbox.getGridPaneCounty().setText(gridPaneLabelsList[2]);
 				updateContentVbox.getGridPaneCursus().setText(gridPaneLabelsList[3]);
 				updateContentVbox.getGridPaneYearIn().setText(gridPaneLabelsList[4]);
+				
+				removeContentVbox.getRightButton().setDisable(false);
 			}
 		});
 
@@ -226,7 +229,7 @@ public class CustomMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn, printBtn, seeMemberBtn, quitBtn);
+		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, removeBtn, updateBtn, seeMemberBtn, quitBtn);
 
 
 		/*
@@ -392,6 +395,9 @@ public class CustomMainScene extends AnchorPane {
 			this.tableView.getSelectionModel().clearSelection();
 		});
 
+
+		
+		
 		/* UPDATE CONTENT : configuration des boutons annuler et valider */
 
 		// valider mise à jour
@@ -423,6 +429,9 @@ public class CustomMainScene extends AnchorPane {
 			this.tableView.getSelectionModel().clearSelection();
 			refreshPane(updateContentVbox);
 		});
+		
+		// Les actions en écrivant
+		this.actionOnTyping(updateContentVbox);
 
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
@@ -438,19 +447,21 @@ public class CustomMainScene extends AnchorPane {
 
 	}
 
-private void actionOnTypingMembers(MembersRepetitivePane pane) {
+private void actionOnTyping(RepetitivePane pane) {
 	Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
-	TextField[] paneTextFields = this.getPaneTextField(pane);
+	TextField[] paneTextFields = new TextField[6];
 	Button paneRightBtn  = pane.getRightButton();
-	String[] types = new String[6];
-	CustomRadioButton crb = pane.getCustomRadioButton();
 
-		types[0] = "name";
-		types[1] = "name";
+	String[] types = {"name", "name", "int", "cursus", "int", "skip"};
+	if (pane instanceof MembersRepetitivePane) {
+		paneTextFields = this.getMemberPaneTextField((MembersRepetitivePane) pane);
 		types[2] = "name";
 		types[3] = "mail";
 		types[4] = "admin";
 		types[5] = "password";
+	} else {
+		paneTextFields = this.getPaneTextField(pane);
+	}
 
 	
 	
@@ -480,6 +491,28 @@ private void actionOnTypingMembers(MembersRepetitivePane pane) {
 								+ "-fx-border-color: red;");
 					}
 					break;
+				case "cursus":
+					if (isStringCursusCorrect(tf)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
+				case "int":
+					if (isStringIntCorrect(tf)) {
+						error.setVisible(false);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+					break;
 				case "mail":
 					if (isStringMailCorrect(tf)) {
 						error.setVisible(false);
@@ -492,7 +525,7 @@ private void actionOnTypingMembers(MembersRepetitivePane pane) {
 					}
 					break;
 				case "admin":
-					if (isBooleanAdminCorrect(crb)) {
+					if (isBooleanAdminCorrect(((MembersRepetitivePane) pane).getCustomRadioButton())) {
 						error.setVisible(false);
 						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
 								+ "-fx-border-color: transparent transparent #704739 transparent;");
@@ -523,66 +556,6 @@ private void actionOnTypingMembers(MembersRepetitivePane pane) {
 	}
 }
 
-private void actionOnTyping(RepetitivePane pane) {
-	Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
-	TextField[] paneTextFields = this.getPaneTextField(pane);
-	Button paneRightBtn  = pane.getRightButton();
-	String[] types = {"name", "name", "int", "cursus", "int", "skip"};
-	
-	for (int i = 0; i < paneTextFields.length; i++) {
-		CustomTextField tf = (CustomTextField) paneTextFields[i];
-		Label error = paneErrorLabels[i];
-		String type = types[i];
-		tf.setOnKeyReleased(event -> {
-			
-			boolean[] good = areAllFieldsCorrectlyFilled(pane);
-			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
-				paneRightBtn.setDisable(false);
-			} else {
-				paneRightBtn.setDisable(true);
-			}
-			
-			switch (type) {
-			case "name":
-				if (isStringNameCorrect(tf)) {
-					error.setVisible(false);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: transparent transparent #704739 transparent;");
-				} else {
-					error.setVisible(true);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: red;");
-				}
-				break;
-			case "cursus":
-				if (isStringCursusCorrect(tf)) {
-					error.setVisible(false);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: transparent transparent #704739 transparent;");
-				} else {
-					error.setVisible(true);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: red;");
-				}
-				break;
-			case "int":
-				if (isStringIntCorrect(tf)) {
-					error.setVisible(false);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: transparent transparent #704739 transparent;");
-				} else {
-					error.setVisible(true);
-					tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-							+ "-fx-border-color: red;");
-				}
-				break;
-			default:
-				System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" ou \"int\" . ");
-				break;
-			}
-		});
-	}
-}
 	
 	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield

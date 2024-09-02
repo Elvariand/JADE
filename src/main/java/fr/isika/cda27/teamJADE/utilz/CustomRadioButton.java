@@ -12,7 +12,7 @@ public class CustomRadioButton extends HBox {
 	private RadioButton falseBtn;
 	private ToggleGroup toggleGroup;
 	
-	CustomRadioButton () {
+	public CustomRadioButton () {
 		this.trueBtn = new RadioButton("oui");
 		this.falseBtn = new RadioButton("non");
 		
