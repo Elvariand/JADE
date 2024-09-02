@@ -6,10 +6,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Font;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
+
+import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
+
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class AddPane extends RepetitivePane {
-	private Label labelError;
+	private FadingErrorLabel labelError;
 
 	public AddPane() {
 		super();
@@ -24,7 +27,7 @@ public class AddPane extends RepetitivePane {
 		this.rightButton.setText("Ajouter");
 		this.rightButton.setDisable(true);
 		
-		this.labelError = new Label("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
+		this.labelError = new FadingErrorLabel("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
 		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		this.labelError.setFont(Font.font("Krona One", 14));
 		this.labelError.setStyle("-fx-alignment: center;");
@@ -38,14 +41,14 @@ public class AddPane extends RepetitivePane {
 	/**
 	 * @return the labelError
 	 */
-	public Label getLabelError() {
+	public FadingErrorLabel getLabelError() {
 		return labelError;
 	}
 
 	/**
 	 * @param labelError the labelError to set
 	 */
-	public void setLabelError(Label labelError) {
+	public void setLabelError(FadingErrorLabel labelError) {
 		this.labelError = labelError;
 	}
 }

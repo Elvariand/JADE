@@ -71,6 +71,11 @@ public class UtilStaticValues {
 
 
 		public static final String[] LABEL_TEXTS_MEMBERS = { "Nom de famille", "Prénom", "Pseudo", "Mail", "Administrateur", "Mot de passe"};
+		public static final String LABEL_ERROR_ALIAS = "Cet espace est limité à 15 caractères. Seuls les lettres avec ou sans accent, les traits d'union et les chiffres sont autorisés.";
+		public static final String LABEL_ERROR_EMAIL = "L'adresse entrée n'est pas valide ou dépasse le nombre maximal de caractères autorisés.";
+		public static final String LABEL_ERROR_PASSWORD = "Cet espace est limité à 15 caractères. Seuls les lettres avec ou sans accent, les traits d'union et les chiffres sont autorisés.";
+		public static final String[] LABEL_ERRORS_MEMBERS = { LABEL_ERROR_FAM_NAME, LABEL_ERROR_FIRST_NAME, LABEL_ERROR_ALIAS,
+				LABEL_ERROR_EMAIL, LABEL_ERROR_PASSWORD };
 		
 		public static final int VBOX_WIDTH = 690;
 		public static final int VBOX_HEIGHT = 720;
@@ -168,7 +173,7 @@ public class UtilStaticValues {
 			// GridPane
 			GridPane gridPane = new GridPane();
 			gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
-			gridPane.setVgap(15);
+			gridPane.setVgap(10);
 			gridPane.setHgap(10);
 
 			// marges pour le GridPane
@@ -185,31 +190,48 @@ public class UtilStaticValues {
 			gridPane.getColumnConstraints().add(col2Constraints);
 
 			// lignes du GridPane
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 8; i++) {
 				RowConstraints rowConstraints = new RowConstraints();
-				rowConstraints.setPrefHeight(ROW_HEIGHT);
+
+				if (i % 2 == 1) {
+					rowConstraints.setPrefHeight(ROW_HEIGHT / 2);
+					// labels des erreurs
+					Label labelError = new Label(LABEL_ERRORS_MEMBERS[i / 2]);
+					labelError.setFont(Font.font("Krona One", 8));
+					labelError.setTextFill(GREY_COLOR);
+					labelError.setMaxWidth(COL2_WIDTH);
+					labelError.setMinHeight(25);
+					labelError.setWrapText(true);
+					labelError.setVisible(false);
+
+					GridPane.setMargin(labelError, new Insets(0, 0, 20, 0));
+
+					gridPane.add(labelError, 1, i);
+
+				} else {
+
+					rowConstraints.setPrefHeight(CustomTextFieldValues.TF_HEIGHT + 5);
+
+					// texte de droite
+					CustomTextField textField = new CustomTextField();
+
+					GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
+					
+					// label
+					Label label = new Label(LABEL_TEXTS_MEMBERS[i / 2]);
+					label.setFont(Font.font("Krona One", 16));
+					label.setTextFill(GREY_COLOR);
+					GridPane.setMargin(label, new Insets(0, 30, 0, 40));
+
+					gridPane.add(label, 0, i);
+					gridPane.add(textField, 1, i);
+				}
 				gridPane.getRowConstraints().add(rowConstraints);
-
-				// label
-				Label label = new Label(LABEL_TEXTS_MEMBERS[i]);
-				label.setFont(Font.font("Krona One", 16));
-				label.setTextFill(GREY_COLOR);
-				GridPane.setMargin(label, new Insets(0, 30, 0, 40));
-
-				// texte de droite
-				CustomTextField textField = new CustomTextField();
-
-				GridPane.setMargin(textField, new Insets(0, 40, 0, 0));
-
-				// ajouter tout au GridPane
-				gridPane.add(label, 0, i);
-				gridPane.add(textField, 1, i);
 			}
 			
-			// Ligne 5
-			RowConstraints rowConstraints5 = new RowConstraints();
-			rowConstraints5.setPrefHeight(ROW_HEIGHT);
-			gridPane.getRowConstraints().add(rowConstraints5);
+			// Ligne 7
+			RowConstraints rowConstraints7 = new RowConstraints();
+			rowConstraints7.setPrefHeight(ROW_HEIGHT);
 			// label
 			Label label5 = new Label(LABEL_TEXTS_MEMBERS[4]);
 			label5.setFont(Font.font("Krona One", 16));
@@ -218,13 +240,13 @@ public class UtilStaticValues {
 			// à droite on met les radioboutons
 			CustomRadioButton radioBtnHbox = new CustomRadioButton();
 			// ajouter tout au GridPane
-			gridPane.add(label5, 0, 4);
-			gridPane.add(radioBtnHbox, 1, 4);
+			gridPane.add(label5, 0, 8);
+			gridPane.add(radioBtnHbox, 1, 8);
+			gridPane.getRowConstraints().add(rowConstraints7);
 			
-			// Ligne 6
-			RowConstraints rowConstraints6 = new RowConstraints();
-			rowConstraints6.setPrefHeight(ROW_HEIGHT);
-			gridPane.getRowConstraints().add(rowConstraints6);
+			// Ligne 8
+			RowConstraints rowConstraints8 = new RowConstraints();
+			rowConstraints8.setPrefHeight(ROW_HEIGHT);
 			// label
 			Label label6 = new Label(LABEL_TEXTS_MEMBERS[5]);
 			label6.setFont(Font.font("Krona One", 16));
@@ -233,10 +255,27 @@ public class UtilStaticValues {
 			// à droite on met le PasswordField
 			CustomPasswordField passwordField = new CustomPasswordField();
 			GridPane.setMargin(passwordField, new Insets(0, 40, 0, 0));
-			
 			// ajouter tout au GridPane
-			gridPane.add(label6, 0, 5);
-			gridPane.add(passwordField, 1, 5);
+			gridPane.add(label6, 0, 9);
+			gridPane.add(passwordField, 1, 9);
+			gridPane.getRowConstraints().add(rowConstraints8);
+			
+			// Message d'erreur ligne 9
+			RowConstraints rowConstraints9 = new RowConstraints();
+			rowConstraints9.setPrefHeight(ROW_HEIGHT / 2);
+			// labels des erreurs
+			Label labelError = new Label(LABEL_ERRORS_MEMBERS[4]);
+			labelError.setFont(Font.font("Krona One", 8));
+			labelError.setTextFill(GREY_COLOR);
+			labelError.setMaxWidth(COL2_WIDTH);
+			labelError.setMinHeight(25);
+			labelError.setWrapText(true);
+			labelError.setVisible(false);
+			GridPane.setMargin(labelError, new Insets(0, 0, 20, 0));
+			// ajouter au GridPane
+			gridPane.add(labelError, 1, 10);
+			gridPane.getRowConstraints().add(rowConstraints9);
+			
 			
 			
 			return gridPane;

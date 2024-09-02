@@ -7,7 +7,8 @@ import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
-import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
+import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
+import javafx.animation.FadeTransition;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Insets;
@@ -25,6 +26,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 public class CustomLoginScene extends AnchorPane {
 
@@ -183,11 +185,16 @@ public class CustomLoginScene extends AnchorPane {
 		// si member non null alors on affiche la mainScene
 		if (member != null) {
 			Stage stage = ((Stage) CustomLoginScene.this.getScene().getWindow());
-			Scene scene = new Scene(new CustomMainScene(member));
+			Scene scene = new Scene(new InternsMainScene(member));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		} else {
-			hboxInvalide.setVisible(true);
+			hboxInvalide.setVisible(true); 
+			FadeTransition fadeOut = new FadeTransition(Duration.seconds(3), hboxInvalide);
+			fadeOut.setFromValue(1);
+		    fadeOut.setToValue(0);
+		    fadeOut.setOnFinished(event -> hboxInvalide.setVisible(false));
+	        fadeOut.play();
 		}
 	}
 

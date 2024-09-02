@@ -29,12 +29,12 @@ public class SeeMembersPane extends RepetitivePane {
 
 			Scene newScene;
 			// Si root est une instance de CustomMainScene on passe à MembersMainScene
-			if (root instanceof CustomMainScene) {
+			if (root instanceof InternsMainScene) {
 				newScene = new Scene(new MembersMainScene(connectedMember));
 
 				// sinon on passe à CustomMainScene
 			} else {
-				newScene = new Scene(new CustomMainScene(connectedMember));
+				newScene = new Scene(new InternsMainScene(connectedMember));
 			}
 
 			Stage stage = ((Stage) SeeMembersPane.this.getScene().getWindow());

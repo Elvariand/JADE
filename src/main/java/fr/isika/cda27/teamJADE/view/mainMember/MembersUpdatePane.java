@@ -33,7 +33,8 @@ public class MembersUpdatePane extends MembersRepetitivePane {
 		this.leftButton.setText("Annuler");
 
 		this.rightButton.setText("Modifier");
-
+		this.rightButton.setDisable(true);
+		
 		this.labelError = new Label("Veuillez entrer tous les champs afin de modifier le stagiaire");
 		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
 		this.labelError.setFont(Font.font("Krona One", 14));

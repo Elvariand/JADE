@@ -25,16 +25,16 @@ public class MembersAddPane extends MembersRepetitivePane {
 		this.leftButton.setText("Annuler");
 
 		this.rightButton.setText("Ajouter");
-
-		this.labelError = new FadingErrorLabel("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
-		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT*2);
-		this.labelError.setFont(Font.font("Krona One", 14));
-		this.labelError.setStyle("-fx-alignment: center;");
-		this.labelError.setTextFill(GREY_COLOR);
-		this.labelError.setVisible(false);
-
-		this.getChildren().set(2,labelError);
-		this.getChildren().add(3,super.getButtonBox());
+//
+//		this.labelError = new FadingErrorLabel("Veuillez entrer tous les champs avant d'ajouter le stagiaire");
+//		this.labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT*2);
+//		this.labelError.setFont(Font.font("Krona One", 14));
+//		this.labelError.setStyle("-fx-alignment: center;");
+//		this.labelError.setTextFill(GREY_COLOR);
+//		this.labelError.setVisible(false);
+//
+//		this.getChildren().set(2,labelError);
+//		this.getChildren().add(3,super.getButtonBox());
 		
 
 		

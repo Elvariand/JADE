@@ -9,7 +9,7 @@ import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.model.TreeNodeDao;
 import fr.isika.cda27.teamJADE.view.login.CustomLoginScene;
-import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
+import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
 import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
 import javafx.application.Application;
 import javafx.scene.Scene;

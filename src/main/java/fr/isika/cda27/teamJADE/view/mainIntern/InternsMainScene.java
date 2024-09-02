@@ -62,7 +62,7 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
-public class CustomMainScene extends AnchorPane {
+public class InternsMainScene extends AnchorPane {
 
 	private ArrayList<Intern> list;
 	private ObservableList<Intern> observableInterns;
@@ -71,10 +71,10 @@ public class CustomMainScene extends AnchorPane {
 	private Intern selected;
 	private boolean showAdminView;
 
-	public CustomMainScene(Member connectedMember) {
-		
+	public InternsMainScene(Member connectedMember) {
+
 		boolean showAdminView = connectedMember.isAdmin();
-		
+
 		// AnchorPane
 		this.setPrefSize(1280, 720);
 
@@ -92,13 +92,13 @@ public class CustomMainScene extends AnchorPane {
 		stackPaneHelp.setMaxSize(75, 75);
 
 		stackPaneHelp.getButton().setOnAction(event -> {
-			Stage stage = ((Stage) CustomMainScene.this.getScene().getWindow());
+			Stage stage = ((Stage) InternsMainScene.this.getScene().getWindow());
 			Scene scene;
 			// Si on est admin
-			if(showAdminView) {
-			scene = new Scene(new HelpSceneAdmin(new CustomMainScene(connectedMember)));
-			}else {
-			scene = new Scene(new HelpSceneNotAdmin(new CustomMainScene(connectedMember)));
+			if (showAdminView) {
+				scene = new Scene(new HelpSceneAdmin(new InternsMainScene(connectedMember)));
+			} else {
+				scene = new Scene(new HelpSceneNotAdmin(new InternsMainScene(connectedMember)));
 			}
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
@@ -149,17 +149,15 @@ public class CustomMainScene extends AnchorPane {
 				updateContentVbox.getGridPaneCounty().setText(gridPaneLabelsList[2]);
 				updateContentVbox.getGridPaneCursus().setText(gridPaneLabelsList[3]);
 				updateContentVbox.getGridPaneYearIn().setText(gridPaneLabelsList[4]);
-				
+
 				removeContentVbox.getRightButton().setDisable(false);
 			}
 		});
 
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
-//		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
 
-		// On crée la croix du haut
-
+		// On crée la croix/fleche du haut
 		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
 
 		// On crée les autres boutons
@@ -174,35 +172,35 @@ public class CustomMainScene extends AnchorPane {
 		StackPaneMenubar seeMemberBtn = new StackPaneMenubar("voir_membre_orange.png", "voir_membre_gris.png",
 				"Membres");
 
-		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn invisibles
-		if(!showAdminView) {
+		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn
+		// invisibles
+		if (!showAdminView) {
 			// on passe btnContainer en pos 0
-			removeBtn.getChildren().remove(1); 
+			removeBtn.getChildren().remove(1);
 			removeBtn.getChildren().add(0, removeBtn.getBtnContainer());
-			
-			updateBtn.getChildren().remove(1); 
+
+			updateBtn.getChildren().remove(1);
 			updateBtn.getChildren().add(0, updateBtn.getBtnContainer());
-			
-			seeMemberBtn.getChildren().remove(1); 
+
+			seeMemberBtn.getChildren().remove(1);
 			seeMemberBtn.getChildren().add(0, seeMemberBtn.getBtnContainer());
-			
+
 			// on enleve le tooltip
 			removeBtn.getButton().setTooltip(null);
 			updateBtn.getButton().setTooltip(null);
 			seeMemberBtn.getButton().setTooltip(null);
 		}
-		
+
 		// On crée le bouton quitter
 		StackPaneMenubar quitBtn = new StackPaneMenubar("deconnexion_orange.png", "deconnexion_gris.png", "Déconnexion",
 				SMALL_PATH_BOT, LARGE_PATH_BOT);
 
 		// On ajoute la croix (invisible pour le moment)
 		menubarVBox.getChildren().add(closeBtn);
+
 		// On ajoute tous les boutons dans le VBox
 		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
-		
-		
-		
+
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
 
@@ -229,28 +227,27 @@ public class CustomMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, removeBtn, updateBtn, seeMemberBtn, quitBtn);
-
+		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, removeBtn, updateBtn,
+				seeMemberBtn, quitBtn);
 
 		/*
 		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
 		 * bouton cliqué 2) le contenu à afficher 3) la HBox du menu 4) la liste des
 		 * autres boutons
 		 */
-		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, listMenuBtn,showAdminView);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, listMenuBtn,showAdminView);
-		configureButtonAction(addBtn, addContentVbox, menuHbox, listMenuBtn,showAdminView);
-		
-		// Si on est admin alors on configure l'action des boutons
-		if(showAdminView) {
-		configureButtonAction(removeBtn, removeContentVbox, menuHbox, listMenuBtn,showAdminView);
-		configureButtonAction(updateBtn, updateContentVbox, menuHbox, listMenuBtn,showAdminView);
-		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, listMenuBtn,showAdminView);
-		}
-		
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, listMenuBtn,showAdminView);
+		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, listMenuBtn, showAdminView);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, listMenuBtn, showAdminView);
+		configureButtonAction(addBtn, addContentVbox, menuHbox, listMenuBtn, showAdminView);
 
-		
+		// Si on est admin alors on configure l'action des boutons
+		if (showAdminView) {
+			configureButtonAction(removeBtn, removeContentVbox, menuHbox, listMenuBtn, showAdminView);
+			configureButtonAction(updateBtn, updateContentVbox, menuHbox, listMenuBtn, showAdminView);
+			configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, listMenuBtn, showAdminView);
+		}
+
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, listMenuBtn, showAdminView);
+
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
 
@@ -280,8 +277,8 @@ public class CustomMainScene extends AnchorPane {
 				rotateTransition.play();
 
 			} else {
-
-				closeMenu(menubarVBox,showAdminView);
+				// sinon on ferme
+				closeMenu(menubarVBox, showAdminView);
 
 			}
 		});
@@ -290,6 +287,7 @@ public class CustomMainScene extends AnchorPane {
 
 		// Search button
 		Button scopeContentValidateBtn = scopeContentVbox.getRightButton();
+
 		scopeContentValidateBtn.setOnAction(event -> {
 			// on récupère tous les textfield
 			String[] data = grabInfos(scopeContentVbox);
@@ -332,7 +330,7 @@ public class CustomMainScene extends AnchorPane {
 				return filters;
 			});
 
-			closeMenu(menubarVBox,showAdminView);
+			closeMenu(menubarVBox, showAdminView);
 
 		});
 
@@ -346,20 +344,24 @@ public class CustomMainScene extends AnchorPane {
 
 		// ajouter
 		Button addContentAddBtn = addContentVbox.getRightButton();
+
 		addContentAddBtn.setOnAction(event -> {
 			String[] data = grabInfos(addContentVbox);
 			InternDao dao = new InternDao();
 
 			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
 
-			if (good[0] && good[1]) {
+			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
 
 				dao.insert(new Intern(data[0].toUpperCase(), data[1].toUpperCase().charAt(0) + data[1].substring(1),
 						Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 				ArrayList<Intern> suppr = new ArrayList<Intern>();
 				this.observableInterns.setAll(internDao.sortView(0, suppr));
+
+				refreshPane(addContentVbox);
+				closeMenu(menubarVBox, showAdminView);
 			} else {
-				addContentVbox.getLabelError().setVisible(true);
+				addContentVbox.getLabelError().show();
 			}
 
 		});
@@ -369,11 +371,9 @@ public class CustomMainScene extends AnchorPane {
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
 		});
-		
-		
+
 		// Les actions en écrivant
 		this.actionOnTyping(addContentVbox);
-
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
@@ -386,18 +386,17 @@ public class CustomMainScene extends AnchorPane {
 					Integer.parseInt(data[2]), data[3].toUpperCase(), Integer.parseInt(data[4])));
 			ArrayList<Intern> suppr = new ArrayList<Intern>();
 			this.observableInterns.setAll(internDao.sortView(0, suppr));
-
+			removeContentValidateBtn.setDisable(true);
+			closeMenu(menubarVBox, showAdminView);
 		});
 
 		// Annuler button
 		Button removeContentCancelBtn = removeContentVbox.getLeftButton();
 		removeContentCancelBtn.setOnAction(event -> {
 			this.tableView.getSelectionModel().clearSelection();
+			removeContentValidateBtn.setDisable(true);
 		});
 
-
-		
-		
 		/* UPDATE CONTENT : configuration des boutons annuler et valider */
 
 		// valider mise à jour
@@ -418,6 +417,7 @@ public class CustomMainScene extends AnchorPane {
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
 				this.closeMenu(menubarVBox, showAdminView);
+				updateContentUpdateBtn.setDisable(true);
 			} else {
 				updateContentVbox.getLabelError().setVisible(true);
 			}
@@ -428,58 +428,58 @@ public class CustomMainScene extends AnchorPane {
 		updateContentCancelBtn.setOnAction(event -> {
 			this.tableView.getSelectionModel().clearSelection();
 			refreshPane(updateContentVbox);
+			updateContentUpdateBtn.setDisable(true);
 		});
-		
+
 		// Les actions en écrivant
 		this.actionOnTyping(updateContentVbox);
 
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
-			closeMenu(menubarVBox,showAdminView);
+			closeMenu(menubarVBox, showAdminView);
 		});
 
 		/* SEE MEMBER CONTENT : configuration du bouton annuler */
 		Button seeMembersContentCancelBtn = seeMembersContentVbox.getLeftButton();
 		seeMembersContentCancelBtn.setOnAction(event -> {
-			closeMenu(menubarVBox,showAdminView);
+			closeMenu(menubarVBox, showAdminView);
 		});
 
 	}
 
-private void actionOnTyping(RepetitivePane pane) {
-	Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
-	TextField[] paneTextFields = new TextField[6];
-	Button paneRightBtn  = pane.getRightButton();
+	private void actionOnTyping(RepetitivePane pane) {
+		Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
+		TextField[] paneTextFields = new TextField[6];
+		Button paneRightBtn = pane.getRightButton();
 
-	String[] types = {"name", "name", "int", "cursus", "int", "skip"};
-	if (pane instanceof MembersRepetitivePane) {
-		paneTextFields = this.getMemberPaneTextField((MembersRepetitivePane) pane);
-		types[2] = "name";
-		types[3] = "mail";
-		types[4] = "admin";
-		types[5] = "password";
-	} else {
-		paneTextFields = this.getPaneTextField(pane);
-	}
+		String[] types = { "name", "name", "int", "cursus", "int", "skip" };
+		if (pane instanceof MembersRepetitivePane) {
+			paneTextFields = this.getMemberPaneTextField((MembersRepetitivePane) pane);
+			types[2] = "name";
+			types[3] = "mail";
+			types[4] = "admin";
+			types[5] = "password";
+		} else {
+			paneTextFields = this.getPaneTextField(pane);
+		}
 
-	
-	
-	for (int i = 0; i < paneTextFields.length; i++) {
-		CustomTextField tf = (CustomTextField) paneTextFields[i];
-		Label error = paneErrorLabels[i];
-		String type = types[i];
-		
-		tf.setOnKeyReleased(event -> {
-			
-			boolean[] good = areAllFieldsCorrectlyFilled(pane);
-			if (good[0] && good[1] && good[2] && good[3] && good[4]) {
-				paneRightBtn.setDisable(false);
-			} else {
-				paneRightBtn.setDisable(true);
-			}
+		for (int i = 0; i < paneTextFields.length; i++) {
+			CustomTextField tf = (CustomTextField) paneTextFields[i];
+			Label error = paneErrorLabels[i];
+			String type = types[i];
 
-			switch (type) {
+			tf.setOnKeyReleased(event -> {
+
+				boolean[] good = areAllFieldsCorrectlyFilled(pane);
+				if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+					paneRightBtn.setDisable(false);
+
+				} else {
+					paneRightBtn.setDisable(true);
+				}
+
+				switch (type) {
 				case "name":
 					if (isStringNameCorrect(tf)) {
 						error.setVisible(false);
@@ -549,14 +549,14 @@ private void actionOnTyping(RepetitivePane pane) {
 				case "skip":
 					break;
 				default:
-					System.err.println("Veuillez renseigner un string type de valeur\"name\", \"cursus\" \"int\" \"skip\" \"mail\" \"admin\"  ou \"password\" . ");
-				break;
-			}
-		});
+					System.err.println(
+							"Veuillez renseigner un string type de valeur\"name\", \"cursus\" \"int\" \"skip\" \"mail\" \"admin\"  ou \"password\" . ");
+					break;
+				}
+			});
+		}
 	}
-}
 
-	
 	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield
 		String familyName = Pane.getTextFamilyName().trim();
@@ -582,7 +582,7 @@ private void actionOnTyping(RepetitivePane pane) {
 				pane.getGridPaneCursus(), pane.getGridPaneYearIn() };
 		return tf;
 	}
-	
+
 	private TextField[] getMemberPaneTextField(MembersRepetitivePane pane) {
 		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneName(), pane.getGridPaneAlias(),
 				pane.getGridPaneEmail(), pane.getGridPaneEmail(), pane.getPasswordField() };
@@ -603,12 +603,11 @@ private void actionOnTyping(RepetitivePane pane) {
 	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
 			List<StackPaneMenubar> listButtons, boolean showAdminView) {
 
-
 		List<StackPaneMenubar> otherButtons = new ArrayList<StackPaneMenubar>();
 		otherButtons.addAll(listButtons);
 		otherButtons.remove(buttonClicked);
 		System.out.println(otherButtons);
-		
+
 		buttonClicked.getButton().setOnAction(event -> {
 
 			// On remplace le contenu de la HBox
@@ -629,29 +628,29 @@ private void actionOnTyping(RepetitivePane pane) {
 			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
 			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
 
-			// on diminue tous lee bouton cliqué
+			// on diminue le bouton cliqué
 			setSmaller(buttonClicked);
 
-			
-			if(showAdminView) {
+			// on diminue tous les boutons
+			if (showAdminView) {
 				for (int i = 1; i < 7; i++) {
 					// on diminue tous les boutons
 					setSmaller(otherButtons.get(i));
-					
+
 					// on passe tous les boutons à gris
-					changeToGrey(otherButtons.get(i));	
-				}			
+					changeToGrey(otherButtons.get(i));
+				}
 			} else {
 				for (int i = 1; i < 4; i++) {
 					setSmaller(otherButtons.get(i));
-					changeToGrey(otherButtons.get(i));	
-				}			
+					changeToGrey(otherButtons.get(i));
+				}
 				// 3 derniers sont removeBtn, updateBtn,seeMemberBtn
 				for (int i = 4; i < 7; i++) {
 					setSmallerNotAdminCase(otherButtons.get(i));
-					changeToGreyNotAdminCase(otherButtons.get(i));	
-				}			
-				
+					changeToGreyNotAdminCase(otherButtons.get(i));
+				}
+
 			}
 
 			// On set maxwidth de la menubarVBox à 100
@@ -698,11 +697,11 @@ private void actionOnTyping(RepetitivePane pane) {
 		changeToOrange(addBtn);
 		changeToOrange(printBtn);
 		changeToOrange(quitBtn);
-		
-		if(!showAdminView) {
-		changeToOrangeNotAdminCase(seeMemberBtn);
-		changeToOrangeNotAdminCase(removeBtn);
-		changeToOrangeNotAdminCase(updateBtn);
+
+		if (!showAdminView) {
+			changeToOrangeNotAdminCase(seeMemberBtn);
+			changeToOrangeNotAdminCase(removeBtn);
+			changeToOrangeNotAdminCase(updateBtn);
 		} else {
 			changeToOrange(seeMemberBtn);
 			changeToOrange(removeBtn);
@@ -714,11 +713,11 @@ private void actionOnTyping(RepetitivePane pane) {
 		setLarger(addBtn);
 		setLarger(printBtn);
 		setLarger(quitBtn);
-		
-		if(!showAdminView) {
-		setLargerNotAdminCase(removeBtn);
-		setLargerNotAdminCase(updateBtn);
-		setLargerNotAdminCase(seeMemberBtn);
+
+		if (!showAdminView) {
+			setLargerNotAdminCase(removeBtn);
+			setLargerNotAdminCase(updateBtn);
+			setLargerNotAdminCase(seeMemberBtn);
 		} else {
 			setLarger(removeBtn);
 			setLarger(updateBtn);
@@ -745,21 +744,21 @@ private void actionOnTyping(RepetitivePane pane) {
 //		stackPaneMenubar.getBtnContainer().setMaxWidth(100);
 
 	}
-	
+
 	private void setSmallerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
 		changeToOrangeNotAdminCase(stackPaneMenubar);
-		
+
 		// on change la taille du bouton à 100
 		stackPaneMenubar.getButton().setPrefSize(BTN_SMALL_WIDTH, BTN_HEIGHT);
 		stackPaneMenubar.getButton().setTranslateX(TOX_SMALL_BTN);
-		
+
 		// on remplace largeSvg par smallSvg
 		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getSmallSvgPath());
-		
+
 		// on enlève le children leftSubcontainer de la HBox
 		stackPaneMenubar.getBtnContainer().getChildren().remove(stackPaneMenubar.getLeftSubcontainer());
 //		stackPaneMenubar.getBtnContainer().setMaxWidth(100);
-		
+
 	}
 
 	private void setLarger(StackPaneMenubar stackPaneMenubar) {
@@ -776,20 +775,20 @@ private void actionOnTyping(RepetitivePane pane) {
 		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getBtnContainer());
 
 	}
-	
+
 	private void setLargerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
 		// on change la taille du bouton à 300
 		stackPaneMenubar.getButton().setPrefSize(BTN_LARGE_WIDTH, BTN_HEIGHT);
 		stackPaneMenubar.getBtnContainer().setMaxWidth(300);
-		
+
 		// on met le LeftSubcontainer en 0 de la HBox et le rightSubcontainer en 1
 		stackPaneMenubar.getBtnContainer().getChildren().set(0, stackPaneMenubar.getLeftSubcontainer());
 		stackPaneMenubar.getBtnContainer().getChildren().add(1, stackPaneMenubar.getRightSubcontainer());
-		
+
 		// on fait remplace smallSvg par LargeSvg
 		stackPaneMenubar.getChildren().set(1, stackPaneMenubar.getLargeSvgPath());
 		stackPaneMenubar.getChildren().set(0, stackPaneMenubar.getBtnContainer());
-		
+
 	}
 
 	private void addHoverEffect(StackPaneMenubar buttonSP) {
@@ -878,11 +877,12 @@ private void actionOnTyping(RepetitivePane pane) {
 		button.getBtnOrangeImageView().setVisible(false);
 		button.getBtnGreyImageView().setVisible(true);
 	}
+
 	private void changeToOrangeNotAdminCase(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(1), ORANGE_COLOR);
 		((SVGPath) button.getChildren().get(1)).setFill(ORANGE_COLOR);
-		
+
 		button.getBtnOrangeImageView().setVisible(false);
 		button.getBtnGreyImageView().setVisible(true);
 	}
@@ -895,11 +895,12 @@ private void actionOnTyping(RepetitivePane pane) {
 		button.getBtnOrangeImageView().setVisible(true);
 		button.getBtnGreyImageView().setVisible(false);
 	}
+
 	private void changeToGreyNotAdminCase(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(1), GREY_COLOR);
 		((SVGPath) button.getChildren().get(1)).setFill(GREY_COLOR);
-		
+
 		button.getBtnOrangeImageView().setVisible(true);
 		button.getBtnGreyImageView().setVisible(false);
 	}
@@ -936,7 +937,7 @@ private void actionOnTyping(RepetitivePane pane) {
 		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s\\d]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
-	
+
 	private boolean isStringPasswordCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 4 || Pattern.compile("[\"\\/<>]").matcher(text).find()
@@ -948,13 +949,13 @@ private void actionOnTyping(RepetitivePane pane) {
 		return !(text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
-	
+
 	private boolean isStringMailCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || (text.contains("@") && text.contains("."))
 				|| text.length() > field.getMaxChars());
 	}
-	
+
 	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
 		String toggle = field.getToggleGroup().getSelectedToggle().getUserData().toString();
 		return (toggle.equals("true") || toggle.equals("false"));

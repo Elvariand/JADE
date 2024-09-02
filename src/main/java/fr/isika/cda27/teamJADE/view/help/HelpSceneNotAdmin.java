@@ -4,7 +4,7 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_WIDTH;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_WHITE;
 
-import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
+import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.HelpTextValues.*;
 

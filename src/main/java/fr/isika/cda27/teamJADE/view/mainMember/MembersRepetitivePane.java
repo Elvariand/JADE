@@ -27,25 +27,24 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 
 public class MembersRepetitivePane extends RepetitivePane {
-	private PasswordField passwordField;
+//	private PasswordField passwordField;
+	protected Label nameErrorLabel;
+	protected Label aliasErrorLabel;
+	protected Label emailErrorLabel;
+	protected Label passwordErrorLabel;
 
 	public MembersRepetitivePane() {
 
 		this.gridPane = MenuVboxValues.createFormGridPaneMembers();
 
-		super.getChildren().set(1, this.gridPane);
-
-		// Création du passwordField
-		this.passwordField = new PasswordField();
-		this.passwordField.setPrefWidth(200);
-		this.passwordField.setPrefHeight(35);
-		this.passwordField.setStyle("-fx-background-color : #DD734C; " + "-fx-background-radius: 13; "
-				+ "-fx-border-radius: 13; " + "-fx-border-color: transparent transparent #704739 transparent;");
-		passwordField.setFont(Font.font("Krona One", 18));
-		passwordField.setEffect(INNER_SHADOW_BLACK);
-		passwordField.setSkin(new VisiblePasswordFieldSkin(passwordField));
-
+		this.familyNameErrorLabel = (Label) gridPane.getChildren().get(2);
+		this.nameErrorLabel = (Label) gridPane.getChildren().get(5);
+		this.aliasErrorLabel = (Label) gridPane.getChildren().get(8);
+		this.emailErrorLabel = (Label) gridPane.getChildren().get(11);
+		this.passwordErrorLabel = (Label) gridPane.getChildren().get(16);
 		
+		super.getChildren().set(1, this.gridPane);
+	
 	}
 
 	/**
@@ -132,17 +131,17 @@ public class MembersRepetitivePane extends RepetitivePane {
 	}
 
 	public TextField getGridPaneName() {
-		TextField textField = (TextField) gridPane.getChildren().get(3);
+		TextField textField = (TextField) gridPane.getChildren().get(4);
 		return textField;
 	}
 
 	public TextField getGridPaneAlias() {
-		TextField textField = (TextField) gridPane.getChildren().get(5);
+		TextField textField = (TextField) gridPane.getChildren().get(7);
 		return textField;
 	}
 
 	public TextField getGridPaneEmail() {
-		TextField textField = (TextField) gridPane.getChildren().get(7);
+		TextField textField = (TextField) gridPane.getChildren().get(10);
 		return textField;
 	}
 
@@ -167,15 +166,15 @@ public class MembersRepetitivePane extends RepetitivePane {
 	}
 
 	public PasswordField getPasswordField() {
-		return ((PasswordField) gridPane.getChildren().get(11));
+		return ((PasswordField) gridPane.getChildren().get(15));
 	}
 	
 	public String getTextPasswordField() {
-		return ((PasswordField) gridPane.getChildren().get(11)).getText();
+		return ((PasswordField) gridPane.getChildren().get(15)).getText();
 	}
 	
 	public boolean isAdminSelected() {
-		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(9));
+		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		if (radioButton.isTrueBtnSelected()) {
 			return true;
 		} else {
@@ -184,7 +183,7 @@ public class MembersRepetitivePane extends RepetitivePane {
 	}
 
 	public boolean isNotAdminSelected() {
-		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(9));
+		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		if (radioButton.isFalseBtnSelected()) {
 			return true;
 		} else {
@@ -192,8 +191,13 @@ public class MembersRepetitivePane extends RepetitivePane {
 		}
 	}
 
+//	public CustomRadioButton getRadioButton() {
+//		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
+//		return radioButton;
+//	}
+	
 	public void setRadioButton(Boolean isAdmin) {
-		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(9));
+		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		if (isAdmin) {
 			radioButton.getTrueBtn().setSelected(true);
 		} else {
@@ -202,13 +206,71 @@ public class MembersRepetitivePane extends RepetitivePane {
 	}
 
 	public void refreshRadioButtons() {
-		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(9));
+		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		radioButton.getTrueBtn().setSelected(false);
 		radioButton.getFalseBtn().setSelected(false);
 	}
 	
 	public CustomRadioButton getCustomRadioButton() {
-		return(CustomRadioButton) (this.gridPane.getChildren().get(9));
+		return(CustomRadioButton) (this.gridPane.getChildren().get(13));
 	}
 
+	/**
+	 * @return the nameErrorLabel
+	 */
+	public Label getNameErrorLabel() {
+		return nameErrorLabel;
+	}
+
+	/**
+	 * @param nameErrorLabel the nameErrorLabel to set
+	 */
+	public void setNameErrorLabel(Label nameErrorLabel) {
+		this.nameErrorLabel = nameErrorLabel;
+	}
+
+	/**
+	 * @return the aliasErrorLabel
+	 */
+	public Label getAliasErrorLabel() {
+		return aliasErrorLabel;
+	}
+
+	/**
+	 * @param aliasErrorLabel the aliasErrorLabel to set
+	 */
+	public void setAliasErrorLabel(Label aliasErrorLabel) {
+		this.aliasErrorLabel = aliasErrorLabel;
+	}
+
+	/**
+	 * @return the emailErrorLabel
+	 */
+	public Label getEmailErrorLabel() {
+		return emailErrorLabel;
+	}
+
+	/**
+	 * @param emailErrorLabel the emailErrorLabel to set
+	 */
+	public void setEmailErrorLabel(Label emailErrorLabel) {
+		this.emailErrorLabel = emailErrorLabel;
+	}
+
+	/**
+	 * @return the passwordErrorLabel
+	 */
+	public Label getPasswordErrorLabel() {
+		return passwordErrorLabel;
+	}
+
+	/**
+	 * @param passwordErrorLabel the passwordErrorLabel to set
+	 */
+	public void setPasswordErrorLabel(Label passwordErrorLabel) {
+		this.passwordErrorLabel = passwordErrorLabel;
+	}
+
+	
+	
 }

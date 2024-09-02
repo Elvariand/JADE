@@ -10,11 +10,14 @@ import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
+import fr.isika.cda27.teamJADE.utilz.CustomRadioButton;
+import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
+import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
 import fr.isika.cda27.teamJADE.view.mainIntern.AddPane;
-import fr.isika.cda27.teamJADE.view.mainIntern.CustomMainScene;
+import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
 import fr.isika.cda27.teamJADE.view.mainIntern.PrintPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.QuitPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.RemovePane;
@@ -40,6 +43,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -96,8 +101,7 @@ public class MembersMainScene extends AnchorPane {
 
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
-//			Scene scene = new Scene(new HelpSceneAdmin(new MembersMainScene()));
-			Scene scene = new Scene(new HelpSceneNotAdmin(new MembersMainScene(connectedMember)));
+			Scene scene = new Scene(new HelpSceneAdmin(new InternsMainScene(connectedMember)));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
@@ -122,9 +126,7 @@ public class MembersMainScene extends AnchorPane {
 
 		// VBox avec les contenu pringipaux à gauche du menu
 		MembersScopePane scopeContentVbox = new MembersScopePane();
-
 		MembersAddPane addContentVbox = new MembersAddPane();
-
 		MembersRemovePane removeContentVbox = new MembersRemovePane();
 		MembersUpdatePane updateContentVbox = new MembersUpdatePane();
 		PrintPane printContentVbox = new PrintPane(tableView);
@@ -153,21 +155,20 @@ public class MembersMainScene extends AnchorPane {
 				updateContentVbox.getGridPaneName().setText(gridPaneLabelsList[1]);
 				updateContentVbox.getGridPaneAlias().setText(gridPaneLabelsList[2]);
 				updateContentVbox.getGridPaneEmail().setText(gridPaneLabelsList[3]);
+				
 				if (newValue != null) {
 					updateContentVbox.setRadioButton(newValue.isAdmin());
 					updateContentVbox.getPasswordField().setText(newValue.getPassword());
 				}
+				
+				removeContentVbox.getRightButton().setDisable(false);
 			}
 		});
 
 		// VBox avec les boutons du menu
 		VBox menubarVBox = new VBox();
-//		menubarVBox.setPrefSize(MENUBAR_WIDTH, MENUBAR_HEIGHT);
-//		menubarVBox.setStyle("-fx-border-color: green;");
-//		menubarVBox.setStyle("-fx-background-color: transparent; -fx-border-color: green; -fx-border-width: 5;");
 
-		// On crée la croix du haut
-
+		// On crée la croix/fleche du haut
 		StackPaneMenubar closeBtn = new StackPaneMenubar("croix.png", "fleche.png", PATH_TOP, 30);
 
 		// On crée les autres boutons
@@ -189,20 +190,9 @@ public class MembersMainScene extends AnchorPane {
 
 		// On ajoute la croix (invisible pour le moment)
 		menubarVBox.getChildren().add(closeBtn);
+
 		// On ajoute tous les boutons dans le VBox
 		menubarVBox.getChildren().addAll(scopeBtn, printBtn, addBtn, removeBtn, updateBtn, seeMemberBtn);
-
-		// Si on est pas admin on rend les boutons removeBtn, updateBtn et seeMemberBtn
-		// invisibles
-		if (!showAdminView) {
-			// on rend l'image invisible pour les 3 boutons
-			removeBtn.getBtnOrangeImageView().setVisible(false);
-			removeBtn.getBtnGreyImageView().setVisible(false);
-			updateBtn.getBtnOrangeImageView().setVisible(false);
-			updateBtn.getBtnGreyImageView().setVisible(false);
-			seeMemberBtn.getBtnOrangeImageView().setVisible(false);
-			seeMemberBtn.getBtnGreyImageView().setVisible(false);
-		}
 
 		// On ajoute le bouton quitter
 		menubarVBox.getChildren().add(quitBtn);
@@ -230,26 +220,9 @@ public class MembersMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> scopeBtnConfig = Arrays.asList(closeBtn, addBtn, removeBtn, updateBtn, printBtn,
+
+		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, removeBtn, updateBtn,
 				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> addBtnConfig = Arrays.asList(closeBtn, scopeBtn, removeBtn, updateBtn, printBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> removeBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, updateBtn, printBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> printBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> updateBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, printBtn,
-				seeMemberBtn, quitBtn);
-
-		List<StackPaneMenubar> seeMemberBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				printBtn, quitBtn);
-
-		List<StackPaneMenubar> quitBtnBtnConfig = Arrays.asList(closeBtn, scopeBtn, addBtn, removeBtn, updateBtn,
-				printBtn, seeMemberBtn);
 
 		/*
 		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
@@ -257,13 +230,13 @@ public class MembersMainScene extends AnchorPane {
 		 * autres boutons
 		 */
 
-		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, scopeBtnConfig);
-		configureButtonAction(addBtn, addContentVbox, menuHbox, addBtnConfig);
-		configureButtonAction(removeBtn, removeContentVbox, menuHbox, removeBtnConfig);
-		configureButtonAction(updateBtn, updateContentVbox, menuHbox, updateBtnConfig);
-		configureButtonAction(printBtn, printContentVbox, menuHbox, printBtnConfig);
-		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, seeMemberBtnConfig);
-		configureButtonAction(quitBtn, quitContentVbox, menuHbox, quitBtnBtnConfig);
+		configureButtonAction(scopeBtn, scopeContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(addBtn, addContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(removeBtn, removeContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(updateBtn, updateContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(printBtn, printContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(seeMemberBtn, seeMembersContentVbox, menuHbox, listMenuBtn);
+		configureButtonAction(quitBtn, quitContentVbox, menuHbox, listMenuBtn);
 
 		// quand on clique sur le bouton fleche/croix
 		closeBtn.getButton().setOnAction(event -> {
@@ -295,7 +268,6 @@ public class MembersMainScene extends AnchorPane {
 
 			} else {
 				// sinon on ferme
-
 				closeMenu(menuHbox);
 
 			}
@@ -307,7 +279,7 @@ public class MembersMainScene extends AnchorPane {
 		Button scopeContentValidateBtn = scopeContentVbox.getRightButton();
 
 		scopeContentValidateBtn.setOnAction(event -> {
-			// on récupère tous les textfield
+			// on récupère tous les textfield et radiobuttons
 			String[] data = grabInfos(scopeContentVbox);
 			boolean isAdminBtnSelected = scopeContentVbox.isAdminSelected();
 			boolean isNotAdminBtnSelected = scopeContentVbox.isNotAdminSelected();
@@ -319,7 +291,6 @@ public class MembersMainScene extends AnchorPane {
 
 			// on filtre la liste de la TableView en fonction
 			filteredMembers.setPredicate(intern -> {
-
 				// pour chaque textfield on doit vérifier si il n'est pas null
 				// si il ne l'est pas, on ajoute la condition au prédicat
 
@@ -368,19 +339,22 @@ public class MembersMainScene extends AnchorPane {
 
 		// ajouter
 		Button addContentAddBtn = addContentVbox.getRightButton();
+
 		addContentAddBtn.setOnAction(event -> {
 			String[] data = grabInfos(addContentVbox);
 			String passwordData = addContentVbox.getTextPasswordField();
 			MemberDao dao = new MemberDao();
 
-			boolean good = this.areAllFieldsCorrectlyFilled(addContentVbox);
+			boolean[] good = this.areAllFieldsCorrectlyFilled(addContentVbox);
 			boolean isAdminBtnSelected = scopeContentVbox.isAdminSelected();
 
-			if (good) {
+			if (good[0] && good[1] && good[2] && good[3] && good[4] && good[5]) {
+
 				dao.insert(new Member(data[2], passwordData, data[0].toUpperCase(),
 						data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3], isAdminBtnSelected));
 				ArrayList<Member> suppr = new ArrayList<Member>();
 				this.observableMembers.setAll(memberDao.sortView(0, suppr));
+
 				refreshPane(addContentVbox);
 				closeMenu(menuHbox);
 			} else {
@@ -388,11 +362,15 @@ public class MembersMainScene extends AnchorPane {
 			}
 
 		});
+
 		// Annuler button
 		Button addcontentCancelBtn = addContentVbox.getLeftButton();
 		addcontentCancelBtn.setOnAction(event -> {
 			refreshPane(addContentVbox);
 		});
+
+		// Les actions en écrivant
+		this.actionOnTyping(addContentVbox);
 
 		/* REMOVE CONTENT : configuration des boutons annuler et valider */
 
@@ -416,7 +394,7 @@ public class MembersMainScene extends AnchorPane {
 
 			ArrayList<Member> suppr = new ArrayList<Member>();
 			this.observableMembers.setAll(memberDao.sortView(0, suppr));
-
+			removeContentValidateBtn.setDisable(true);
 			closeMenu(menuHbox);
 		});
 
@@ -424,6 +402,7 @@ public class MembersMainScene extends AnchorPane {
 		Button removeContentCancelBtn = removeContentVbox.getLeftButton();
 		removeContentCancelBtn.setOnAction(event -> {
 			this.tableView.getSelectionModel().clearSelection();
+			removeContentValidateBtn.setDisable(true);
 		});
 
 		/* UPDATE CONTENT : configuration des boutons annuler et valider */
@@ -431,17 +410,15 @@ public class MembersMainScene extends AnchorPane {
 		Button updateContentUpdateBtn = updateContentVbox.getRightButton();
 		updateContentUpdateBtn.setOnAction(event -> {
 			Member oldMember = selected;
-//			Member oldMember = this.tableView.getSelectionModel().getSelectedItem();
-			System.out.println("-------------------" + oldMember);
 			String[] data = grabInfos(updateContentVbox);
 			String password = updateContentVbox.getTextPasswordField();
 			MemberDao dao = new MemberDao();
 
-			boolean isAdmin = updateContentVbox.isAdminSelected();
+//			boolean isAdmin = updateContentVbox.isAdminSelected();
 //			updateContentVbox.setRadioButton(isAdmin);
-			boolean good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
+			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
 
-			if (good) {
+			if (good[0] && good[1] && good[2] && good[3] && good[4] && good[5]) {
 
 				dao.update(new Member(data[2], password, data[0].toUpperCase(),
 						data[1].toUpperCase().charAt(0) + data[1].substring(1), data[3],
@@ -449,11 +426,13 @@ public class MembersMainScene extends AnchorPane {
 
 				this.tableView.getSelectionModel().clearSelection();
 				refreshPane(updateContentVbox);
+				this.closeMenu(menuHbox);
+				updateContentUpdateBtn.setDisable(true);
 			} else {
 				System.err.println("erreur");
 				updateContentVbox.getLabelError().setVisible(true);
 			}
-			closeMenu(menuHbox);
+			
 		});
 
 		// Annuler button
@@ -461,8 +440,12 @@ public class MembersMainScene extends AnchorPane {
 		updateContentCancelBtn.setOnAction(event -> {
 			this.tableView.getSelectionModel().clearSelection();
 			refreshPane(updateContentVbox);
+			updateContentUpdateBtn.setDisable(true);
 		});
 
+		// Les actions en écrivant
+		this.actionOnTyping(updateContentVbox);
+				
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
@@ -475,6 +458,107 @@ public class MembersMainScene extends AnchorPane {
 		seeMembersContentCancelBtn.setOnAction(event -> {
 			closeMenu(menuHbox);
 		});
+	}
+
+	private void actionOnTyping(MembersRepetitivePane pane) {
+		Label[] paneErrorLabels = this.getMemberPaneErrorLabel(pane);
+		TextField[] paneTextFields = new TextField[5];
+
+		Button paneRightBtn = pane.getRightButton();
+
+		String[] types = { "name", "name", "alias", "email", "password" };
+		paneTextFields = this.getMemberPaneTextField((MembersRepetitivePane) pane);
+
+		for (int i = 0; i < 5; i++) {
+			CustomTextField tf = (CustomTextField) paneTextFields[i];
+			PasswordField pf = pane.getPasswordField();
+
+			Label error = paneErrorLabels[i];
+			String type = types[i];
+
+			
+
+			if (i < 4) {
+				tf.setOnKeyReleased(event -> {
+					boolean[] good = areAllFieldsCorrectlyFilled(pane);
+					for(boolean monBoolean : good) {
+						System.out.println(monBoolean);
+					}
+					System.out.println("---------------------------------");
+					if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+						paneRightBtn.setDisable(false);
+						System.out.println("good");
+					} else {
+						paneRightBtn.setDisable(true);
+					}
+					switch (type) {
+					case "name":
+						if (isStringNameCorrect(tf)) {
+							error.setVisible(false);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: transparent transparent #704739 transparent;");
+						} else {
+							error.setVisible(true);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: red;");
+						}
+						break;
+					case "alias":
+						if (isStringAliasCorrect(tf)) {
+							error.setVisible(false);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: transparent transparent #704739 transparent;");
+						} else {
+							error.setVisible(true);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: red;");
+						}
+						break;
+					case "email":
+						if (isStringEmailCorrect(tf)) {
+							error.setVisible(false);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: transparent transparent #704739 transparent;");
+						} else {
+							error.setVisible(true);
+							tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+									+ "-fx-border-color: red;");
+						}
+						break;
+					default:
+						System.err.println(
+								"Veuillez renseigner un string type de valeur\"name\", \"cursus\" \"int\" \"skip\" \"mail\" \"admin\"  ou \"password\" . ");
+						break;
+					}
+				});
+			} else {
+				pf.setOnKeyReleased(event -> {
+					boolean[] good = areAllFieldsCorrectlyFilled(pane);
+					for(boolean monBoolean : good) {
+						System.out.println(monBoolean);
+					}
+					System.out.println("---------------------------------");
+					if (good[0] && good[1] && good[2] && good[3] && good[4]) {
+						paneRightBtn.setDisable(false);
+						System.out.println("good");
+					} else {
+						paneRightBtn.setDisable(true);
+					}
+					if (isStringPasswordCorrect(pf)) {
+						error.setVisible(false);
+						pf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: transparent transparent #704739 transparent;");
+					} else {
+						error.setVisible(true);
+						pf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
+								+ "-fx-border-color: red;");
+					}
+
+				});
+
+			}
+
+		}
 	}
 
 	private String[] grabRemoveInfos(MembersRemovePane Pane) {
@@ -514,8 +598,25 @@ public class MembersMainScene extends AnchorPane {
 		textField.setText("");
 	}
 
+	private TextField[] getMemberPaneTextField(MembersRepetitivePane pane) {
+		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneName(), pane.getGridPaneAlias(),
+				pane.getGridPaneEmail(), pane.getGridPaneEmail() };
+		return tf;
+	}
+
+	private Label[] getMemberPaneErrorLabel(MembersRepetitivePane pane) {
+
+		Label[] labels = { pane.getFamilyNameErrorLabel(), pane.getNameErrorLabel(), pane.getAliasErrorLabel(),
+				pane.getEmailErrorLabel(), pane.getPasswordErrorLabel() };
+		return labels;
+	}
+
 	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
-			List<StackPaneMenubar> otherButtons) {
+			List<StackPaneMenubar> listButtons) {
+
+		List<StackPaneMenubar> otherButtons = new ArrayList<StackPaneMenubar>();
+		otherButtons.addAll(listButtons);
+		otherButtons.remove(buttonClicked);
 
 		buttonClicked.getButton().setOnAction(event -> {
 
@@ -537,8 +638,10 @@ public class MembersMainScene extends AnchorPane {
 			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
 			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
 
-			// on diminue tous les boutons
+			// on diminue le bouton cliqué
 			setSmaller(buttonClicked);
+
+			// on diminue tous les boutons
 			setSmaller(otherButtons.get(1));
 			setSmaller(otherButtons.get(2));
 			setSmaller(otherButtons.get(3));
@@ -567,59 +670,6 @@ public class MembersMainScene extends AnchorPane {
 		addHoverEffect(buttonClicked);
 
 	}
-
-//	private void configureButtonAction(StackPaneMenubar buttonClicked, MembersRepetitivePane mainContentToShow, HBox menuHbox,
-//			List<StackPaneMenubar> otherButtons) {
-//		buttonClicked.getButton().setOnAction(event -> {
-//
-//			// On remplace le contenu de la HBox
-//			menuHbox.getChildren().set(0, mainContentToShow);
-//
-//			// On rend les boutons du contenu en bouton par défaut (ceux qui réagissent
-//			// quand one appuie sur Entrée et échap)
-//			mainContentToShow.getLeftButton().setCancelButton(true);
-//			mainContentToShow.getRightButton().setDefaultButton(true);
-//
-//			VBox menubarVBox = (VBox) menuHbox.getChildren().get(1);
-//
-//			TranslateTransition moveTransition = new TranslateTransition(Duration.millis(500), menuHbox);
-//			moveTransition.setToX(TOX_LARGE_MENU);
-//			moveTransition.play();
-//
-//			// on fait apparaitre la croix et disparaitre la fleche
-//			otherButtons.get(0).getBtnGreyImageView().setVisible(true);
-//			otherButtons.get(0).getBtnOrangeImageView().setVisible(false);
-//
-//			// on diminue tous les boutons
-//			setSmaller(buttonClicked);
-//			setSmaller(otherButtons.get(1));
-//			setSmaller(otherButtons.get(2));
-//			setSmaller(otherButtons.get(3));
-//			setSmaller(otherButtons.get(4));
-//			setSmaller(otherButtons.get(5));
-//			setSmaller(otherButtons.get(6));
-//
-//			// On set maxwidth de la menubarVBox à 100
-//			menubarVBox.setPrefWidth(100);
-//			menubarVBox.setTranslateX(200);
-//			otherButtons.get(0).setTranslateX(0);
-//
-//			// on passe tous les boutons à gris
-//			changeToGrey(otherButtons.get(1));
-//			changeToGrey(otherButtons.get(2));
-//			changeToGrey(otherButtons.get(3));
-//			changeToGrey(otherButtons.get(4));
-//			changeToGrey(otherButtons.get(5));
-//			changeToGrey(otherButtons.get(6));
-//
-//			// on met à jour la couleur du bouton cliqué en orange
-//			changeToOrange(buttonClicked);
-//
-//		});
-//
-//		addHoverEffect(buttonClicked);
-//		
-//	}
 
 	public void closeMenu(HBox menuHbox) {
 		TranslateTransition moveTransition = new TranslateTransition();
@@ -812,31 +862,102 @@ public class MembersMainScene extends AnchorPane {
 		timeline.play();
 	}
 
-	private boolean areAllFieldsCorrectlyFilled(MembersRepetitivePane pane) {
-		boolean filled = true;
+	private boolean[] areAllFieldsCorrectlyFilled(MembersRepetitivePane scene) {
 
-		String familyName = pane.getTextFamilyName().trim();
-		String name = pane.getTextName().trim();
-		String alias = pane.getTextAlias().trim();
-		String email = pane.getTextEmail().trim();
-		String password = pane.getTextPasswordField().trim();
+		boolean[] tab = { isStringNameCorrect((CustomTextField) scene.getGridPaneFamilyName()),
+				isStringNameCorrect((CustomTextField) scene.getGridPaneName()),
+				isStringAliasCorrect((CustomTextField) scene.getGridPaneAlias()),
+				isStringEmailCorrect((CustomTextField) scene.getGridPaneEmail()),
+				isStringPasswordCorrect((PasswordField) scene.getPasswordField()),
+				isBooleanAdminCorrect((CustomRadioButton) scene.getCustomRadioButton()) };
+		return tab;
+	}
 
-		System.out.println(familyName + " " + name + " " + alias + " " + email + " " + password);
-		if (familyName.length() == 0 || name.length() == 0 || alias.length() == 0 || email.length() == 0
-				|| password.length() == 0) {
-			filled = false;
-			return filled;
-		}
+	/**
+	 * Vérifie si le texte dans le champ de nom est valide.
+	 * 
+	 * Critères de validation :
+	 * - Le texte ne doit pas être vide.
+	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des espaces et des tirets.
+	 * - Le texte ne doit pas dépasser la longueur maximale autorisée par le champ.
+	 * 
+	 * @param field Le champ de texte à valider (CustomTextField).
+	 * @return true si le nom est valide, false sinon.
+	 */
+	private boolean isStringNameCorrect(CustomTextField field) {
+	    String text = field.getText().trim();
+	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s]").matcher(text).find()
+	            || text.length() > field.getMaxChars());
+	}
 
-		if (Pattern.compile("[^(\\p{L}-\\s)]").matcher(familyName).find()
-				|| Pattern.compile("[^(\\p{L}-\\s)]").matcher(name).find()
-				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(alias).find()
-				|| Pattern.compile("[^(\\p{L}-\\s\\d@.)]").matcher(email).find()
-				|| Pattern.compile("[^(\\p{L}-\\s\\d)]").matcher(password).find()) {
-			filled = false;
-		}
+	/**
+	 * Vérifie si le texte dans le champ d'alias est valide.
+	 * 
+	 * Critères de validation :
+	 * - Le texte ne doit pas être vide.
+	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres et des tirets.
+	 * - Le texte ne doit pas dépasser 15 caractères.
+	 * 
+	 * @param field Le champ de texte à valider (CustomTextField).
+	 * @return true si l'alias est valide, false sinon.
+	 */
+	private boolean isStringAliasCorrect(CustomTextField field) {
+	    String text = field.getText().trim();
+	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find()
+	            || text.length() > 15);
+	}
 
-		return filled;
+	/**
+	 * Vérifie si le mot de passe est valide.
+	 * 
+	 * Critères de validation :
+	 * - Le texte ne doit pas être vide.
+	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres, des tirets.
+	 * - Le texte ne doit pas dépasser 15 caractères.
+	 * 
+	 * @param field Le champ de mot de passe à valider (PasswordField).
+	 * @return true si le mot de passe est valide, false sinon.
+	 */
+	private boolean isStringPasswordCorrect(PasswordField field) {
+	    String text = field.getText().trim();
+	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find()
+	            || text.length() > 15);
+	}
+
+	/**
+	 * Vérifie si l'adresse e-mail est valide.
+	 * 
+	 * Critères de validation :
+	 * - Le texte ne doit pas être vide.
+	 * - Le texte doit contenir un "@" et un "." pour être considéré comme une adresse e-mail valide.
+	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres, des tirets.
+	 * - Le texte ne doit pas dépasser la longueur maximale autorisée par le champ.
+	 * 
+	 * @param field Le champ de texte à valider (CustomTextField).
+	 * @return true si l'adresse e-mail est valide, false sinon.
+	 */
+	private boolean isStringEmailCorrect(CustomTextField field) {
+	    String text = field.getText().trim();
+	    return !(text.length() <= 0 || !(text.contains("@") && text.contains("."))
+	    		|| Pattern.compile("[^\\p{L}\\d-@[.]]").matcher(text).find()
+	            || text.length() > field.getMaxChars());
+	}
+
+	/**
+	 * Vérifie si l'option Admin est correctement sélectionnée.
+	 * 
+	 * Critères de validation :
+	 * - Le bouton "Admin" doit être soit "True" soit "False" (un des deux doit être sélectionné).
+	 * 
+	 * @param field Le champ de bouton radio à valider (CustomRadioButton).
+	 * @return true si l'une des options (True ou False) est sélectionnée, false sinon.
+	 */
+	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
+	    if (field.isTrueBtnSelected() || field.isFalseBtnSelected()) {
+	        return true;
+	    } else {
+	        return false;
+	    }
 	}
 
 	private String getCurrentColor(SVGPath svgPath) {
