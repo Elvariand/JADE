@@ -17,6 +17,7 @@ import javafx.animation.KeyValue;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -754,9 +755,14 @@ public class InternsMainScene extends AnchorPane {
 			setLarger(seeMemberBtn);
 		}
 
-		InternDao internDao = new InternDao();
-		ArrayList<Intern> suppr = new ArrayList<Intern>();
-		this.observableInterns.setAll(internDao.sortView(0, suppr));
+		moveTransition.setOnFinished(event -> {
+		    // On décale les mises à jour de données après la transition pour éviter les saccades de transition
+		    Platform.runLater(() -> {
+		        InternDao internDao = new InternDao();
+		        ArrayList<Intern> suppr = new ArrayList<Intern>();
+		        this.observableInterns.setAll(internDao.sortView(0, suppr));
+		    });
+		});
 	}
 
 	/**
