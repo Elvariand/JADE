@@ -205,7 +205,6 @@ public class CustomLoginScene extends AnchorPane {
 	 */
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
 		Member member = memberDao.findByAlias(alias, password);
-		System.out.println(member);
 		// si member non null alors on affiche la mainScene
 		if (member != null) {
 			Stage stage = ((Stage) CustomLoginScene.this.getScene().getWindow());

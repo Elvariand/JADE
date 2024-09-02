@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.regex.Pattern;
 
 import fr.isika.cda27.teamJADE.view.App;
 
@@ -65,12 +66,14 @@ public class InternDao extends TreeNodeDao<Intern>{
 				// Idem pour les lignes 3, 4 et 5
 				case 3:
 					county = text;
+					if (text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()) county = "999";
 					break;
 				case 4:
 					cursus = text;
 					break;
 				case 5:
 					yearIn = text;
+					if (text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()) yearIn = "9999";
 					break;
 
 				// Dans le cas où nous sommes sur la sixieme ligne, qui correspond à une ligne
