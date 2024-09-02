@@ -7,7 +7,6 @@ import java.util.regex.Pattern;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
-import fr.isika.cda27.teamJADE.utilz.CustomRadioButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
@@ -57,9 +56,9 @@ public class InternsMainScene extends AnchorPane {
 	private boolean showAdminView;
 
 	/**
-	 * Crée une instance de `CustomMainScene` en configurant l'interface utilisateur
-	 * principale de l'application. Configure les actions des boutons pour gérer les
-	 * événements comme les clics et les transitions.
+	 * Crée une instance de `InternsMainScene` en configurant l'interface
+	 * utilisateur pour voir la table des stagiaires. Configure les actions des
+	 * boutons pour gérer les événements comme les clics et les transitions.
 	 *
 	 * @param connectedMember Le membre actuellement connecté. Utilisé pour
 	 *                        déterminer si la vue administrateur doit être
@@ -458,18 +457,12 @@ public class InternsMainScene extends AnchorPane {
 		Button paneRightBtn = pane.getRightButton();
 
 		String[] types = { "name", "name", "int", "cursus", "int", "skip" };
-		if (pane instanceof MembersRepetitivePane) {
-			paneTextFields = this.getMemberPaneTextField((MembersRepetitivePane) pane);
-			types[2] = "name";
-			types[3] = "mail";
-			types[4] = "admin";
-			types[5] = "password";
-		} else {
-			paneTextFields = this.getPaneTextField(pane);
-		}
-
+		
+		paneTextFields = this.getPaneTextField(pane);
+		
 		for (int i = 0; i < paneTextFields.length; i++) {
 			CustomTextField tf = (CustomTextField) paneTextFields[i];
+			
 			Label error = paneErrorLabels[i];
 			String type = types[i];
 
@@ -517,39 +510,6 @@ public class InternsMainScene extends AnchorPane {
 								+ "-fx-border-color: red;");
 					}
 					break;
-				case "mail":
-					if (isStringMailCorrect(tf)) {
-						error.setVisible(false);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: transparent transparent #704739 transparent;");
-					} else {
-						error.setVisible(true);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: red;");
-					}
-					break;
-				case "admin":
-					if (isBooleanAdminCorrect(((MembersRepetitivePane) pane).getCustomRadioButton())) {
-						error.setVisible(false);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: transparent transparent #704739 transparent;");
-					} else {
-						error.setVisible(true);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: red;");
-					}
-					break;
-				case "password":
-					if (isStringPasswordCorrect(tf)) {
-						error.setVisible(false);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: transparent transparent #704739 transparent;");
-					} else {
-						error.setVisible(true);
-						tf.setStyle(SET_BG_ORANGE_COLOR + "-fx-background-radius: 13; " + "-fx-border-radius: 13; "
-								+ "-fx-border-color: red;");
-					}
-					break;
 				case "skip":
 					break;
 				default:
@@ -586,7 +546,7 @@ public class InternsMainScene extends AnchorPane {
 
 	/**
 	 * Actualise le {@link RepetitivePane} spécifié en mettant à jour ses différents
-	 * panneaux de grille. Cette méthode appelle la méthode {@link #refresh(String)}
+	 * panneaux de grille. Cette méthode appelle la méthode {@link #refresh(TextField)}
 	 * pour chaque panneau de grille associé au {@code RepetitivePane} fourni.
 	 * 
 	 * @param pane L'instance de {@link RepetitivePane} dont les panneaux de grille
@@ -598,6 +558,16 @@ public class InternsMainScene extends AnchorPane {
 		refresh(pane.getGridPaneCounty());
 		refresh(pane.getGridPaneCursus());
 		refresh(pane.getGridPaneYearIn());
+	}
+	
+	/**
+	 * Réinitialise le texte d'un champ de texte en le vidant.
+	 *
+	 * @param textField Le champ de texte dont le texte doit être réinitialisé. Cet
+	 *                  objet ne doit pas être {@code null}.
+	 */
+	private void refresh(TextField textField) {
+		textField.setText("");
 	}
 
 	/**
@@ -640,16 +610,6 @@ public class InternsMainScene extends AnchorPane {
 		Label[] labels = { pane.getFamilyNameErrorLabel(), pane.getFirstNameErrorLabel(), pane.getCountyErrorLabel(),
 				pane.getCursusErrorLabel(), pane.getYearInErrorLabel() };
 		return labels;
-	}
-
-	/**
-	 * Réinitialise le texte d'un champ de texte en le vidant.
-	 *
-	 * @param textField Le champ de texte dont le texte doit être réinitialisé. Cet
-	 *                  objet ne doit pas être {@code null}.
-	 */
-	private void refresh(TextField textField) {
-		textField.setText("");
 	}
 
 	/**
@@ -738,7 +698,13 @@ public class InternsMainScene extends AnchorPane {
 	 *                    fermer. Ne doit pas être null.
 	 */
 	public void closeMenu(VBox menubarVBox, boolean showAdminView) {
+		TranslateTransition moveTransition = new TranslateTransition();
 
+		moveTransition.setDuration(DURATION_TIME);
+		moveTransition.setNode(menubarVBox.getParent());
+		moveTransition.setToX(TOX_SMALL_MENU);
+		moveTransition.play();
+		
 		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
 		StackPaneMenubar scopeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(1);
 		StackPaneMenubar printBtn = (StackPaneMenubar) menubarVBox.getChildren().get(2);
@@ -748,21 +714,15 @@ public class InternsMainScene extends AnchorPane {
 		StackPaneMenubar seeMemberBtn = (StackPaneMenubar) menubarVBox.getChildren().get(6);
 		StackPaneMenubar quitBtn = (StackPaneMenubar) menubarVBox.getChildren().get(7);
 
-		TranslateTransition moveTransition = new TranslateTransition();
-
-		moveTransition.setDuration(DURATION_TIME);
-		moveTransition.setNode(menubarVBox.getParent());
-		moveTransition.setToX(TOX_SMALL_MENU);
-		moveTransition.play();
-
 		closeBtn.getBtnGreyImageView().setVisible(false);
 		closeBtn.getBtnOrangeImageView().setVisible(true);
-// On set maxwidth de la menubarVBox à 300
+		
+		// On set maxwidth de la menubarVBox à 300
 		menubarVBox.setPrefWidth(300);
 		menubarVBox.setTranslateX(0);
 		closeBtn.setTranslateX(100);
 
-// Changer la couleur des boutons en orange
+		// Changer la couleur des boutons en orange
 		changeToOrange(scopeBtn);
 		changeToOrange(addBtn);
 		changeToOrange(printBtn);
@@ -778,7 +738,7 @@ public class InternsMainScene extends AnchorPane {
 			changeToOrange(updateBtn);
 		}
 
-// Agrandir tous les boutons
+		// Agrandir tous les boutons
 		setLarger(scopeBtn);
 		setLarger(addBtn);
 		setLarger(printBtn);
@@ -1017,7 +977,6 @@ public class InternsMainScene extends AnchorPane {
 	 * @param button l'objet {@link StackPaneMenubar} dont la couleur doit être
 	 *               changée. Ne doit pas être {@code null}.
 	 */
-
 	private void changeToGrey(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(0), GREY_COLOR);
@@ -1071,7 +1030,7 @@ public class InternsMainScene extends AnchorPane {
 	 * @return Un tableau de booléens où chaque élément indique si le champ
 	 *         correspondant est correctement rempli. La première valeur vérifie le
 	 *         nom de famille, la deuxième vérifie le prénom, la troisième vérifie
-	 *         le départementadmin , la quatrième vérifie la formation suivie et la
+	 *         le département , la quatrième vérifie la formation suivie et la
 	 *         cinquième vérifie l'année d'entrée.
 	 */
 	private boolean[] areAllFieldsCorrectlyFilled(RepetitivePane scene) {
@@ -1133,31 +1092,6 @@ public class InternsMainScene extends AnchorPane {
 	}
 
 	/**
-	 * Vérifie si le texte du champ de texte est un mot de passe valide.
-	 * <p>
-	 * Un mot de passe est considéré comme valide si les conditions suivantes sont
-	 * remplies :
-	 * <ul>
-	 * <li>La longueur du texte est supérieure à 4 caractères.</li>
-	 * <li>Le texte ne contient aucun des caractères suivants : {@code "},
-	 * {@code /}, {@code \}, {@code <}, {@code >}.</li>
-	 * <li>La longueur du texte ne dépasse pas le nombre maximal de caractères
-	 * autorisés par le champ.</li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @param field Le champ de texte dont le texte doit être vérifié. Cet objet ne
-	 *              doit pas être {@code null}.
-	 * @return {@code true} si le texte du champ est un mot de passe valide,
-	 *         {@code false} sinon.
-	 */
-	private boolean isStringPasswordCorrect(CustomTextField field) {
-		String text = field.getText().trim();
-		return !(text.length() <= 4 || Pattern.compile("[\"\\/<>]").matcher(text).find()
-				|| text.length() > field.getMaxChars());
-	}
-
-	/**
 	 * Vérifie si le texte d'un champ {@link CustomTextField} est correctement
 	 * formaté pour un entier.
 	 * 
@@ -1178,45 +1112,6 @@ public class InternsMainScene extends AnchorPane {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
-	}
-
-	/**
-	 * Vérifie si le texte du champ de texte est une adresse e-mail valide.
-	 * <p>
-	 * Une adresse e-mail est considérée comme valide si les conditions suivantes
-	 * sont remplies :
-	 * <ul>
-	 * <li>Le texte ne doit pas être vide.</li>
-	 * <li>Le texte doit contenir à la fois le caractère {@code @} et un point
-	 * ({@code .}).</li>
-	 * <li>La longueur du texte ne doit pas dépasser le nombre maximal de caractères
-	 * autorisés par le champ.</li>
-	 * </ul>
-	 * </p>
-	 *
-	 * @param field Le champ de texte dont le texte doit être vérifié. Cet objet ne
-	 *              doit pas être {@code null}.
-	 * @return {@code true} si le texte du champ est une adresse e-mail valide,
-	 *         {@code false} sinon.
-	 */
-	private boolean isStringMailCorrect(CustomTextField field) {
-		String text = field.getText().trim();
-		return !(text.length() <= 0 || (text.contains("@") && text.contains("."))
-				|| text.length() > field.getMaxChars());
-	}
-
-	/**
-	 * Vérifie si le bouton radio sélectionné dans le groupe de boutons représente
-	 * une valeur booléenne valide.
-	 *
-	 * @param field Le bouton radio dont la sélection doit être vérifiée. Cet objet
-	 *              ne doit pas être {@code null}.
-	 * @return {@code true} si le texte associé au bouton radio sélectionné est une
-	 *         valeur booléenne valide, {@code false} sinon.
-	 */
-	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
-		String toggle = field.getToggleGroup().getSelectedToggle().getUserData().toString();
-		return (toggle.equals("true") || toggle.equals("false"));
 	}
 
 	/**

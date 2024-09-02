@@ -13,8 +13,8 @@ import javafx.stage.Stage;
  */
 public class App extends Application {
 
-	private final static String INTERN_DON_FILE = "src/main/resources/data/STAGIAIRES.DON";
-	private final static String INTERN_BIN_FILE = "src/main/resources/data/STAGIAIRES.bin";
+	private final static String INTERN_DON_FILE = "src/main/resources/data/TEST_STAGIAIRES.DON";
+	private final static String INTERN_BIN_FILE = "src/main/resources/data/TEST_STAGIAIRES.bin";
 	private final static String MEMBER_BIN_FILE = "src/main/resources/data/MEMBRES.bin";
 
 	/**
@@ -61,9 +61,9 @@ public class App extends Application {
 
 	public static void main(String[] args) {
 
-		InternDao test_intern = new InternDao();
-		test_intern.deleteBinary();
-		test_intern.addFromDon();
+//		InternDao test_intern = new InternDao();
+//		test_intern.deleteBinary();
+//		test_intern.addFromDon();
 
 		launch();
 	}
