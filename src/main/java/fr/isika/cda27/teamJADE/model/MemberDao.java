@@ -2,28 +2,29 @@ package fr.isika.cda27.teamJADE.model;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
 import fr.isika.cda27.teamJADE.view.App;
 
-public class MemberDao extends TreeNodeDao<Member>{
+public class MemberDao extends TreeNodeDao<Member> {
 
 	/**
-	 * @param memberToAdd Le premier objet de type Member à ajouter 
+	 * Ajoute un premier membre avec des valeurs prédéfinies dans le fichier
+	 * binaire.
+	 * 
+	 * @param memberToAdd Le premier objet de type Member à ajouter
 	 */
 	public void addFirstMember() {
 
 		insert(new Member("admin", "pass", "test", "test", "test@isika.fr", true));
 	}
-	
+
 	/**
+	 * Écrit les champs spécifiques d'un membre dans un fichier binaire.
+	 * 
 	 * @param memberToAdd L'objet type Member à ajouter dans le fichier binaire
-	 * @param raf Le RandomAccessFile 
+	 * @param raf         Le RandomAccessFile
 	 */
 	@Override
 	protected void writeSpecificFields(Member memberToAdd, RandomAccessFile raf) {
@@ -38,9 +39,11 @@ public class MemberDao extends TreeNodeDao<Member>{
 			e.printStackTrace();
 		}
 	}
-	
 
 	/**
+	 * Lit un objet Member à partir d'une position spécifiée dans le fichier
+	 * binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return Retourne un objet de type Member stocké à la position du curseur dans
@@ -49,9 +52,9 @@ public class MemberDao extends TreeNodeDao<Member>{
 	protected Member readObjectFromBinary(long cursorPosition) {
 		String alias = "";
 		String password = "";
-		String familyName = ""; 
-		String name = ""; 
-		String email = ""; 
+		String familyName = "";
+		String name = "";
+		String email = "";
 		Boolean admin = false;
 
 		try {
@@ -76,20 +79,19 @@ public class MemberDao extends TreeNodeDao<Member>{
 				familyName += raf.readChar();
 			}
 			// On lit tous les caractères du prénom du Membre incluant les espaces
-						// supplémentaires
+			// supplémentaires
 			for (int i = 0; i < MAX_CHAR_NAME; i++) {
 				name += raf.readChar();
 			}
 			// On lit tous les caractères de l'adresse mail du Membre incluant les espaces
-						// supplémentaires
+			// supplémentaires
 			for (int i = 0; i < MAX_CHAR_EMAIL; i++) {
 				email += raf.readChar();
 			}
-			
+
 			// On lit tous les caractères d'Admin du Membre incluant les espaces
 			// supplémentaires
 			admin = raf.readBoolean();
-		
 
 			// On coupe le flux d'échanges de données entre l'application et le fichier afin
 			// de libérer de la mémoire pour l'ordinateur.
@@ -100,7 +102,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 			// pouvoir la régler
 			e.printStackTrace();
 		}
-		return new Member(alias.trim(), password.trim(), familyName.trim(), name.trim(), email.trim() ,admin);
+		return new Member(alias.trim(), password.trim(), familyName.trim(), name.trim(), email.trim(), admin);
 	}
 
 	/**
@@ -114,9 +116,9 @@ public class MemberDao extends TreeNodeDao<Member>{
 				int indexLeft = this.readLeftChildFromBinary(cursor);
 				int indexRight = this.readRightChildFromBinary(cursor);
 				int indexTwin = this.readTwinFromBinary(cursor);
-				System.out.println(
-						member.getAlias() + "\t" + member.getPassword()
-								+ "\t" + member.getFamilyName() + "\t" + member.getName() + "\t" + member.getEmail() + "\t" + member.isAdmin() + "\t" + indexLeft + "\t" + indexRight + "\t" + indexTwin);
+				System.out.println(member.getAlias() + "\t" + member.getPassword() + "\t" + member.getFamilyName()
+						+ "\t" + member.getName() + "\t" + member.getEmail() + "\t" + member.isAdmin() + "\t"
+						+ indexLeft + "\t" + indexRight + "\t" + indexTwin);
 				cursor += MEMBER_NODE_SIZE - 1;
 			}
 			raf.close();
@@ -124,66 +126,115 @@ public class MemberDao extends TreeNodeDao<Member>{
 			e.printStackTrace();
 		}
 	}
-	
+
+	/**
+	 * Lit la clé (nom d'utilisateur) d'un nœud à partir d'une position spécifiée
+	 * dans le fichier binaire.
+	 * 
+	 * @param cursorPosition La position du curseur en octets. Doit être au début du
+	 *                       nœud.
+	 * @return La clé (nom d'utilisateur) lue à la position spécifiée.
+	 */
 	@Override
 	protected String readKeyFromBinary(long cursorPosition) {
 		String alias = "";
-		
+
 		try {
 			RandomAccessFile raf = new RandomAccessFile(App.getMemberBinFile(), "rw");
-			
+
 			// On met le curseur à la position demandée
 			raf.seek(cursorPosition);
-			
+
 			// On lit tous les caractères du pseudo incluant les
 			// espaces supplémentaires
 			for (int i = 0; i < MAX_CHAR_ALIAS; i++) {
 				alias += raf.readChar();
 			}
-			
+
 			// On coupe le flux d'échanges de données entre l'application et le fichier afin
 			// de libérer de la mémoire pour l'ordinateur.
 			raf.close();
 		} catch (IOException e) {
-			
+
 			// S'il y a une erreur, on affiche dans la console d'où elle vient afin de
 			// pouvoir la régler
 			e.printStackTrace();
 		}
 		return alias.trim();
-		
+
 	}
 
+	/**
+	 * Cette méthode fournit la taille fixe d'un nœud dans le fichier binaire.
+	 * 
+	 * @return La taille en octets d'un nœud, telle que définie par la constante
+	 *         {@code MEMBER_NODE_SIZE}.
+	 */
 	@Override
 	protected int getNodeSize() {
 		return MEMBER_NODE_SIZE;
 	}
 
+	/**
+	 * Retourne la clé d'un membre.
+	 * 
+	 * @param member L'objet de type {@code Member} dont la clé doit être extraite.
+	 * @return Le nom d'utilisateur du membre, qui sert de clé unique pour l'objet
+	 *         {@code Member}.
+	 */
 	@Override
 	protected String getKey(Member member) {
 		return member.getAlias();
 	}
 
-
+	/**
+	 * Cette méthode fournit la taille fixe d'un objet Member. La taille de l'objet
+	 * doit être connue pour permettre une gestion correcte de la mémoire et un
+	 * accès approprié aux données dans le fichier.
+	 * 
+	 * @return La taille en octets d'un objet Member, telle que définie par la
+	 *         constante {@code MEMBER_SIZE}.
+	 */
 	@Override
 	protected int getObjectSize() {
 		return MEMBER_SIZE;
 	}
 
-
+	/**
+	 * Retourne le chemin du fichier binaire utilisé pour stocker les membres.
+	 * 
+	 * @return Le chemin du fichier binaire des membres, tel que défini dans la
+	 *         configuration de l'application.
+	 */
 	@Override
 	protected String getBinFile() {
 		return App.getMemberBinFile();
 	}
-	
-	
-	
-	// Trouver le Pseudo
+
+	/**
+	 * Trouve un membre par son nom d'utilisateur et mot de passe.
+	 * 
+	 * @param alias    Le nom d'utilisateur du membre à rechercher.
+	 * @param password Le mot de passe du membre à rechercher.
+	 * @return Le membre correspondant au nom d'utilisateur et au mot de passe
+	 *         spécifiés.
+	 */
 	public Member findByAlias(String alias, String password) {
 		Member member = findByAlias(alias, password, 0);
 		return member;
 	}
-	
+
+	/**
+	 * Trouve un membre par son nom d'utilisateur et mot de passe à partir d'une
+	 * position spécifiée dans le fichier binaire.
+	 * 
+	 * @param alias          Le nom d'utilisateur du membre à rechercher.
+	 * @param password       Le mot de passe du membre à rechercher.
+	 * @param cursorPosition La position du curseur en octets. Doit être au début du
+	 *                       nœud.
+	 * @return Le membre correspondant au nom d'utilisateur et au mot de passe
+	 *         spécifiés.
+	 */
 	public Member findByAlias(String alias, String password, long cursorPosition) {
 
 		long binarySize = this.getBinarySize();
@@ -191,7 +242,6 @@ public class MemberDao extends TreeNodeDao<Member>{
 		// Si le fichier binaire est vide
 		if (binarySize == 0) {
 			// Alors on return
-			System.out.println("Fichier binaire vide");
 			return null;
 		}
 		String nodeKey = this.readKeyFromBinary(cursorPosition);
@@ -209,7 +259,6 @@ public class MemberDao extends TreeNodeDao<Member>{
 				/*
 				 * Dans ce cas ça veut dire que le Pseudo entré n'existe pas dans le fichier
 				 */
-				System.out.println("Aucune correspondance trouvée 1");
 				return null;
 
 				// Si le fils gauche existe déjà, alors nous déplaçons notre curseur à la
@@ -217,7 +266,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 				// et nous relançons une recherche.
 			} else {
 				return this.findByAlias(alias, password, newCursorPosition * getNodeSize());
-				
+
 			}
 		}
 
@@ -234,7 +283,6 @@ public class MemberDao extends TreeNodeDao<Member>{
 				/*
 				 * Dans ce cas ça veut dire que le Pseudo entré n'existe pas dans le fichier
 				 */
-				System.out.println("Aucune correspondance trouvée 2");
 				return null;
 
 				// Si le fils droit existe déjà, alors nous déplaçons notre curseur à la
@@ -242,7 +290,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 				// et nous relançons une recherche.
 			} else {
 				return this.findByAlias(alias, password, newCursorPosition * getNodeSize());
-				
+
 			}
 		}
 
@@ -258,7 +306,6 @@ public class MemberDao extends TreeNodeDao<Member>{
 				Member member = this.readObjectFromBinary(cursorPosition);
 				// Si le mdp est égal au mdp du membre courant
 				if (password.equals(this.readObjectFromBinary(cursorPosition).getPassword())) {
-					System.out.println("Le mdp à été trouvé 1 !");
 					return member;
 				}
 				read = readTwinFromBinary(cursorPosition);
@@ -266,9 +313,7 @@ public class MemberDao extends TreeNodeDao<Member>{
 					cursorPosition = read * getNodeSize();
 			}
 		}
-			System.out.println("Aucune correspondance trouvée 3 !");
-			return null;
+		return null;
 
 	}
 }
-

@@ -33,7 +33,10 @@ public class RepetitivePane extends VBox {
 	protected Label countyErrorLabel;
 	protected Label cursusErrorLabel;
 	protected Label yearInErrorLabel;
-	
+
+	/**
+	 * Crée le panneau répétitive
+	 */
 	public RepetitivePane() {
 		this.setPrefSize(VBOX_WIDTH, VBOX_HEIGHT);
 		this.setAlignment(Pos.CENTER);
@@ -47,13 +50,12 @@ public class RepetitivePane extends VBox {
 		this.titleLabel.setTextFill(GREY_COLOR);
 
 		this.gridPane = MenuVboxValues.createFormGridPane();
-		
+
 		this.familyNameErrorLabel = (Label) gridPane.getChildren().get(2);
 		this.firstNameErrorLabel = (Label) gridPane.getChildren().get(5);
 		this.countyErrorLabel = (Label) gridPane.getChildren().get(8);
 		this.cursusErrorLabel = (Label) gridPane.getChildren().get(11);
 		this.yearInErrorLabel = (Label) gridPane.getChildren().get(14);
-		
 
 		this.buttonBox = new HBox(SPACE_BETWEEN_BTNS);
 		this.buttonBox.setAlignment(Pos.CENTER);
@@ -63,205 +65,242 @@ public class RepetitivePane extends VBox {
 
 		this.rightButton = new CustomButton("DROITE");
 
-
 		this.buttonBox.getChildren().addAll(leftButton, rightButton);
 		this.getChildren().addAll(titleLabel, gridPane, buttonBox);
 	}
 
 	/**
-	 * @return the buttonBox
+	 * @return le buttonBox
 	 */
 	public HBox getButtonBox() {
 		return buttonBox;
 	}
 
 	/**
-	 * @param buttonBox the buttonBox to set
+	 * @param buttonBox le buttonBox à définir
 	 */
 	public void setButtonBox(HBox buttonBox) {
 		this.buttonBox = buttonBox;
 	}
 
 	/**
-	 * @return the leftButton
+	 * @return le bouton de gauche
 	 */
 	public Button getLeftButton() {
 		return leftButton;
 	}
 
 	/**
-	 * @param leftButton the leftButton to set
+	 * @param leftButton le bouton de gauche à définir
 	 */
 	public void setLeftButton(Button leftButton) {
 		this.leftButton = leftButton;
 	}
 
 	/**
-	 * @return the rightButton
+	 * @return le bouton de droite
 	 */
 	public Button getRightButton() {
 		return rightButton;
 	}
 
 	/**
-	 * @param rightButton the rightButton to set
+	 * @param rightButton le rightButton à définir
 	 */
 	public void setRightButton(Button rightButton) {
 		this.rightButton = rightButton;
 	}
 
 	/**
-	 * @return the titleLabel
+	 * @return le titleLabel
 	 */
 	public Label getTitleLabel() {
 		return titleLabel;
 	}
 
 	/**
-	 * @param titleLabel the titleLabel to set
+	 * @param titleLabel le titleLabel à définir
 	 */
 	public void setTitleLabel(Label titleLabel) {
 		this.titleLabel = titleLabel;
 	}
 
 	/**
-	 * @param titleLabelText the titleLabelText to set
+	 * @param titleLabelText le titleLabelText à définir
 	 */
 	public void setTitleLabelText(String titleLabelText) {
-		this.titleLabel.setText(titleLabelText);;
+		this.titleLabel.setText(titleLabelText);
+		;
 	}
 
-	
 	/**
-	 * @return the gridPane
+	 * @return le gridPane
 	 */
 	public GridPane getGridPane() {
 		return gridPane;
 	}
 
 	/**
-	 * @param gridPane the gridPane to set
+	 * @param gridPane le gridPane à définir
 	 */
 	public void setGridPane(GridPane gridPane) {
 		this.gridPane = gridPane;
 	}
-	
 
+	/**
+	 * @return le champ de texte à l'index 1 du {@link GridPane}, représentant le
+	 *         nom de famille.
+	 */
 	public TextField getGridPaneFamilyName() {
 		TextField textField = (TextField) gridPane.getChildren().get(1);
 		return textField;
 	}
 
+	/**
+	 * @return le champ de texte à l'index 4 du {@link GridPane}, représentant le
+	 *         prénom.
+	 */
 	public TextField getGridPaneFirstName() {
 		TextField textField = (TextField) gridPane.getChildren().get(4);
 		return textField;
 	}
 
+	/**
+	 * @return le champ de texte à l'index 7 du {@link GridPane}, représentant le
+	 *         département.
+	 */
 	public TextField getGridPaneCounty() {
 		TextField textField = (TextField) gridPane.getChildren().get(7);
 		return textField;
 	}
 
+	/**
+	 * @return le champ de texte à l'index 10 du {@link GridPane}, représentant la
+	 *         formation suivie.
+	 */
 	public TextField getGridPaneCursus() {
 		TextField textField = (TextField) gridPane.getChildren().get(10);
 		return textField;
 	}
 
+	/**
+	 * @return le champ de texte à l'index 13 du {@link GridPane}, représentant
+	 *         l'année.
+	 */
 	public TextField getGridPaneYearIn() {
 		TextField textField = (TextField) gridPane.getChildren().get(13);
 		return textField;
 	}
 
-
+	/**
+	 * @return le texte du champ saisi par l'utilisateur à l'index 1 du
+	 *         {@link GridPane}, représentant le nom de famille.
+	 */
 	public String getTextFamilyName() {
 		return ((TextField) gridPane.getChildren().get(1)).getText();
-		
+
 	}
 
+	/**
+	 * @return le texte du champ saisi par l'utilisateur à l'index 4 du
+	 *         {@link GridPane}, représentant le prénom.
+	 */
 	public String getTextFirstName() {
 		return ((TextField) gridPane.getChildren().get(4)).getText();
-		
+
 	}
 
+	/**
+	 * @return le texte du champ saisi par l'utilisateur à l'index 7 du
+	 *         {@link GridPane}, représentant le département.
+	 */
 	public String getTextCounty() {
 		return ((TextField) gridPane.getChildren().get(7)).getText();
-		
+
 	}
 
+	/**
+	 * @return le texte du champ saisi par l'utilisateur à l'index 10 du
+	 *         {@link GridPane}, représentant la formation suivie.
+	 */
 	public String getTextCursus() {
 		return ((TextField) gridPane.getChildren().get(10)).getText();
-		
+
 	}
 
+	/**
+	 * @return le texte du champ saisi par l'utilisateur à l'index 13 du
+	 *         {@link GridPane}, représentant l'année.
+	 */
 	public String getTextYearIn() {
 		return ((TextField) gridPane.getChildren().get(13)).getText();
 	}
 
 	/**
-	 * @return the familyNameErrorLabel
+	 * @return le familyNameErrorLabel
 	 */
 	public Label getFamilyNameErrorLabel() {
 		return familyNameErrorLabel;
 	}
 
 	/**
-	 * @param familyNameErrorLabel the familyNameErrorLabel to set
+	 * @param familyNameErrorLabel le familyNameErrorLabel à définir
 	 */
 	public void setFamilyNameErrorLabel(Label familyNameErrorLabel) {
 		this.familyNameErrorLabel = familyNameErrorLabel;
 	}
 
 	/**
-	 * @return the firstNameErrorLabel
+	 * @return le firstNameErrorLabel
 	 */
 	public Label getFirstNameErrorLabel() {
 		return firstNameErrorLabel;
 	}
 
 	/**
-	 * @param firstNameErrorLabel the firstNameErrorLabel to set
+	 * @param firstNameErrorLabel le firstNameErrorLabel à définir
 	 */
 	public void setFirstNameErrorLabel(Label firstNameErrorLabel) {
 		this.firstNameErrorLabel = firstNameErrorLabel;
 	}
 
 	/**
-	 * @return the countyErrorLabel
+	 * @return le countyErrorLabel
 	 */
 	public Label getCountyErrorLabel() {
 		return countyErrorLabel;
 	}
 
 	/**
-	 * @param countyErrorLabel the countyErrorLabel to set
+	 * @param countyErrorLabel le countyErrorLabel à définir
 	 */
 	public void setCountyErrorLabel(Label countyErrorLabel) {
 		this.countyErrorLabel = countyErrorLabel;
 	}
 
 	/**
-	 * @return the cursusErrorLabel
+	 * @return le cursusErrorLabel
 	 */
 	public Label getCursusErrorLabel() {
 		return cursusErrorLabel;
 	}
 
 	/**
-	 * @param cursusErrorLabel the cursusErrorLabel to set
+	 * @param cursusErrorLabel le cursusErrorLabel à définir
 	 */
 	public void setCursusErrorLabel(Label cursusErrorLabel) {
 		this.cursusErrorLabel = cursusErrorLabel;
 	}
 
 	/**
-	 * @return the yearInErrorLabel
+	 * @return le yearInErrorLabel
 	 */
 	public Label getYearInErrorLabel() {
 		return yearInErrorLabel;
 	}
 
 	/**
-	 * @param yearInErrorLabel the yearInErrorLabel to set
+	 * @param yearInErrorLabel le yearInErrorLabel à définir
 	 */
 	public void setYearInErrorLabel(Label yearInErrorLabel) {
 		this.yearInErrorLabel = yearInErrorLabel;

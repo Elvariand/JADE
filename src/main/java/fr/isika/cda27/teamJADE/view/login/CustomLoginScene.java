@@ -33,6 +33,16 @@ public class CustomLoginScene extends AnchorPane {
 	private MemberDao memberDao = new MemberDao();
 	private final int maxChars = 30;
 
+	/**
+	 * Crée la scène de connexion de l'application.
+	 * 
+	 * Lorsqu'un utilisateur entre des informations dans les champs, la méthode
+	 * vérifie si les longueurs des champs dépassent la longueur maximale autorisée
+	 * et ajuste le texte en conséquence. Les erreurs sont affichées si les
+	 * informations de connexion sont invalides ou si la longueur des champs dépasse
+	 * les limites.
+	 *
+	 */
 	public CustomLoginScene() {
 
 		// Police de texte
@@ -111,49 +121,44 @@ public class CustomLoginScene extends AnchorPane {
 		hboxErrorChars.getChildren().addAll(imageAttention, labelErrorChars);
 		hboxErrorChars.setAlignment(Pos.CENTER_LEFT);
 		hboxErrorChars.setVisible(false);
-		
-		aliasField.setHboxError(hboxErrorChars); 
-		
-		// Ajout des éléments 
+
+		aliasField.setHboxError(hboxErrorChars);
+
+		// Ajout des éléments
 		vboxAlias.getChildren().addAll(labelAlias, aliasField);
 		vboxPassword.getChildren().addAll(labelPassword, passwordField);
-	
-		
-		
-		
-		
-		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le mot de passe et le nom d'utilisateur
+
+		// L'utilisateur ne peut pas saisir plus de 30 caractères pour le mot de passe
+		// et le nom d'utilisateur
 		passwordField.textProperty().addListener(new ChangeListener<String>() {
 			@Override
 			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
 				if (newValue.length() > maxChars) {
 					passwordField.setText(newValue.substring(0, maxChars));
 				}
-				checkIfError(hboxErrorChars, aliasField.getText(), newValue); 
+				checkIfError(hboxErrorChars, aliasField.getText(), newValue);
 			}
 		});
 		aliasField.textProperty().addListener(new ChangeListener<String>() {
-		    @Override
-		    public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
-		        if (newValue.length() > maxChars) {
-		            aliasField.setText(newValue.substring(0, maxChars)); 
-		        }
-		        checkIfError(hboxErrorChars, newValue, passwordField.getText()); 
-		    }
+			@Override
+			public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+				if (newValue.length() > maxChars) {
+					aliasField.setText(newValue.substring(0, maxChars));
+				}
+				checkIfError(hboxErrorChars, newValue, passwordField.getText());
+			}
 		});
 
-
-		
 		// Création bouton Valider
 		CustomButton btnValider = new CustomButton("Valider");
-		
+
 		// Gestionnaire d'évènement pour le bouton Valider
 		btnValider.setOnAction(event -> handleLogin(aliasField.getText(), passwordField.getText(), hboxInvalide));
-		
+
 		vboxRight.setAlignment(Pos.CENTER);
 		vboxRight.getChildren().addAll(labelConnexion, hboxInvalide, vboxAlias, vboxPassword, hboxErrorChars,
 				btnValider);
-		
+
 		// Valider via la touche Entrée, après avoir renseigné le password !
 		passwordField.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {
@@ -161,24 +166,43 @@ public class CustomLoginScene extends AnchorPane {
 			}
 		});
 
-		
 		this.getChildren().addAll(fondConnexion, vboxRight);
 
 		AnchorPane.setTopAnchor(vboxRight, 30.0);
 		AnchorPane.setRightAnchor(vboxRight, 30.0);
 	}
 
+	/**
+	 * Vérifie si le nom d'utilisateur ou le mot de passe dépassent la longueur
+	 * maximale autorisée et met à jour la visibilité d'un conteneur d'erreurs en
+	 * conséquence.
+	 * 
+	 * @param hboxErrorChars Le conteneur d'erreurs dont la visibilité sera modifiée
+	 *                       en fonction de la longueur du nom d'utilisateur et du
+	 *                       mot de passe.
+	 * @param alias          Le nom d'utilisateur dont la longueur sera vérifiée.
+	 * @param password       Le mot de passe dont la longueur sera vérifiée.
+	 */
 	public void checkIfError(HBox hboxErrorChars, String alias, String password) {
-	    boolean aliasTooLong = alias.length() > maxChars-1;
-	    boolean passwordTooLong = password.length() > maxChars-1;
+		boolean aliasTooLong = alias.length() > maxChars - 1;
+		boolean passwordTooLong = password.length() > maxChars - 1;
 
-	    if (aliasTooLong || passwordTooLong) {
-	        hboxErrorChars.setVisible(true);
-	    } else {
-	        hboxErrorChars.setVisible(false);
-	    }
+		if (aliasTooLong || passwordTooLong) {
+			hboxErrorChars.setVisible(true);
+		} else {
+			hboxErrorChars.setVisible(false);
+		}
 	}
-	
+
+	/**
+	 * Gère le processus de connexion en vérifiant les informations d'identification
+	 * fournies et en mettant à jour l'interface utilisateur en conséquence.
+	 *
+	 * @param alias        Le nom d'utilisateur fourni pour la connexion.
+	 * @param password     Le mot de passe fourni pour la connexion.
+	 * @param hboxInvalide Le conteneur d'erreurs à afficher si les informations de
+	 *                     connexion sont invalides.
+	 */
 	public void handleLogin(String alias, String password, HBox hboxInvalide) {
 		Member member = memberDao.findByAlias(alias, password);
 		System.out.println(member);
@@ -189,12 +213,12 @@ public class CustomLoginScene extends AnchorPane {
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		} else {
-			hboxInvalide.setVisible(true); 
+			hboxInvalide.setVisible(true);
 			FadeTransition fadeOut = new FadeTransition(Duration.seconds(3), hboxInvalide);
 			fadeOut.setFromValue(1);
-		    fadeOut.setToValue(0);
-		    fadeOut.setOnFinished(event -> hboxInvalide.setVisible(false));
-	        fadeOut.play();
+			fadeOut.setToValue(0);
+			fadeOut.setOnFinished(event -> hboxInvalide.setVisible(false));
+			fadeOut.play();
 		}
 	}
 

@@ -3,7 +3,6 @@ package fr.isika.cda27.teamJADE.model;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -15,7 +14,7 @@ public class InternDao extends TreeNodeDao<Intern>{
 
 	/**
 	 * Lit le fichier .DON et ajoute tous les stagiaires s'y trouvant dans l'arbre
-	 * binaire
+	 * binaire. Les stagiaires sont ajoutés à l'arbre binaire après chaque ligne marquée par un astérisque (*).
 	 */
 	public void addFromDon() {
 
@@ -104,6 +103,7 @@ public class InternDao extends TreeNodeDao<Intern>{
 	}
 
 	/**
+	 *  Ajoute un objet {@code Intern} à la fin du fichier .DON.
 	 * @param internToAdd L'objet de type Intern à ajouter à la fin du fichier .DON
 	 */
 	public void addToDon(Intern internToAdd) {
@@ -124,7 +124,15 @@ public class InternDao extends TreeNodeDao<Intern>{
 
 
 	/**
-	 * @param memberToAdd L'objet type Member à ajouter dans le fichier binaire
+	 * Écrit les champs spécifiques d'un objet {@code Intern} dans un fichier binaire.
+     * Les champs sont écrits dans l'ordre suivant :
+     * - Nom de famille
+     * - Prénom
+     * - Le numéro de département
+     * - Le nom de la formation
+     * - L'année d'entrée en formation
+     * 
+	 * @param internToAdd L'objet {@code Intern} à écrire dans le fichier binaire.
 	 * @param raf Le RandomAccessFile 
 	 */
 	@Override
@@ -141,7 +149,8 @@ public class InternDao extends TreeNodeDao<Intern>{
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
+	 * Lit un objet {@code Intern} à partir du fichier binaire à la position du curseur spécifiée.
+     * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
 	 *         le fichier binaire.
@@ -200,7 +209,15 @@ public class InternDao extends TreeNodeDao<Intern>{
 	}
 
 	/**
-	 * Lit le fichier binaire et l'affiche dans la console
+	 * Lit le fichier binaire et l'affiche dans la console.
+	 * Les informations affichées incluent :
+     * - Index du noeud
+     * - Nom de famille
+     * - Prénom
+     * - Le numéro de département
+     * - Le nom de la formation
+     * - L'année d'entrée en formation
+     * - Index des enfants gauche, droit et jumeau
 	 */
 	public void readBinary() {
 		try {
@@ -231,9 +248,10 @@ public class InternDao extends TreeNodeDao<Intern>{
 	
 	
 	/**
+	 * Lit la clé (nom de famille) d'un objet {@code Intern} à partir du fichier binaire à la position du curseur spécifiée.
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
-	 * @return
+	 * @return La clé (nom de famille) lue à partir du fichier binaire.
 	 */
 	public String readKeyFromBinary(long cursorPosition) {
 		String familyName = "";
@@ -261,23 +279,40 @@ public class InternDao extends TreeNodeDao<Intern>{
 		}
 		return familyName.trim();
 	}
-
+	/**
+	 * Retourne la taille du nœud utilisé dans la structure de données.
+	 * 
+	 * @return La taille du nœud pour les objets {@code Intern}.
+	 */
 	@Override
 	protected int getNodeSize() {
 		return INTERN_NODE_SIZE;
 	}
-
+	/**
+	 * Retourne la clé associée à un objet {@code Intern}.
+	 * 
+	 * @param intern L'objet {@code Intern} dont la clé doit être extraite.
+	 * @return La clé associée à l'objet {@code Intern}, qui est le nom de famille sans espaces.
+	 */
 	@Override
 	protected String getKey(Intern intern) {
 		return intern.getFamilyName().trim();
 	}
 
-
+	/**
+	 * Retourne la taille de l'objet {@code Intern} en mémoire.
+	 * 
+	 * @return La taille de l'objet {@code Intern} en mémoire.
+	 */
 	@Override
 	protected int getObjectSize() {
 		return INTERN_SIZE;
 	}
-
+	/**
+	 * Retourne le chemin du fichier binaire associé aux objets {@code Intern}.
+	 * 
+	 * @return Le chemin du fichier binaire pour les objets {@code Intern}.
+	 */
 	@Override
 	protected String getBinFile() {
 		return App.getInternBinFile();

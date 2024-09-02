@@ -1,30 +1,14 @@
 package fr.isika.cda27.teamJADE.view.mainMember;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.BTN_BOX_HEIGHT;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.BTN_BOX_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.SPACE_BETWEEN_BTNS;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.TITLE_HEIGHT;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.TITLE_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.TOX_VBOX;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.VBOX_HEIGHT;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.VBOX_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_BLACK;
-
-import fr.isika.cda27.teamJADE.utilz.CustomButton;
 import fr.isika.cda27.teamJADE.utilz.CustomRadioButton;
 import fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues;
-import fr.isika.cda27.teamJADE.view.login.VisiblePasswordFieldSkin;
 import fr.isika.cda27.teamJADE.view.mainIntern.RepetitivePane;
-import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
-import javafx.scene.text.Font;
 
 public class MembersRepetitivePane extends RepetitivePane {
 //	private PasswordField passwordField;
@@ -42,9 +26,9 @@ public class MembersRepetitivePane extends RepetitivePane {
 		this.aliasErrorLabel = (Label) gridPane.getChildren().get(8);
 		this.emailErrorLabel = (Label) gridPane.getChildren().get(11);
 		this.passwordErrorLabel = (Label) gridPane.getChildren().get(16);
-		
+
 		super.getChildren().set(1, this.gridPane);
-	
+
 	}
 
 	/**
@@ -168,11 +152,11 @@ public class MembersRepetitivePane extends RepetitivePane {
 	public PasswordField getPasswordField() {
 		return ((PasswordField) gridPane.getChildren().get(15));
 	}
-	
+
 	public String getTextPasswordField() {
 		return ((PasswordField) gridPane.getChildren().get(15)).getText();
 	}
-	
+
 	public boolean isAdminSelected() {
 		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		if (radioButton.isTrueBtnSelected()) {
@@ -191,11 +175,6 @@ public class MembersRepetitivePane extends RepetitivePane {
 		}
 	}
 
-//	public CustomRadioButton getRadioButton() {
-//		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
-//		return radioButton;
-//	}
-	
 	public void setRadioButton(Boolean isAdmin) {
 		CustomRadioButton radioButton = (CustomRadioButton) (this.gridPane.getChildren().get(13));
 		if (isAdmin) {
@@ -210,9 +189,9 @@ public class MembersRepetitivePane extends RepetitivePane {
 		radioButton.getTrueBtn().setSelected(false);
 		radioButton.getFalseBtn().setSelected(false);
 	}
-	
+
 	public CustomRadioButton getCustomRadioButton() {
-		return(CustomRadioButton) (this.gridPane.getChildren().get(13));
+		return (CustomRadioButton) (this.gridPane.getChildren().get(13));
 	}
 
 	/**
@@ -271,6 +250,4 @@ public class MembersRepetitivePane extends RepetitivePane {
 		this.passwordErrorLabel = passwordErrorLabel;
 	}
 
-	
-	
 }

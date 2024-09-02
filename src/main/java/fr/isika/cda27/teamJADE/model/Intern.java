@@ -1,6 +1,7 @@
 package fr.isika.cda27.teamJADE.model;
 
 import java.util.Objects;
+import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
 
 public class Intern {
 
@@ -9,17 +10,12 @@ public class Intern {
 	private int county; // 4 octets
 	private String cursus; // 20
 	private int yearIn; // 4 octets
-	private static final int OCTETS_TOOK_BY_CHAR = 2;
-	private static final int MAX_CHAR_NAMES = 31;
-	private static final int MAX_CHAR_COUNTY = 3;
-	private static final int MAX_CHAR_CURSUS = 10;
-	private static final int MAX_CHAR_YEARIN = 4;
-	private static final int SIZE_INDEX = 4;
-	private static final int SIZE_INTERN = (MAX_CHAR_NAMES + MAX_CHAR_NAMES + MAX_CHAR_COUNTY + MAX_CHAR_CURSUS + MAX_CHAR_YEARIN) * OCTETS_TOOK_BY_CHAR;
-	private static final int SIZE_NODE = SIZE_INTERN + SIZE_INDEX + SIZE_INDEX + SIZE_INDEX;
+
 	
 	
 	/**
+	 * Crée un objet Stagiaire
+	 * 
 	 * @param familyName Le nom de famille du Stagiaire
 	 * @param firstName Le prénom du Stagiaire
 	 * @param county Le numéro de département du Stagiaire
@@ -35,77 +31,77 @@ public class Intern {
 	}
 		
 	/**
-	 * @return the familyName
+	 * @return Le nom de famille
 	 */
 	public String getFamilyName() {
 		return familyName;
 	}
 
 	/**
-	 * @param familyName the familyName to set
+	 * @param familyName Le nom de famille à définir
 	 */
 	public void setFamilyName(String familyName) {
 		this.familyName = familyName;
 	}
 
 	/**
-	 * @return the firstName
+	 * @return Le prénom
 	 */
 	public String getFirstName() {
 		return firstName;
 	}
 
 	/**
-	 * @param firstName the firstName to set
+	 * @param firstName Le prénom à définir
 	 */
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
 	}
 
 	/**
-	 * @return the county
+	 * @return Le numéro de département
 	 */
 	public int getCounty() {
 		return county;
 	}
 
 	/**
-	 * @return the county in String
+	 * @return Le numéro de département en chaine de caractère
 	 */
 	public String getCountyString() {
 		return Integer.toString(county);
 	}
 	
 	/**
-	 * @param county the county to set
+	 * @param county Le numéro de département à définir
 	 */
 	public void setCounty(int county) {
 		this.county = county;
 	}
 
 	/**
-	 * @return the cursus
+	 * @return Le nom de la formation
 	 */
 	public String getCursus() {
 		return cursus;
 	}
 
 	/**
-	 * @param cursus the cursus to set
+	 * @param cursus Le nom de la formation à définir
 	 */
 	public void setCursus(String cursus) {
 		this.cursus = cursus;
 	}
 
 	/**
-	 * @return the yearIn
+	 * @return L'année d'entrée en formation
 	 */
 	public int getYearIn() {
 		return yearIn;
 	}
 
 	/**
-	 * @return the yearIn in String
+	 * @return L'année d'entrée en formation en chaine de caractère
 	 */
 	public String getYearInString() {
 		return Integer.toString(yearIn);
@@ -113,7 +109,7 @@ public class Intern {
 	
 	
 	/**
-	 * @param yearIn the yearIn to set
+	 * @param yearIn  L'année d'entrée en formation à définir
 	 */
 	public void setYearIn(int yearIn) {
 		this.yearIn = yearIn;
@@ -152,12 +148,27 @@ public class Intern {
 		return builder.toString();
 	}
 
-	
+	/**
+	 * Génère un code de hachage pour cet objet basé sur ses champs. Le code de hachage est 
+	 * calculé à l'aide de {@link java.util.Objects#hash(Object...)} qui combine 
+	 * ces champs pour produire un résultat entier unique, garantissant que les objets 
+	 * ayant les mêmes valeurs de champs auront le même code de hachage.
+	 *
+	 * @return un entier représentant le code de hachage de cet objet.
+	 * @see java.util.Objects#hash(Object...)
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(county, cursus, familyName, firstName, yearIn);
 	}
-
+	/**
+	 * Vérifie si cet objet est égal à un autre objet. Deux objets de type 
+	 * {@code Intern} sont considérés égaux s'ils ont les mêmes valeurs pour les 
+	 * champs `county`, `cursus`, `familyName`, `firstName` et `yearIn`.
+	 *
+	 * @param obj L'objet à comparer avec cet objet.
+	 * @return {@code true} si les objets sont égaux, sinon {@code false}.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -173,7 +184,13 @@ public class Intern {
 	}
 
 
-
+	/**
+	 * Obtient le nom de famille sous une forme longue, avec un formatage pour atteindre une longueur
+	 * de caractères spécifiée.
+	 * @return le nom de famille formaté pour être exactement de longueur {@code MAX_CHAR_NAMES}. 
+	 *         Si le nom de famille original est plus court, des espaces sont ajoutés à la fin. Si le nom de famille original est plus long,
+	 *         il est tronqué.
+	 */
 	public String getFamilyNameLong() {
 		String familyNameLong = this.familyName;
 		if (familyNameLong.length() < MAX_CHAR_NAMES) {
@@ -186,7 +203,13 @@ public class Intern {
 		}
 		return familyNameLong;
 	}
-	
+	/**
+	 * Obtient le prénom sous une forme longue, avec un formatage pour atteindre une longueur
+	 * de caractères spécifiée.
+	 * @return le prénom formaté pour être exactement de longueur {@code MAX_CHAR_NAMES}. 
+	 *         Si le prénom original est plus court, des espaces sont ajoutés à la fin. Si le prénom original est plus long,
+	 *         il est tronqué.
+	 */
 	public String getFirstNameLong() {
 		String firstNameLong = this.firstName;
 		if (firstNameLong.length() < MAX_CHAR_NAMES) {
@@ -201,19 +224,14 @@ public class Intern {
 	}
 	
 	
-//	public String getCountyLong() {
-//		String countyLong = this.county;
-//		if (countyLong.length() < MAX_CHAR_COUNTY) {
-//			
-//			for (int i = this.county.length(); i < MAX_CHAR_COUNTY; i++) {
-//				countyLong += " ";
-//			}
-//		} else {
-//			countyLong = countyLong.substring(0,MAX_CHAR_COUNTY);
-//		}
-//		return countyLong;
-//	}
-	
+	/**
+	 * Obtient le nom de la formation sous une forme longue, en formatant le texte pour atteindre une longueur
+	 * de caractères spécifiée.
+	 *  
+	 * @return Le nom de la formation formaté pour être exactement de longueur {@code MAX_CHAR_CURSUS}. 
+	 *         Si le nom de la formation original est plus court, des espaces sont ajoutés à la fin. Si le nom de la formation original est plus long,
+	 *         il est tronqué à la longueur maximale.
+	 */
 	public String getCursusLong() {
 		String cursusLong = this.cursus;
 		if (cursusLong.length() < MAX_CHAR_CURSUS) {

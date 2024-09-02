@@ -15,7 +15,12 @@ public class CustomPasswordField extends PasswordField {
 
 	private int MaxChars = 30;
 	private HBox hboxError;
-
+	/**
+	 * Crée le champ du mot de passe.
+	 * 
+	 * Si l'utilisateur tente de saisir plus de caractères, le texte est tronqué et une zone d'erreur 
+	 * (si disponible) est rendue visible.
+	 */
 	public CustomPasswordField() {
 
 		this.setPrefHeight(TF_HEIGHT);

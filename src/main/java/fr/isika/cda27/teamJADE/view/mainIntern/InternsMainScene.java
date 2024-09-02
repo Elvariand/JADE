@@ -2,10 +2,8 @@ package fr.isika.cda27.teamJADE.view.mainIntern;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
-import com.itextpdf.text.log.SysoCounter;
 import fr.isika.cda27.teamJADE.model.Intern;
 import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
@@ -14,16 +12,12 @@ import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
-import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
 import fr.isika.cda27.teamJADE.view.mainMember.MembersRepetitivePane;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -31,23 +25,14 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -71,6 +56,15 @@ public class InternsMainScene extends AnchorPane {
 	private Intern selected;
 	private boolean showAdminView;
 
+	/**
+	 * Crée une instance de `CustomMainScene` en configurant l'interface utilisateur
+	 * principale de l'application. Configure les actions des boutons pour gérer les
+	 * événements comme les clics et les transitions.
+	 *
+	 * @param connectedMember Le membre actuellement connecté. Utilisé pour
+	 *                        déterminer si la vue administrateur doit être
+	 *                        affichée.
+	 */
 	public InternsMainScene(Member connectedMember) {
 
 		boolean showAdminView = connectedMember.isAdmin();
@@ -81,7 +75,7 @@ public class InternsMainScene extends AnchorPane {
 		// police
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
-		// StackPane qui va contenir la TableView et menuHbox
+		// StackPane qui va contenir la TableView, la menuHbox et la StackPane Help
 		StackPane bgStackPane = new StackPane();
 		bgStackPane.setPrefSize(1280, 720);
 		bgStackPane.setStyle("-fx-background-color: #272727;");
@@ -448,6 +442,16 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Ajoute un comportement à un champ de texte personnalisé
+	 * ({@link CustomTextField}) pour vérifier sa validité à chaque saisie de
+	 * l'utilisateur en fonction d'un type spécifique.Si un type non reconnu est
+	 * fourni, un message d'erreur est affiché dans la console.
+	 * 
+	 * @param tf    le champ de texte personnalisé à surveiller
+	 * @param error le label utilisé pour afficher les messages d'erreur
+	 * @param type  le type de validation à appliquer ("name", "cursus", ou "int")
+	 */
 	private void actionOnTyping(RepetitivePane pane) {
 		Label[] paneErrorLabels = this.getPaneErrorLabel(pane);
 		TextField[] paneTextFields = new TextField[6];
@@ -557,6 +561,17 @@ public class InternsMainScene extends AnchorPane {
 		}
 	}
 
+	/**
+	 * Récupère les informations saisies dans les différents champs de texte d'un
+	 * {@link RepetitivePane} et les retourne sous forme de tableau de chaînes de
+	 * caractères.
+	 * 
+	 * @param Pane L'objet {@link RepetitivePane} contenant les champs de texte à
+	 *             extraire
+	 * @return Un tableau de chaînes de caractères contenant les valeurs des champs
+	 *         de texte dans l'ordre suivant : nom de famille, prénom, département,
+	 *         formation suivie, année d'entrée
+	 */
 	private String[] grabInfos(RepetitivePane Pane) {
 		// on récupère tous les textfield
 		String familyName = Pane.getTextFamilyName().trim();
@@ -569,6 +584,14 @@ public class InternsMainScene extends AnchorPane {
 		return data;
 	}
 
+	/**
+	 * Actualise le {@link RepetitivePane} spécifié en mettant à jour ses différents
+	 * panneaux de grille. Cette méthode appelle la méthode {@link #refresh(String)}
+	 * pour chaque panneau de grille associé au {@code RepetitivePane} fourni.
+	 * 
+	 * @param pane L'instance de {@link RepetitivePane} dont les panneaux de grille
+	 *             doivent être actualisés. Ne doit pas être null.
+	 */
 	private void refreshPane(RepetitivePane pane) {
 		refresh(pane.getGridPaneFamilyName());
 		refresh(pane.getGridPaneFirstName());
@@ -577,18 +600,41 @@ public class InternsMainScene extends AnchorPane {
 		refresh(pane.getGridPaneYearIn());
 	}
 
+	/**
+	 * Retourne un tableau de champs de texte associés à l'objet `RepetitivePane`.
+	 *
+	 * @param pane L'objet `RepetitivePane` dont les champs de texte doivent être
+	 *             récupérés. Cet objet ne doit pas être {@code null}.
+	 * @return Un tableau de champs de texte associés au `RepetitivePane`.
+	 */
 	private TextField[] getPaneTextField(RepetitivePane pane) {
 		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneFirstName(), pane.getGridPaneCounty(),
 				pane.getGridPaneCursus(), pane.getGridPaneYearIn() };
 		return tf;
 	}
 
+	/**
+	 * Retourne un tableau de champs de texte associés à un objet
+	 * `MembersRepetitivePane`.
+	 *
+	 * @param pane L'objet `MembersRepetitivePane` dont les champs de texte doivent
+	 *             être récupérés. Cet objet ne doit pas être {@code null}.
+	 * @return Un tableau de champs de texte associés au `MembersRepetitivePane`.
+	 */
 	private TextField[] getMemberPaneTextField(MembersRepetitivePane pane) {
 		TextField[] tf = { pane.getGridPaneFamilyName(), pane.getGridPaneName(), pane.getGridPaneAlias(),
 				pane.getGridPaneEmail(), pane.getGridPaneEmail(), pane.getPasswordField() };
 		return tf;
 	}
 
+	/**
+	 * Retourne un tableau d'étiquettes d'erreur associées à un objet
+	 * `RepetitivePane`.
+	 *
+	 * @param pane L'objet `RepetitivePane` dont les étiquettes d'erreur doivent
+	 *             être récupérées. Cet objet ne doit pas être {@code null}.
+	 * @return Un tableau d'étiquettes d'erreur associées au `RepetitivePane`.
+	 */
 	private Label[] getPaneErrorLabel(RepetitivePane pane) {
 
 		Label[] labels = { pane.getFamilyNameErrorLabel(), pane.getFirstNameErrorLabel(), pane.getCountyErrorLabel(),
@@ -596,17 +642,34 @@ public class InternsMainScene extends AnchorPane {
 		return labels;
 	}
 
+	/**
+	 * Réinitialise le texte d'un champ de texte en le vidant.
+	 *
+	 * @param textField Le champ de texte dont le texte doit être réinitialisé. Cet
+	 *                  objet ne doit pas être {@code null}.
+	 */
 	private void refresh(TextField textField) {
 		textField.setText("");
 	}
 
+	/**
+	 * Configure l'action du bouton cliqué dans une interface utilisateur en
+	 * modifiant le contenu affiché et en ajustant l'apparence des boutons.
+	 * 
+	 * @param buttonClicked     Le bouton qui a été cliqué. Ne doit pas être null.
+	 * @param mainContentToShow Le contenu à afficher dans la HBox. Ne doit pas être
+	 *                          null.
+	 * @param menuHbox          La {@code HBox} dont le contenu sera modifié. Ne
+	 *                          doit pas être null.
+	 * @param otherButtons      La liste des autres boutons à modifier. Ne doit pas
+	 *                          être null. et doit contenir au moins 7 éléments.
+	 */
 	public void configureButtonAction(StackPaneMenubar buttonClicked, RepetitivePane mainContentToShow, HBox menuHbox,
 			List<StackPaneMenubar> listButtons, boolean showAdminView) {
 
 		List<StackPaneMenubar> otherButtons = new ArrayList<StackPaneMenubar>();
 		otherButtons.addAll(listButtons);
 		otherButtons.remove(buttonClicked);
-		System.out.println(otherButtons);
 
 		buttonClicked.getButton().setOnAction(event -> {
 
@@ -667,6 +730,13 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Ferme le menu en ajustant la taille et la visibilité des boutons dans le
+	 * panneau de menu.
+	 * 
+	 * @param menubarVBox le conteneur {@link VBox} contenant les boutons du menu à
+	 *                    fermer. Ne doit pas être null.
+	 */
 	public void closeMenu(VBox menubarVBox, boolean showAdminView) {
 
 		StackPaneMenubar closeBtn = (StackPaneMenubar) menubarVBox.getChildren().get(0);
@@ -729,6 +799,13 @@ public class InternsMainScene extends AnchorPane {
 		this.observableInterns.setAll(internDao.sortView(0, suppr));
 	}
 
+	/**
+	 * Réduit la taille et ajuste les propriétés visuelles du bouton représenté par
+	 * l'objet {@link StackPaneMenubar}.
+	 * 
+	 * @param stackPaneMenubar L'objet {@link StackPaneMenubar} dont la taille et
+	 *                         les propriétés visuelles doivent être modifiées.
+	 */
 	private void setSmaller(StackPaneMenubar stackPaneMenubar) {
 		changeToOrange(stackPaneMenubar);
 
@@ -745,6 +822,13 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Ajuste la taille et l'apparence du `StackPaneMenubar` pour l'utilisateur non
+	 * administrateur (bouton plus petit).
+	 *
+	 * @param stackPaneMenubar L'instance de `StackPaneMenubar` qui sera modifiée.
+	 *                         Cet objet ne doit pas être {@code null}.
+	 */
 	private void setSmallerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
 		changeToOrangeNotAdminCase(stackPaneMenubar);
 
@@ -761,6 +845,13 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Agrandit la taille et ajuste les propriétés visuelles du bouton représenté
+	 * par l'objet {@link StackPaneMenubar}.
+	 * 
+	 * @param stackPaneMenubar l'objet {@link StackPaneMenubar} dont la taille et
+	 *                         les propriétés visuelles doivent être modifiées.
+	 */
 	private void setLarger(StackPaneMenubar stackPaneMenubar) {
 		// on change la taille du bouton à 300
 		stackPaneMenubar.getButton().setPrefSize(BTN_LARGE_WIDTH, BTN_HEIGHT);
@@ -776,6 +867,13 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Ajuste la taille et l'apparence du `StackPaneMenubar` pour un utilisateur non
+	 * administrateur (bouton plus grand).
+	 *
+	 * @param stackPaneMenubar L'instance de `StackPaneMenubar` qui sera modifiée.
+	 *                         Cet objet ne doit pas être {@code null}.
+	 */
 	private void setLargerNotAdminCase(StackPaneMenubar stackPaneMenubar) {
 		// on change la taille du bouton à 300
 		stackPaneMenubar.getButton().setPrefSize(BTN_LARGE_WIDTH, BTN_HEIGHT);
@@ -791,6 +889,13 @@ public class InternsMainScene extends AnchorPane {
 
 	}
 
+	/**
+	 * Ajoute un effet de survol au bouton représenté par l'objet
+	 * {@link StackPaneMenubar}.
+	 * 
+	 * @param buttonSP L'objet {@link StackPaneMenubar} auquel l'effet de survol
+	 *                 doit être appliqué. Ne doit pas être {@code null}.
+	 */
 	private void addHoverEffect(StackPaneMenubar buttonSP) {
 
 		// Variables pour stocker les couleurs
@@ -808,8 +913,6 @@ public class InternsMainScene extends AnchorPane {
 					((SVGPath) buttonSP.getChildren().get(0)).setFill(HOVER_ORANGE_COLOR);
 				} else if (currentColor.equals(GREY_COLOR)) {
 					((SVGPath) buttonSP.getChildren().get(0)).setFill(HOVER_GREY_COLOR);
-				} else {
-					System.out.println("couleur : " + initialColorHex[0]);
 				}
 			}
 		});
@@ -827,13 +930,21 @@ public class InternsMainScene extends AnchorPane {
 					((SVGPath) buttonSP.getChildren().get(0)).setFill(ORANGE_COLOR);
 				} else if (initialColorHex[0].equals(STRING_GREY_COLOR)) {
 					((SVGPath) buttonSP.getChildren().get(0)).setFill(GREY_COLOR);
-				} else {
-					System.out.println("couleur : " + initialColorHex[0]);
+
 				}
 			}
 		});
 	}
 
+	/**
+	 * Crée et configure une {@link TableView} pour afficher une liste filtrée
+	 * d'internes.
+	 * 
+	 * @param filteredInterns la liste filtrée des internes à afficher dans la
+	 *                        table. Ne doit pas être {@code null}.
+	 * @return une instance de {@link TableView} configurée avec les colonnes et les
+	 *         données fournies.
+	 */
 	private TableView<Intern> createTableView(FilteredList<Intern> filteredInterns) {
 
 		TableView<Intern> tableView = new TableView<>(filteredInterns);
@@ -849,7 +960,7 @@ public class InternsMainScene extends AnchorPane {
 		column2.setCellValueFactory(new PropertyValueFactory<>("firstName"));
 		column2.setPrefWidth(columnWidth);
 
-		TableColumn<Intern, String> column3 = new TableColumn<>("Région");
+		TableColumn<Intern, String> column3 = new TableColumn<>("Département");
 		column3.setCellValueFactory(new PropertyValueFactory<>("county"));
 		column3.setPrefWidth(columnWidth);
 
@@ -857,7 +968,7 @@ public class InternsMainScene extends AnchorPane {
 		column4.setCellValueFactory(new PropertyValueFactory<>("cursus"));
 		column4.setPrefWidth(columnWidth);
 
-		TableColumn<Intern, String> column5 = new TableColumn<>("Année");
+		TableColumn<Intern, String> column5 = new TableColumn<>("Année d'entrée");
 		column5.setCellValueFactory(new PropertyValueFactory<>("yearIn"));
 		column5.setPrefWidth(columnWidth);
 
@@ -867,8 +978,13 @@ public class InternsMainScene extends AnchorPane {
 		return tableView;
 	}
 
-	/* ---------------------------------------------------------------- */
-
+	/**
+	 * Change la couleur du bouton représenté par l'objet {@link StackPaneMenubar}
+	 * en orange.
+	 * 
+	 * @param button l'objet {@link StackPaneMenubar} dont la couleur doit être
+	 *               changée. Ne doit pas être {@code null}.
+	 */
 	private void changeToOrange(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(0), ORANGE_COLOR);
@@ -878,6 +994,13 @@ public class InternsMainScene extends AnchorPane {
 		button.getBtnGreyImageView().setVisible(true);
 	}
 
+	/**
+	 * Change l'apparence du bouton pour un utilisateur non-administrateur en le
+	 * configurant avec une couleur orange.
+	 *
+	 * @param button L'instance de `StackPaneMenubar` dont l'apparence sera
+	 *               modifiée. Cet objet ne doit pas être {@code null}.
+	 */
 	private void changeToOrangeNotAdminCase(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(1), ORANGE_COLOR);
@@ -886,6 +1009,14 @@ public class InternsMainScene extends AnchorPane {
 		button.getBtnOrangeImageView().setVisible(false);
 		button.getBtnGreyImageView().setVisible(true);
 	}
+
+	/**
+	 * Change la couleur du bouton représenté par l'objet {@link StackPaneMenubar}
+	 * en gris.
+	 * 
+	 * @param button l'objet {@link StackPaneMenubar} dont la couleur doit être
+	 *               changée. Ne doit pas être {@code null}.
+	 */
 
 	private void changeToGrey(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
@@ -896,6 +1027,13 @@ public class InternsMainScene extends AnchorPane {
 		button.getBtnGreyImageView().setVisible(false);
 	}
 
+	/**
+	 * Modifie l'apparence du bouton pour un utilisateur non-administrateur en le
+	 * configurant avec une couleur grise.
+	 *
+	 * @param button L'instance de `StackPaneMenubar` dont l'apparence sera
+	 *               modifiée. Cet objet ne doit pas être {@code null}.
+	 */
 	private void changeToGreyNotAdminCase(StackPaneMenubar button) {
 		// on change la couleur du SVGPath
 		applyColorTransition((SVGPath) button.getChildren().get(1), GREY_COLOR);
@@ -905,6 +1043,14 @@ public class InternsMainScene extends AnchorPane {
 		button.getBtnGreyImageView().setVisible(false);
 	}
 
+	/**
+	 * Applique une transition de couleur à un objet {@link SVGPath}.
+	 * 
+	 * @param svgPath  l'objet {@link SVGPath} dont la couleur de remplissage doit
+	 *                 être animée. Ne doit pas être {@code null}.
+	 * @param newColor la nouvelle couleur vers laquelle la transition doit être
+	 *                 effectuée. Ne doit pas être {@code null}.
+	 */
 	private void applyColorTransition(SVGPath svgPath, Color newColor) {
 		Color initialColor = Color.web(getCurrentColor(svgPath));
 		Color finalColor = newColor;
@@ -916,6 +1062,18 @@ public class InternsMainScene extends AnchorPane {
 		timeline.play();
 	}
 
+	/**
+	 * Vérifie si tous les champs d'un {@link RepetitivePane} sont correctement
+	 * remplis.
+	 * 
+	 * @param scene L'objet {@link RepetitivePane} contenant les champs à vérifier.
+	 *              Ne doit pas être {@code null}.
+	 * @return Un tableau de booléens où chaque élément indique si le champ
+	 *         correspondant est correctement rempli. La première valeur vérifie le
+	 *         nom de famille, la deuxième vérifie le prénom, la troisième vérifie
+	 *         le départementadmin , la quatrième vérifie la formation suivie et la
+	 *         cinquième vérifie l'année d'entrée.
+	 */
 	private boolean[] areAllFieldsCorrectlyFilled(RepetitivePane scene) {
 
 		boolean[] tab = { isStringNameCorrect((CustomTextField) scene.getGridPaneFamilyName()),
@@ -926,41 +1084,150 @@ public class InternsMainScene extends AnchorPane {
 		return tab;
 	}
 
+	/**
+	 * Vérifie si le texte d'un champ {@link CustomTextField} est correctement
+	 * formaté pour un nom.
+	 * 
+	 * Cette méthode effectue les vérifications suivantes sur le texte du champ :
+	 * <ul>
+	 * <li>Le texte ne doit pas être vide ou uniquement composé d'espaces.</li>
+	 * <li>Le texte ne doit contenir que des lettres, des tirets et des
+	 * espaces.</li>
+	 * <li>La longueur du texte ne doit pas dépasser le nombre maximal de caractères
+	 * autorisé.</li>
+	 * </ul>
+	 * 
+	 * @param field le champ {@link CustomTextField} dont le texte doit être
+	 *              vérifié. Ne doit pas être {@code null}.
+	 * @return {@code true} si le texte du champ est valide selon les critères
+	 *         spécifiés ; {@code false} sinon.
+	 */
 	private boolean isStringNameCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
+	/**
+	 * Vérifie si le texte d'un champ {@link CustomTextField} est correctement
+	 * formaté pour un cursus.
+	 * 
+	 * Cette méthode effectue les vérifications suivantes sur le texte du champ :
+	 * <ul>
+	 * <li>Le texte ne doit pas être vide ou uniquement composé d'espaces.</li>
+	 * <li>Le texte ne doit contenir que des lettres, des tirets, des espaces et des
+	 * chiffres.</li>
+	 * <li>La longueur du texte ne doit pas dépasser le nombre maximal de caractères
+	 * autorisé.</li>
+	 * </ul>
+	 * 
+	 * @param field le champ {@link CustomTextField} dont le texte doit être
+	 *              vérifié. Ne doit pas être {@code null}.
+	 * @return {@code true} si le texte du champ est valide selon les critères
+	 *         spécifiés ; {@code false} sinon.
+	 */
 	private boolean isStringCursusCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s\\d]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
+	/**
+	 * Vérifie si le texte du champ de texte est un mot de passe valide.
+	 * <p>
+	 * Un mot de passe est considéré comme valide si les conditions suivantes sont
+	 * remplies :
+	 * <ul>
+	 * <li>La longueur du texte est supérieure à 4 caractères.</li>
+	 * <li>Le texte ne contient aucun des caractères suivants : {@code "},
+	 * {@code /}, {@code \}, {@code <}, {@code >}.</li>
+	 * <li>La longueur du texte ne dépasse pas le nombre maximal de caractères
+	 * autorisés par le champ.</li>
+	 * </ul>
+	 * </p>
+	 *
+	 * @param field Le champ de texte dont le texte doit être vérifié. Cet objet ne
+	 *              doit pas être {@code null}.
+	 * @return {@code true} si le texte du champ est un mot de passe valide,
+	 *         {@code false} sinon.
+	 */
 	private boolean isStringPasswordCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 4 || Pattern.compile("[\"\\/<>]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
+	/**
+	 * Vérifie si le texte d'un champ {@link CustomTextField} est correctement
+	 * formaté pour un entier.
+	 * 
+	 * Cette méthode effectue les vérifications suivantes sur le texte du champ :
+	 * <ul>
+	 * <li>Le texte ne doit pas être vide ou uniquement composé d'espaces.</li>
+	 * <li>Le texte ne doit contenir que des chiffres.</li>
+	 * <li>La longueur du texte ne doit pas dépasser le nombre maximal de caractères
+	 * autorisé.</li>
+	 * </ul>
+	 * 
+	 * @param field le champ {@link CustomTextField} dont le texte doit être
+	 *              vérifié. Ne doit pas être {@code null}.
+	 * @return {@code true} si le texte du champ est valide selon les critères
+	 *         spécifiés ; {@code false} sinon.
+	 */
 	private boolean isStringIntCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || Pattern.compile("[\\D]").matcher(text).find()
 				|| text.length() > field.getMaxChars());
 	}
 
+	/**
+	 * Vérifie si le texte du champ de texte est une adresse e-mail valide.
+	 * <p>
+	 * Une adresse e-mail est considérée comme valide si les conditions suivantes
+	 * sont remplies :
+	 * <ul>
+	 * <li>Le texte ne doit pas être vide.</li>
+	 * <li>Le texte doit contenir à la fois le caractère {@code @} et un point
+	 * ({@code .}).</li>
+	 * <li>La longueur du texte ne doit pas dépasser le nombre maximal de caractères
+	 * autorisés par le champ.</li>
+	 * </ul>
+	 * </p>
+	 *
+	 * @param field Le champ de texte dont le texte doit être vérifié. Cet objet ne
+	 *              doit pas être {@code null}.
+	 * @return {@code true} si le texte du champ est une adresse e-mail valide,
+	 *         {@code false} sinon.
+	 */
 	private boolean isStringMailCorrect(CustomTextField field) {
 		String text = field.getText().trim();
 		return !(text.length() <= 0 || (text.contains("@") && text.contains("."))
 				|| text.length() > field.getMaxChars());
 	}
 
+	/**
+	 * Vérifie si le bouton radio sélectionné dans le groupe de boutons représente
+	 * une valeur booléenne valide.
+	 *
+	 * @param field Le bouton radio dont la sélection doit être vérifiée. Cet objet
+	 *              ne doit pas être {@code null}.
+	 * @return {@code true} si le texte associé au bouton radio sélectionné est une
+	 *         valeur booléenne valide, {@code false} sinon.
+	 */
 	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
 		String toggle = field.getToggleGroup().getSelectedToggle().getUserData().toString();
 		return (toggle.equals("true") || toggle.equals("false"));
 	}
 
+	/**
+	 * Récupère la couleur actuelle de remplissage d'un objet {@link SVGPath} sous
+	 * forme de code hexadécimal.
+	 * 
+	 * @param svgPath l'objet {@link SVGPath} dont la couleur de remplissage doit
+	 *                être récupérée. Ne doit pas être {@code null}.
+	 * @return la couleur de remplissage de l'objet {@link SVGPath} sous forme de
+	 *         chaîne hexadécimale (par exemple, "#FF5733").
+	 */
 	private String getCurrentColor(SVGPath svgPath) {
 		// couleur actuelle de remplissage de l'SVGPath
 		Paint fill = svgPath.getFill();

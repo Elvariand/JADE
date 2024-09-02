@@ -1,38 +1,34 @@
 package fr.isika.cda27.teamJADE.model;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-
-import fr.isika.cda27.teamJADE.view.App;
 
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.TreeNodeValues.*;
 
 public abstract class TreeNodeDao<T> {
 
 	/**
-	 * @param intern L'information sous forme d'objet de type Intern qui sera
-	 *               stockée dans le fichier binaire.
+	 * Cette méthode permet d'écrire un objet de type T dans le fichier binaire en
+	 * le parcourant de manière efficace. La position du curseur est au début du
+	 * fichier.
 	 * 
-	 *               Cette fonction permet d'écrire un objet de type Intern dans le
-	 *               fichier binaire en le parcourant de manière efficace. La
-	 *               position du curseur est au début du fichier.
+	 * @param objet L'information sous forme d'objet de type T qui sera stockée dans
+	 *              le fichier binaire.
 	 */
 	public void insert(T object) {
 		insert(object, 0);
 	}
 
 	/**
-	 * @param intern         L'information sous forme d'objet de type Intern qui
-	 *                       sera stockée dans le fichier binaire.
+	 * Cette méthode permet d'écrire un objet de type T dans le fichier binaire en
+	 * le parcourant de manière efficace.
+	 * 
+	 * @param objet          L'information sous forme d'objet de type T qui sera
+	 *                       stockée dans le fichier binaire.
 	 * @param cursorPosition La position en Long du curseur dans le fichier binaire.
 	 * 
-	 *                       Cette fonction permet d'écrire un objet de type Intern
-	 *                       dans le fichier binaire en le parcourant de manière
-	 *                       efficace.
 	 */
 	public void insert(T object, long cursorPosition) {
 
@@ -46,8 +42,9 @@ public abstract class TreeNodeDao<T> {
 		}
 		String nodeKey = this.readKeyFromBinary(cursorPosition);
 
-		// Si la valeur de la clé à écrire est plus petite que
-		// celle de la clé courante lue dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus petite que
+		// la valeur de la clé de comparaison de l'objet courant lue dans le fichier
+		// binaire.
 		if (getKey(object).compareTo(nodeKey) < 0) {
 
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
@@ -58,7 +55,7 @@ public abstract class TreeNodeDao<T> {
 
 				/*
 				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
-				 * fils gauche par la valeur de la position du Stagiaire que l'on va écrire à la
+				 * fils gauche par la valeur de la position de l'objet que l'on va écrire à la
 				 * fin du fichier binaire
 				 */
 				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + getObjectSize());
@@ -74,20 +71,21 @@ public abstract class TreeNodeDao<T> {
 			}
 		}
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
-		// celle
-		// du nom de famille du Stagiaire courant lu dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus grande que
+		// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
+
 		else if (getKey(object).compareTo(nodeKey) > 0) {
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
-			// Si il n'y a pas de fils droit, c'est donc que l'information sur le fichier
+			// S'il n'y a pas de fils droit, c'est donc que l'information sur le fichier
 			// binaire vaut -1
 			if (newCursorPosition < 0) {
 
 				/*
 				 * Dans ce cas nous remplaçons dans le fichier binaire le -1 correspondant au
-				 * fils droit par la valeur de la position du Stagiaire que l'on va écrire à la
+				 * fils droit par la valeur de la position de l'objet que l'on va écrire à la
 				 * fin du fichier binaire
 				 */
 				this.writeIntInBinary(this.getNumberNodeInBinary(), cursorPosition + getObjectSize() + INDEX_SIZE);
@@ -103,20 +101,21 @@ public abstract class TreeNodeDao<T> {
 			}
 		}
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
-		// de famille de l'Intern courant lu dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est égale
+		// à la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
 		else {
 			int read = 1;
 
 			/*
-			 * Pour le fichier binaire nous lisons la valeur de position du doublon du
-			 * Stagiaire que nous sommes en train de lire. Tant que nous n'obtenons pas -1
+			 * Pour le fichier binaire nous lisons la valeur de position du doublon de
+			 * l'Objet que nous sommes en train de lire. Tant que nous n'obtenons pas -1
 			 * c'est que nous ne sommes pas au bout des doublons alors nous déplaçons notre
 			 * curseur vers la position du doublon suivant dans le fichier et nous
 			 * recommençons à lire la valeur de position du noeud suivant
 			 */
 			while (read > 0) {
-				// Si le Stagiaire est déjà présent
+				// Si l'objet est déjà présent
 				if (object.equals(this.readObjectFromBinary(cursorPosition))) {
 					System.out.println("L'objet est déjà présent dans la base de données");
 					return;
@@ -129,7 +128,7 @@ public abstract class TreeNodeDao<T> {
 			/*
 			 * Une fois le bout de liste des doublons atteint, nous remplaçons dans le
 			 * fichier binaire le -1 correspondant suivant dans la liste par la valeur de la
-			 * position du Stagiaire que l'on va ajouter à la fin du fichier binaire
+			 * position de l'Objet que l'on va ajouter à la fin du fichier binaire
 			 */
 			this.writeIntInBinary(this.getNumberNodeInBinary(),
 					cursorPosition + getObjectSize() + INDEX_SIZE + INDEX_SIZE);
@@ -140,8 +139,11 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param newObject
-	 * @param oldObject
+	 * Met à jour un objet en comparant sa clé à celle d'un ancien objet.
+	 *
+	 * @param newObject Le nouvel objet à mettre à jour.
+	 * @param oldObject L'ancien objet à comparer pour déterminer l'action à
+	 *                  effectuer.
 	 */
 	public void update(T newObject, T oldObject) {
 		if (getKey(oldObject).compareTo(getKey(newObject)) == 0) {
@@ -154,9 +156,20 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param newObject
-	 * @param oldObject
-	 * @param cursorPosition
+	 * Met à jour un objet dans une structure binaire à partir d'une position
+	 * donnée.
+	 * 
+	 * Cette méthode permet de parcourir un fichier binaire pour localiser et
+	 * remplacer un ancien objet par un nouvel objet, en utilisant une structure
+	 * arborescente. La recherche est effectuée en fonction de la comparaison des
+	 * clés des objets.
+	 * 
+	 * @param newObject      Le nouvel objet qui remplacera l'ancien objet s'il est
+	 *                       trouvé.
+	 * @param oldObject      L'ancien objet à rechercher dans la structure pour le
+	 *                       mettre à jour.
+	 * @param cursorPosition La position actuelle du curseur dans le fichier
+	 *                       binaire.
 	 */
 	public void update(T newObject, T oldObject, long cursorPosition) {
 		long binarySize = this.getBinarySize();
@@ -170,14 +183,15 @@ public abstract class TreeNodeDao<T> {
 
 		String nodeKey = this.readKeyFromBinary(cursorPosition);
 
-		// Si la valeur de la clé à écrire est plus petite que
-		// celle de la clé courante lue dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus petite que
+		// la valeur de la clé de comparaison de l'objet courante lue dans le fichier
+		// binaire.
 		if (getKey(oldObject).compareTo(nodeKey) < 0) {
 
 			long newCursorPosition = readLeftChildFromBinary(cursorPosition);
 
 			if (newCursorPosition < 0) {
-				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+				System.err.println("Erreur : L'objet à modifier n'a pas été pas trouvé.\n");
 				return;
 
 			} else {
@@ -185,15 +199,16 @@ public abstract class TreeNodeDao<T> {
 				return;
 			}
 		}
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus grande que
+		// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
-		// celle du nom de famille du Stagiaire courant lu dans le fichier binaire.
 		else if (getKey(oldObject).compareTo(nodeKey) > 0) {
 
 			long newCursorPosition = readRightChildFromBinary(cursorPosition);
 
 			if (newCursorPosition < 0) {
-				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+				System.err.println("Erreur : L'objet à modifier n'a pas été pas trouvé.\n");
 				return;
 
 			} else {
@@ -202,14 +217,15 @@ public abstract class TreeNodeDao<T> {
 			}
 		}
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est égale à celle du nom
-		// de famille de l'Intern courant lu dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est égale à
+		// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
 		else {
 
 			int read = 1;
 
 			while (read > 0) {
-				// Si le Stagiaire est déjà présent
+				// Si l'objet est déjà présent
 				if (oldObject.equals(this.readObjectFromBinary(cursorPosition))) {
 					this.writeInBinary(newObject, cursorPosition);
 					return;
@@ -220,7 +236,7 @@ public abstract class TreeNodeDao<T> {
 			}
 
 			if (read < 0 && !oldObject.equals(this.readObjectFromBinary(cursorPosition))) {
-				System.err.println("Erreur : Le stagiaire à modifier n'a pas été pas trouvé.\n");
+				System.err.println("Erreur : L'objet à modifier n'a pas été pas trouvé.\n");
 			}
 		}
 		return;
@@ -228,49 +244,52 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param intern L'objet de type Intern que nous voulons effacer du fichier
+	 * Cette méthode parcourt le fichier binaire de manière efficace pour trouver
+	 * l'emplacement de l'objet à effacer dans le fichier binaire. Elle l'efface et
+	 * modifie les parents, enfants et doublons en conséquence. Elle parcourt le
+	 * fichier depuis le début.
+	 * 
+	 * @param intern L'objet de type Objet que nous voulons effacer du fichier
 	 *               binaire
 	 * 
-	 *               Cette fonction parcourt le fichier binaire de manière efficace
-	 *               pour trouver l'emplacement du Stagiaire à effacer dans le
-	 *               fichier binaire. Elle l'efface et modifie les parents, enfants
-	 *               et doublons en conséquence. Elle parcourt le fichier depuis le
-	 *               début.
+	 *
 	 */
 	public void delete(T object) {
 		this.delete(object, 0, 0, false);
 	}
 
 	/**
+	 * Cette méthode parcourt le fichier binaire de manière efficace pour trouver
+	 * l'emplacement de l'objet à effacer dans le fichier binaire. Elle l'efface et
+	 * modifie les parents, enfants et doublons en conséquence. Elle parcourt le
+	 * fichier depuis childCursorPosition.
+	 * 
 	 * @param intern               L'objet de type Intern que nous voulons effacer
 	 *                             du fichier binaire
-	 * @param parentCursorPosition La position en Long du parent du Stagiaire
+	 * @param parentCursorPosition La position en Long du parent de l'objet
 	 *                             actuellement lu dans le fichier Binaire
-	 * @param childCursorPosition  La position en Long du Stagiaire actuellement lu
+	 * @param childCursorPosition  La position en Long de l'objet actuellement lu
 	 *                             dans le fichier Binaire
-	 * @param isFromLeft           Booléen indiquand si le Stagiaire actuellement lu
-	 *                             est un fils gauche ou non de son parent
+	 * @param isFromLeft           Booléen indiquand si l'objet actuellement lu est
+	 *                             un fils gauche ou non de son parent
 	 * 
-	 *                             Cette fonction parcourt le fichier binaire de
-	 *                             manière efficace pour trouver l'emplacement du
-	 *                             Stagiaire à effacer dans le fichier binaire. Elle
-	 *                             l'efface et modifie les parents, enfants et
-	 *                             doublons en conséquence. Elle parcourt le fichier
-	 *                             depuis childCursorPosition.
+	 *
 	 */
 	public void delete(T object, long parentCursorPosition, long childCursorPosition, boolean isFromLeft) {
 
 		String nodeKey = this.readKeyFromBinary(childCursorPosition);
 		long buffer = childCursorPosition;
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus petite que
-		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus petite que
+		// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
+
 		if (getKey(object).compareTo(nodeKey) < 0) {
 
 			childCursorPosition = readLeftChildFromBinary(childCursorPosition) * getNodeSize();
 
-			// Si l'on doit aller vers le fils gauche pour trouver le Stagiaire que l'on
-			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
+			// Si l'on doit aller vers le fils gauche pour trouver l'objet que l'on
+			// doit effacer et que l'objet lu dans le fichier binaire n'en a pas (et
 			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
 			// l'affiche
 			if (childCursorPosition < 0) {
@@ -288,14 +307,15 @@ public abstract class TreeNodeDao<T> {
 			return;
 		}
 
-		// Si la valeur du nom de famille du Stagiaire à écrire est plus grande que
-		// celle du nom de famille du Stagiaire lu dans le fichier binaire.
+		// Si la valeur de la clé de comparaison de l'objet à écrire est plus grande que
+		// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+		// binaire.
 		else if (getKey(object).compareTo(nodeKey) > 0) {
 
 			childCursorPosition = readRightChildFromBinary(childCursorPosition) * getNodeSize();
 
-			// Si l'on doit aller vers le fils droit pour trouver le Stagiaire que l'on
-			// doit effacer et que le Stagiaire lu dans le fichier binaire n'en a pas (et
+			// Si l'on doit aller vers le fils droit pour trouver l'objet que l'on
+			// doit effacer et que l'objet lu dans le fichier binaire n'en a pas (et
 			// donc que la valeur égale à -1) alors on a fait une erreur quelque part et on
 			// l'affiche
 			if (childCursorPosition < 0) {
@@ -311,23 +331,24 @@ public abstract class TreeNodeDao<T> {
 			// niveau de l'enfant droit
 			this.delete(object, buffer, childCursorPosition, false);
 			return;
+			// Si la valeur de la clé de comparaison de l'objet à écrire est égale à
+			// la valeur de la clé de comparaison de l'objet courant lu dans le fichier
+			// binaire.
 
-			// Si la valeur du nom de famille du Stagiaire à écrire est égale à
-			// celle du nom de famille du Stagiaire lu dans le fichier binaire.
 		} else {
 
 			// Si on a plusieurs homonymes et donc que la valeur de doublon suivant dans le
-			// fichier binaire au niveau du stagiaire courant est différente de -1
+			// fichier binaire au niveau de l'objet courant est différente de -1
 			if (this.readTwinFromBinary(childCursorPosition) != -1) {
 
-				// On parcourt la suite de doublons jusqu'à trouver celui qui correspond au
-				// Stagiaire que l'on veut supprimer
+				// On parcourt la suite de doublons jusqu'à trouver celui qui correspond à
+				// l'objet que l'on veut supprimer
 				while (!object.equals(this.readObjectFromBinary(childCursorPosition)) && childCursorPosition > 0) {
 					parentCursorPosition = childCursorPosition;
 					childCursorPosition = readTwinFromBinary(childCursorPosition) * getNodeSize();
 
-					// Si nous atteignons le bout de la liste c'est que nous n'avons pas trouver le
-					// stagiaire à supprimer et donc qu'il y a une erreur et on l'affiche.
+					// Si nous atteignons le bout de la liste c'est que nous n'avons pas trouver
+					// l'objet à supprimer et donc qu'il y a une erreur et on l'affiche.
 					if (childCursorPosition < 0) {
 						System.err.println(
 								"************************************\nErreur lors du parcours de l'arbre lors de la suppression. Doublon inexistant. On veut supprimer\n"
@@ -338,7 +359,7 @@ public abstract class TreeNodeDao<T> {
 					}
 				}
 
-				// On efface le Stagiaire cible dans notre fichier binaire et met à jour la
+				// On efface l'objet cible dans notre fichier binaire et met à jour la
 				// valeur du suivant dans la liste des doublons chez le parent ou -1 s'il n'y a
 				// pas de suivant
 				this.writeIntInBinary(this.readTwinFromBinary(childCursorPosition), parentCursorPosition);
@@ -348,24 +369,24 @@ public abstract class TreeNodeDao<T> {
 				// S'il n'y a pas de doublon/ d'homonyme
 			} else {
 
-				// Si le Stagiaire à supprimer est une feuille et donc le seul cas où la valeur
+				// Si l'objet à supprimer est une feuille et donc le seul cas où la valeur
 				// des enfants gauche et droits sont égales
 				if (this.readLeftChildFromBinary(childCursorPosition) == this
 						.readRightChildFromBinary(childCursorPosition)) {
 
-					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
+					// On remplace dans le parent de l'objet qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par -1
 					this.writeIntInBinary(-1, isFromLeft ? parentCursorPosition + getObjectSize()
 							: parentCursorPosition + getObjectSize() + INDEX_SIZE);
 
-					// On efface le Stagiaire voulu dans le fichier binaire
+					// On efface l'objet voulu dans le fichier binaire
 					this.eraseFromBinary(childCursorPosition);
 					return;
 
 				} else {
 
-					// Nous parcourons le fichier binaire jusqu'à trouver le bon Stagiaire qui va
-					// prendre la place du Stagiaire que l'on veut supprimer
+					// Nous parcourons le fichier binaire jusqu'à trouver le bon objet qui va
+					// prendre la place de l'objet que l'on veut supprimer
 					long[] result = findSubstitute(childCursorPosition);
 					long substitute = result[0], parentSubstituteCursor = result[1];
 
@@ -379,7 +400,7 @@ public abstract class TreeNodeDao<T> {
 						return;
 					}
 
-					// On remplace dans le parent du Stagiaire qu'on efface, le fils gauche ou le
+					// On remplace dans le parent de l'objet qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par la valeur de position du substitut
 					// que l'on a trouvé
 					System.out.println("Valeur substitut : " + (int) substitute / getNodeSize());
@@ -391,14 +412,14 @@ public abstract class TreeNodeDao<T> {
 					// -1
 					this.writeIntInBinary(-1, parentSubstituteCursor + getObjectSize());
 
-					// On transmet au substitut les valeurs des enfants du Stagiaire que l'on
+					// On transmet au substitut les valeurs des enfants de l'objet que l'on
 					// supprime
 					this.writeIntInBinary(this.readLeftChildFromBinary(childCursorPosition),
 							substitute + getObjectSize());
 					this.writeIntInBinary(this.readRightChildFromBinary(childCursorPosition),
 							substitute + getObjectSize() + INDEX_SIZE);
 
-					// On efface le stagiaire
+					// On efface l'objet
 					this.eraseFromBinary(childCursorPosition);
 					return;
 				}
@@ -409,14 +430,14 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * 
+	 * Cette méthode permet de trouver dans le fichier binaire, un substitut à un
+	 * objet que l'on veut supprimer et qui a au moins un enfant
+	 * 
 	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire dont on veut trouver le substitut
+	 *                       début de l'objet dont on veut trouver le substitut
 	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
 	 *         celle de son parent.
-	 * 
-	 *         Cette fonction permet de trouver dans le fichier binaire, un
-	 *         substitut à un stagiaire que l'on veut supprimer et qui a au moins un
-	 *         enfant
 	 */
 	private long[] findSubstitute(long cursorPosition) {
 		int leftChild = this.readLeftChildFromBinary(cursorPosition);
@@ -436,22 +457,20 @@ public abstract class TreeNodeDao<T> {
 		} else if (rightChild != -1 && leftChild != -1) {
 			tabCursorPosition = findTwoChildSubstitute(rightChild * getNodeSize());
 		} else {
-			System.err.println(
-					"*****************\nLe Stagiaire recherché n'a pas d'enfant.\nLe stagiaire recherché est :\n"
-							+ this.readObjectFromBinary(cursorPosition) + "\n************************************");
+			System.err.println("*****************\nL'objet recherché n'a pas d'enfant.\nL'objet recherché est :\n"
+					+ this.readObjectFromBinary(cursorPosition) + "\n************************************");
 		}
 		return tabCursorPosition;
 	}
 
 	/**
+	 * Cette méthode permet de trouver dans le fichier binaire, un substitut à un
+	 * objet que l'on veut supprimer et qui a exactement 2 enfants.
+	 * 
 	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire dont on veut trouver le substitut
+	 *                       début de l'objet dont on veut trouver le substitut
 	 * @return Un tableau de long avec la position du substitut trouvé ainsi que
 	 *         celle de son parent.
-	 * 
-	 *         Cette fonction permet de trouver dans le fichier binaire, un
-	 *         substitut à un stagiaire que l'on veut supprimer et qui a exactement
-	 *         2 enfants
 	 */
 	private long[] findTwoChildSubstitute(long cursorPosition) {
 		// On cherche la valeur minimale du sous arbre droit
@@ -484,16 +503,20 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param internToAdd L'objet type Intern à ajouter dans le fichier binaire
-	 *                    Ajoute le noeud à la fin du fichier binaire en tant que
-	 *                    feuille: fils gauche vaut -1, fils droit vaut -1 et
-	 *                    suivant liste chainée vaut -1 aussi.
+	 * Ajoute le noeud à la fin du fichier binaire en tant que feuille: fils gauche
+	 * vaut -1, fils droit vaut -1 et suivant liste chainée vaut -1 aussi.
+	 * 
+	 * @param objetToAdd L'objet type T à ajouter dans le fichier binaire
+	 * 
 	 */
 	public void writeInBinary(T objectToAdd) {
 		writeInBinary(objectToAdd, this.getBinarySize(), -1, -1, -1);
 	}
 
 	/**
+	 * Ajoute un noeud dans le fichier binaire à une position spécifique en tant que
+	 * feuille.
+	 * 
 	 * @param objectToAdd    L'objet type T à ajouter dans le fichier binaire
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud. Ajoute le noeud en tant que feuille:
@@ -505,6 +528,9 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Ajoute un noeud dans le fichier binaire à une position spécifique avec des
+	 * références aux fils gauche, droit et au noeud suivant dans une liste chaînée.
+	 * 
 	 * @param objectToAdd    L'objet type T à ajouter dans le fichier binaire
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
@@ -537,6 +563,8 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Méthode abstraite à implémenter pour définir la manière dont les attributs
+	 * spécifiques de l'objet sont écrits dans le fichier binaire
 	 * 
 	 * @param object L'objet type T à ajouter dans le fichier binaire
 	 * @param raf    Le RandomAccessFile
@@ -544,6 +572,8 @@ public abstract class TreeNodeDao<T> {
 	protected abstract void writeSpecificFields(T object, RandomAccessFile raf);
 
 	/**
+	 * Ecrit un entier à une position spécifique dans le fichier binaire.
+	 * 
 	 * @param twinOrChild    L'entier à inscrire dans le fichier binaire.
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du fils gauche, droit ou du noeud suivant dans la
@@ -564,9 +594,11 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Lit un noeud à partir du fichier binaire à une position donnée.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
-	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
+	 * @return Retourne un objet de type Objet stocké à la position du curseur dans
 	 *         le fichier binaire.
 	 */
 	protected String readNodeFromBinary(long cursorPosition) {
@@ -575,14 +607,19 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Méthode abstraite à implémenter pour lire l'objet de type T à une position
+	 * donnée dans le fichier binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
-	 * @return Retourne un objet de type Intern stocké à la position du curseur dans
-	 *         le fichier binaire.
+	 * @return Retourne un objet de type T stocké à la position du curseur dans le
+	 *         fichier binaire.
 	 */
 	protected abstract T readObjectFromBinary(long cursorPosition);
 
 	/**
+	 * Lit la position du fils gauche d'un noeud à partir du fichier binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return Retourne un entier correspondant à la place dans le fichier binaire
@@ -609,6 +646,8 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Lit la position du fils droit d'un noeud à partir du fichier binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return Retourne un entier correspondant à la place dans le fichier binaire
@@ -635,6 +674,9 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Lit la position du noeud suivant dans la liste chaînée à partir du fichier
+	 * binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return Retourne un entier correspondant à la place dans le fichier binaire
@@ -661,6 +703,9 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Lit et retourne le nom de famille à une position donnée dans le fichier
+	 * binaire.
+	 * 
 	 * @param cursorPosition La position du curseur en octet. Doit être au niveau du
 	 *                       début du noeud.
 	 * @return
@@ -693,7 +738,9 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @return Retourn un int correspondant au nombre de noeuds écrits dans le
+	 * Calcule le nombre de noeuds écrits dans le fichier binaire.
+	 * 
+	 * @return Retourne un int correspondant au nombre de noeuds écrits dans le
 	 *         fichier binaire.
 	 */
 	public int getNumberNodeInBinary() {
@@ -701,11 +748,11 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
+	 * Efface l'objet à la position cursorPosition sur le fichier Binaire et le
+	 * remplace par des espaces.
+	 * 
 	 * @param cursorPosition long - La position du curseur en octet. Doit être au
 	 *                       niveau du début du noeud.
-	 * 
-	 *                       Efface le Stagiaire à la position cursorPosition sur le
-	 *                       fichier Binaire et le remplace par des espaces.
 	 */
 	public void eraseFromBinary(long cursorPosition) {
 		try {
@@ -731,12 +778,11 @@ public abstract class TreeNodeDao<T> {
 	}
 
 	/**
-	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
-	 *                       début du stagiaire depuis lequel on veut démarrer la
-	 *                       lecture de l'arbre
+	 * Cette méthode lit et affiche l'arbre suivant l'ordre infixe.
 	 * 
-	 *                       Cette fonction lit et affiche l'arbre suivant l'ordre
-	 *                       infixe
+	 * @param cursorPosition La position du curseur en long. Doit être au niveau du
+	 *                       début de l'objet depuis lequel on veut démarrer la
+	 *                       lecture de l'arbre.
 	 */
 	public ArrayList<T> sortView(long cursorPosition, ArrayList<T> list) {
 
@@ -750,41 +796,57 @@ public abstract class TreeNodeDao<T> {
 		int leftChild = this.readLeftChildFromBinary(cursorPosition);
 		int rightChild = this.readRightChildFromBinary(cursorPosition);
 
-		// Si le Stagiaire lu dans le fichier binaire possède un enfant gauche
+		// Si l'objet lu dans le fichier binaire possède un enfant gauche
 		// alors on lit celui-ci en priorité
 		if (leftChild > 0)
 			sortView(leftChild * getNodeSize(), list);
 
-		// On affiche le Stagiaire lu
-//		System.out.println(this.readNodeFromBinary(cursorPosition));
+		// On affiche l'objet lu
+
 		list.add(this.readObjectFromBinary(cursorPosition));
 
 		// S'il y a des homonymes, on les affiche tous
 		long twinPosition = this.readTwinFromBinary(cursorPosition) * getNodeSize();
 		while (twinPosition > 0) {
-//			System.out.println(this.readNodeFromBinary(twinPosition));
+
 			list.add(this.readObjectFromBinary(twinPosition));
 			twinPosition = this.readTwinFromBinary(twinPosition) * getNodeSize();
 		}
 
-		// Puis on s'intéresse au fils droit du Stagiaire lu
+		// Puis on s'intéresse au fils droit de l'objet lu
 		if (rightChild > 0)
 			sortView(this.readRightChildFromBinary(cursorPosition) * getNodeSize(), list);
 		return list;
 	}
 
 	/**
-	 * Lit le fichier binaire et l'affiche dans la console
+	 * Lit le fichier binaire et l'affiche dans la console.
 	 */
 	protected abstract void readBinary();
 
+	/**
+	 * Retourne la taille en octets d'un nœud dans le fichier binaire.
+	 */
 	protected abstract int getNodeSize();
 
+	/**
+	 * Retourne la clé unique d'un objet.
+	 */
 	protected abstract String getKey(T object);
 
+	/**
+	 * Lit la clé d'un objet à partir d'une position spécifiée dans le fichier
+	 * binaire.
+	 */
 	protected abstract String readKeyFromBinary(long cursorPosition);
 
+	/**
+	 * Retourne la taille en octets d'un objet dans le fichier binaire.
+	 */
 	protected abstract int getObjectSize();
 
+	/**
+	 * Retourne le chemin du fichier binaire utilisé pour stocker les données.
+	 */
 	protected abstract String getBinFile();
 }

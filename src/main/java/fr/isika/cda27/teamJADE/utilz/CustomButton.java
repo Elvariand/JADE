@@ -1,7 +1,6 @@
 package fr.isika.cda27.teamJADE.utilz;
 
 import javafx.scene.control.Button;
-import javafx.scene.effect.InnerShadow;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 
@@ -15,8 +14,9 @@ public class CustomButton extends Button {
 	private String text;
 
 	/**
-	 * @param innerShadow
-	 * @param button
+	 * Crée un groupe de bouton classique
+	 *
+	 * @param text Le texte à afficher sur le bouton.
 	 */
 	public CustomButton(String text) {
 		this.text = text;
@@ -28,7 +28,7 @@ public class CustomButton extends Button {
 		this.setFont(Font.font("Krona One", 18));
 		this.setEffect(INNER_SHADOW_WHITE);
 
-		this.setText(text);
+		this.setText(this.text);
 
 		this.setOnMouseEntered(event -> {
 			this.setStyle("-fx-background-color: #333232; -fx-background-radius: 13;");
@@ -43,14 +43,14 @@ public class CustomButton extends Button {
 	}
 
 	/**
-	 * @return the button
+	 * @return Le bouton 
 	 */
 	public Button getButton() {
 		return button;
 	}
 
 	/**
-	 * @param button the button to set
+	 * @param button Le bouton à définir
 	 */
 	public void setButton(Button button) {
 		this.button = button;

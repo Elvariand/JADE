@@ -2,38 +2,25 @@ package fr.isika.cda27.teamJADE.view.mainMember;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
-import com.itextpdf.text.log.SysoCounter;
-import fr.isika.cda27.teamJADE.model.Intern;
-import fr.isika.cda27.teamJADE.model.InternDao;
 import fr.isika.cda27.teamJADE.model.Member;
 import fr.isika.cda27.teamJADE.model.MemberDao;
 import fr.isika.cda27.teamJADE.utilz.CustomRadioButton;
 import fr.isika.cda27.teamJADE.utilz.CustomTextField;
-import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
 import fr.isika.cda27.teamJADE.view.help.HelpSceneAdmin;
-import fr.isika.cda27.teamJADE.view.help.HelpSceneNotAdmin;
 import fr.isika.cda27.teamJADE.view.help.StackPaneHelp;
-import fr.isika.cda27.teamJADE.view.mainIntern.AddPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
 import fr.isika.cda27.teamJADE.view.mainIntern.PrintPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.QuitPane;
-import fr.isika.cda27.teamJADE.view.mainIntern.RemovePane;
 import fr.isika.cda27.teamJADE.view.mainIntern.RepetitivePane;
-import fr.isika.cda27.teamJADE.view.mainIntern.ScopePane;
 import fr.isika.cda27.teamJADE.view.mainIntern.SeeMembersPane;
 import fr.isika.cda27.teamJADE.view.mainIntern.StackPaneMenubar;
-import fr.isika.cda27.teamJADE.view.mainIntern.UpdatePane;
-import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
-import javafx.animation.PauseTransition;
 import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.animation.TranslateTransition;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -45,16 +32,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
-import javafx.scene.control.RadioButton;
-import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.ToggleButton;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
@@ -65,8 +47,6 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MainSceneValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
@@ -155,12 +135,12 @@ public class MembersMainScene extends AnchorPane {
 				updateContentVbox.getGridPaneName().setText(gridPaneLabelsList[1]);
 				updateContentVbox.getGridPaneAlias().setText(gridPaneLabelsList[2]);
 				updateContentVbox.getGridPaneEmail().setText(gridPaneLabelsList[3]);
-				
+
 				if (newValue != null) {
 					updateContentVbox.setRadioButton(newValue.isAdmin());
 					updateContentVbox.getPasswordField().setText(newValue.getPassword());
 				}
-				
+
 				removeContentVbox.getRightButton().setDisable(false);
 			}
 		});
@@ -208,7 +188,7 @@ public class MembersMainScene extends AnchorPane {
 
 		/* ---------------------------------------------------------------- */
 
-		/* BOUTONS ACCTIONS */
+		/* BOUTONS ACTIONS */
 
 		TranslateTransition moveTransition = new TranslateTransition();
 
@@ -414,8 +394,6 @@ public class MembersMainScene extends AnchorPane {
 			String password = updateContentVbox.getTextPasswordField();
 			MemberDao dao = new MemberDao();
 
-//			boolean isAdmin = updateContentVbox.isAdminSelected();
-//			updateContentVbox.setRadioButton(isAdmin);
 			boolean[] good = this.areAllFieldsCorrectlyFilled(updateContentVbox);
 
 			if (good[0] && good[1] && good[2] && good[3] && good[4] && good[5]) {
@@ -432,7 +410,7 @@ public class MembersMainScene extends AnchorPane {
 				System.err.println("erreur");
 				updateContentVbox.getLabelError().setVisible(true);
 			}
-			
+
 		});
 
 		// Annuler button
@@ -445,7 +423,7 @@ public class MembersMainScene extends AnchorPane {
 
 		// Les actions en écrivant
 		this.actionOnTyping(updateContentVbox);
-				
+
 		/* QUIT CONTENT : configuration du bouton annuler */
 		Button quitContentCancelBtn = quitContentVbox.getLeftButton();
 		quitContentCancelBtn.setOnAction(event -> {
@@ -476,18 +454,13 @@ public class MembersMainScene extends AnchorPane {
 			Label error = paneErrorLabels[i];
 			String type = types[i];
 
-			
-
 			if (i < 4) {
 				tf.setOnKeyReleased(event -> {
 					boolean[] good = areAllFieldsCorrectlyFilled(pane);
-					for(boolean monBoolean : good) {
-						System.out.println(monBoolean);
-					}
-					System.out.println("---------------------------------");
+
 					if (good[0] && good[1] && good[2] && good[3] && good[4]) {
 						paneRightBtn.setDisable(false);
-						System.out.println("good");
+
 					} else {
 						paneRightBtn.setDisable(true);
 					}
@@ -534,13 +507,10 @@ public class MembersMainScene extends AnchorPane {
 			} else {
 				pf.setOnKeyReleased(event -> {
 					boolean[] good = areAllFieldsCorrectlyFilled(pane);
-					for(boolean monBoolean : good) {
-						System.out.println(monBoolean);
-					}
-					System.out.println("---------------------------------");
+
 					if (good[0] && good[1] && good[2] && good[3] && good[4]) {
 						paneRightBtn.setDisable(false);
-						System.out.println("good");
+
 					} else {
 						paneRightBtn.setDisable(true);
 					}
@@ -733,7 +703,6 @@ public class MembersMainScene extends AnchorPane {
 
 		// on enlève le children leftSubcontainer de la HBox
 		stackPaneMenubar.getBtnContainer().getChildren().remove(stackPaneMenubar.getLeftSubcontainer());
-//		stackPaneMenubar.getBtnContainer().setMaxWidth(100);
 
 	}
 
@@ -876,88 +845,84 @@ public class MembersMainScene extends AnchorPane {
 	/**
 	 * Vérifie si le texte dans le champ de nom est valide.
 	 * 
-	 * Critères de validation :
-	 * - Le texte ne doit pas être vide.
-	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des espaces et des tirets.
-	 * - Le texte ne doit pas dépasser la longueur maximale autorisée par le champ.
+	 * Critères de validation : - Le texte ne doit pas être vide. - Le texte doit
+	 * contenir uniquement des lettres avec ou sans accents, des espaces et des
+	 * tirets. - Le texte ne doit pas dépasser la longueur maximale autorisée par le
+	 * champ.
 	 * 
 	 * @param field Le champ de texte à valider (CustomTextField).
 	 * @return true si le nom est valide, false sinon.
 	 */
 	private boolean isStringNameCorrect(CustomTextField field) {
-	    String text = field.getText().trim();
-	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s]").matcher(text).find()
-	            || text.length() > field.getMaxChars());
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}-\\s]").matcher(text).find()
+				|| text.length() > field.getMaxChars());
 	}
 
 	/**
 	 * Vérifie si le texte dans le champ d'alias est valide.
 	 * 
-	 * Critères de validation :
-	 * - Le texte ne doit pas être vide.
-	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres et des tirets.
-	 * - Le texte ne doit pas dépasser 15 caractères.
+	 * Critères de validation : - Le texte ne doit pas être vide. - Le texte doit
+	 * contenir uniquement des lettres avec ou sans accents, des chiffres et des
+	 * tirets. - Le texte ne doit pas dépasser 15 caractères.
 	 * 
 	 * @param field Le champ de texte à valider (CustomTextField).
 	 * @return true si l'alias est valide, false sinon.
 	 */
 	private boolean isStringAliasCorrect(CustomTextField field) {
-	    String text = field.getText().trim();
-	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find()
-	            || text.length() > 15);
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find() || text.length() > 15);
 	}
 
 	/**
 	 * Vérifie si le mot de passe est valide.
 	 * 
-	 * Critères de validation :
-	 * - Le texte ne doit pas être vide.
-	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres, des tirets.
-	 * - Le texte ne doit pas dépasser 15 caractères.
+	 * Critères de validation : - Le texte ne doit pas être vide. - Le texte doit
+	 * contenir uniquement des lettres avec ou sans accents, des chiffres, des
+	 * tirets. - Le texte ne doit pas dépasser 15 caractères.
 	 * 
 	 * @param field Le champ de mot de passe à valider (PasswordField).
 	 * @return true si le mot de passe est valide, false sinon.
 	 */
 	private boolean isStringPasswordCorrect(PasswordField field) {
-	    String text = field.getText().trim();
-	    return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find()
-	            || text.length() > 15);
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || Pattern.compile("[^\\p{L}\\d-]").matcher(text).find() || text.length() > 15);
 	}
 
 	/**
 	 * Vérifie si l'adresse e-mail est valide.
 	 * 
-	 * Critères de validation :
-	 * - Le texte ne doit pas être vide.
-	 * - Le texte doit contenir un "@" et un "." pour être considéré comme une adresse e-mail valide.
-	 * - Le texte doit contenir uniquement des lettres avec ou sans accents, des chiffres, des tirets.
-	 * - Le texte ne doit pas dépasser la longueur maximale autorisée par le champ.
+	 * Critères de validation : - Le texte ne doit pas être vide. - Le texte doit
+	 * contenir un "@" et un "." pour être considéré comme une adresse e-mail
+	 * valide. - Le texte doit contenir uniquement des lettres avec ou sans accents,
+	 * des chiffres, des tirets. - Le texte ne doit pas dépasser la longueur
+	 * maximale autorisée par le champ.
 	 * 
 	 * @param field Le champ de texte à valider (CustomTextField).
 	 * @return true si l'adresse e-mail est valide, false sinon.
 	 */
 	private boolean isStringEmailCorrect(CustomTextField field) {
-	    String text = field.getText().trim();
-	    return !(text.length() <= 0 || !(text.contains("@") && text.contains("."))
-	    		|| Pattern.compile("[^\\p{L}\\d-@[.]]").matcher(text).find()
-	            || text.length() > field.getMaxChars());
+		String text = field.getText().trim();
+		return !(text.length() <= 0 || !(text.contains("@") && text.contains("."))
+				|| Pattern.compile("[^\\p{L}\\d-@[.]]").matcher(text).find() || text.length() > field.getMaxChars());
 	}
 
 	/**
 	 * Vérifie si l'option Admin est correctement sélectionnée.
 	 * 
-	 * Critères de validation :
-	 * - Le bouton "Admin" doit être soit "True" soit "False" (un des deux doit être sélectionné).
+	 * Critères de validation : - Le bouton "Admin" doit être soit "True" soit
+	 * "False" (un des deux doit être sélectionné).
 	 * 
 	 * @param field Le champ de bouton radio à valider (CustomRadioButton).
-	 * @return true si l'une des options (True ou False) est sélectionnée, false sinon.
+	 * @return true si l'une des options (True ou False) est sélectionnée, false
+	 *         sinon.
 	 */
 	private boolean isBooleanAdminCorrect(CustomRadioButton field) {
-	    if (field.isTrueBtnSelected() || field.isFalseBtnSelected()) {
-	        return true;
-	    } else {
-	        return false;
-	    }
+		if (field.isTrueBtnSelected() || field.isFalseBtnSelected()) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	private String getCurrentColor(SVGPath svgPath) {

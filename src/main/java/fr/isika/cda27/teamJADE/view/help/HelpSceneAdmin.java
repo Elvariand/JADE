@@ -4,8 +4,6 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.CustomButtonValues.BTN_WIDTH;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.ShadowSet.INNER_SHADOW_WHITE;
 
-import fr.isika.cda27.teamJADE.view.mainIntern.InternsMainScene;
-
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.HelpTextValues.*;
 
 import javafx.geometry.Insets;
@@ -18,15 +16,9 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TitledPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.BorderStrokeStyle;
-import javafx.scene.layout.BorderWidths;
-import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -36,6 +28,12 @@ public class HelpSceneAdmin extends AnchorPane {
 	private TextArea textArea;
 	private AnchorPane rootForReturnBtn;
 
+	/**
+	 * Crée une scène d'aide pour l'administrateur
+	 * 
+	 * @param rootForReturnBtn La racine de la scène à afficher lorsque
+	 *                         l'utilisateur clique sur le bouton "Retour".
+	 */
 	public HelpSceneAdmin(AnchorPane rootForReturnBtn) {
 		this.setPrefSize(1280, 720);
 
@@ -44,7 +42,6 @@ public class HelpSceneAdmin extends AnchorPane {
 		Font font = Font.loadFont(getClass().getResourceAsStream("/fonts/KronaOne-Regular.ttf"), 24);
 
 		// Création des éléments de l'accordeon
-
 		CustomPaneHelp paneIntroduction = new CustomPaneHelp(INTRODUCTION, INTRODUCTION_TEXT);
 		CustomPaneHelp paneRecherche = new CustomPaneHelp(RECHERCHE, RECHERCHE_TEXT);
 		CustomPaneHelp paneAjoutStagiaire = new CustomPaneHelp(AJOUT_STAGIAIRE, AJOUT_STAGIAIRE_TEXT);
@@ -54,18 +51,18 @@ public class HelpSceneAdmin extends AnchorPane {
 		CustomPaneHelp paneMembres = new CustomPaneHelp(MEMBRES, MEMBRES_TEXT);
 		CustomPaneHelp paneImpression = new CustomPaneHelp(IMPRESSION, IMPRESSION_TEXT);
 		CustomPaneHelp paneDeconnexion = new CustomPaneHelp(DECONNEXION, DECONNEXION_TEXT);
-        
+
 		// On crée l'accordeon
 		Accordion accordionHelp = new Accordion();
-		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneAjoutStagiaire, paneSuppressionStagiaire,
-				paneModificationStagiaire, paneMembres, paneImpression, paneDeconnexion);
-    	accordionHelp.setStyle("-fx-background-color: #272727;"); 
-    	    	
-    	ScrollPane scrollPane = new ScrollPane(accordionHelp);
-    	scrollPane.setPrefHeight(500);
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        
+		accordionHelp.getPanes().addAll(paneIntroduction, paneRecherche, paneImpression, paneAjoutStagiaire,
+				paneSuppressionStagiaire, paneModificationStagiaire, paneMembres, paneDeconnexion);
+		accordionHelp.setStyle("-fx-background-color: #272727;");
+
+		ScrollPane scrollPane = new ScrollPane(accordionHelp);
+		scrollPane.setPrefHeight(500);
+		scrollPane.setFitToWidth(true);
+		scrollPane.setFitToHeight(true);
+
 		Label bienvenue = new Label("Bienvenue dans le centre d'aide de votre annuaire en ligne");
 		bienvenue.setStyle("-fx-font-family : 'Krona One'; -fx-font-size : 24px; -fx-text-fill : 'FFFFFF'");
 		bienvenue.setAlignment(Pos.CENTER);
@@ -81,7 +78,7 @@ public class HelpSceneAdmin extends AnchorPane {
 		btnRetourHelp.setEffect(INNER_SHADOW_WHITE);
 		hboxBtnRetourHelp.setAlignment(Pos.BOTTOM_RIGHT);
 		hboxBtnRetourHelp.getChildren().add(btnRetourHelp);
-		VBox.setMargin(hboxBtnRetourHelp,new Insets(0,10,0,0));
+		VBox.setMargin(hboxBtnRetourHelp, new Insets(0, 10, 0, 0));
 
 		// Hover Effect sur le bouton Retour
 		btnRetourHelp.setOnMouseEntered(e -> btnRetourHelp.setStyle(
@@ -104,11 +101,10 @@ public class HelpSceneAdmin extends AnchorPane {
 		vboxHelp.setStyle("-fx-background-color:#272727;");
 		vboxHelp.setAlignment(Pos.CENTER);
 
-		
 		// Création de la StackPane qui contient la VBox
 		StackPane StackPaneHelp = new StackPane();
 		StackPaneHelp.setPrefSize(1280, 720);
-		StackPaneHelp.setPadding(new Insets(30,20,30,30));
+		StackPaneHelp.setPadding(new Insets(30, 20, 30, 30));
 		StackPaneHelp.setStyle("-fx-background-color: #272727;");
 		StackPaneHelp.getChildren().addAll(vboxHelp);
 

@@ -1,11 +1,7 @@
 package fr.isika.cda27.teamJADE.view.mainIntern;
 
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.GREY_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.SET_BG_ORANGE_COLOR;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.BTN_BOX_WIDTH;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_HEIGHT;
-import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.LABEL_ERROR_WIDTH;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.time.LocalDate;
@@ -29,9 +25,6 @@ import fr.isika.cda27.teamJADE.utilz.CustomTextField;
 import fr.isika.cda27.teamJADE.utilz.FadingErrorLabel;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBase;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.VBox;
@@ -49,8 +42,14 @@ public class CustomPrintBox extends VBox {
 	protected String saveDirectory = "";
 	protected String fileName = "";
 
+	/**
+	 * Gère l'exportation des données d'une TableView vers un fichier PDF.
+	 * 
+	 * @param tableView  La `TableView` contenant les données à exporter.
+	 * @param labelError Le `Label` utilisé pour afficher les messages d'erreur ou
+	 *                   de succès.
+	 */
 	public CustomPrintBox(TableView tableView, FadingErrorLabel labelError) {
-
 		this.tableView = tableView;
 		this.setSpacing(40);
 		this.setAlignment(Pos.CENTER);
@@ -62,7 +61,7 @@ public class CustomPrintBox extends VBox {
 
 		CustomTextField fileNameField = new CustomTextField();
 		fileNameField.setMaxChars(200);
-		
+
 		Object item = tableView.getItems().get(1);
 
 		if (item instanceof Intern) {
@@ -116,6 +115,21 @@ public class CustomPrintBox extends VBox {
 
 	}
 
+	/**
+	 * Exporte le contenu d'un {@link TableView} vers un fichier PDF. Le fichier PDF
+	 * est créé dans un répertoire de sauvegarde spécifique avec un nom de fichier
+	 * défini. Le PDF comprend un titre centré en fonction du type des éléments
+	 * contenus dans la table (par exemple "Liste des Stagiaires" pour des éléments
+	 * de type {@code Intern} ou "Liste des Membres" pour des éléments de type
+	 * {@code Member}). La table est également exportée sous forme de tableau PDF.
+	 *
+	 * <p>
+	 * Cette méthode utilise la bibliothèque iText pour générer le fichier PDF.
+	 * <p>
+	 *
+	 * @param tableView le {@link TableView} dont les données doivent être exportées
+	 *                  au format PDF
+	 */
 	private void exportToPDF(TableView tableView) {
 		File file = new File(saveDirectory, fileName);
 		try (FileOutputStream fileOutputStream = new FileOutputStream(file)) {
@@ -132,49 +146,19 @@ public class CustomPrintBox extends VBox {
 			// ajout du titre
 			Object item = tableView.getItems().get(1);
 
-				if (item instanceof Intern) {
-					Paragraph title = new Paragraph("Liste des Stagiaires", titleFont);
-					title.setAlignment(Element.ALIGN_CENTER);
-					document.add(title);
+			if (item instanceof Intern) {
+				Paragraph title = new Paragraph("Liste des Stagiaires", titleFont);
+				title.setAlignment(Element.ALIGN_CENTER);
+				document.add(title);
 
-				} else if (item instanceof Member) {
-					Paragraph title = new Paragraph("Liste des Membres", titleFont);
-					title.setAlignment(Element.ALIGN_CENTER);
-					document.add(title);
-				}
+			} else if (item instanceof Member) {
+				Paragraph title = new Paragraph("Liste des Membres", titleFont);
+				title.setAlignment(Element.ALIGN_CENTER);
+				document.add(title);
+			}
 
 			// retour à la ligne
 			document.add(new Paragraph("\n\n\n"));
-
-			// ajout du soustitre
-//			Font normalFont = new Font(baseFont, 14, Font.UNDERLINE);
-//			Paragraph subtitle = new Paragraph("Critères de sélection :", normalFont);
-//			document.add(subtitle);
-//
-//			// retour à la ligne
-//			document.add(new Paragraph("\n\n"));
-
-			/* SI ON A LE TEMPS */
-//			Font textFont = new Font(baseFont, 12);
-//			
-//			// ajout des lignes de critères
-//			if (item instanceof Intern) {
-//				document.add(new Paragraph("Nom de famille : ", textFont));
-//				document.add(new Paragraph("Prénom : ", textFont));
-//				document.add(new Paragraph("Région : ", textFont));
-//				document.add(new Paragraph("Formation suivie : ", textFont));
-//				document.add(new Paragraph("Année : ", textFont));
-//
-//			} else if (item instanceof Member) {
-//				document.add(new Paragraph("Nom de famille : ", textFont));
-//				document.add(new Paragraph("Prénom : ", textFont));
-//				document.add(new Paragraph("Pseudo : ", textFont));
-//				document.add(new Paragraph("Mail : ", textFont));
-//				document.add(new Paragraph("Status : ", textFont));
-//			}
-//
-//			// retour à la ligne
-//			document.add(new Paragraph("\n\n"));
 
 			// ajout de la table
 			PdfPTable pdfTable = new PdfPTable(tableView.getColumns().size());
@@ -195,6 +179,23 @@ public class CustomPrintBox extends VBox {
 
 	}
 
+	/**
+	 * Ajoute un en-tête à la table PDF à partir des colonnes d'un
+	 * {@link TableView}.
+	 * 
+	 * <p>
+	 * Pour chaque colonne du {@link TableView}, une cellule d'en-tête est créée
+	 * avec un texte correspondant au titre de la colonne. La cellule est
+	 * personnalisée avec une couleur d'arrière-plan et une hauteur fixe. La bordure
+	 * de la cellule est également définie avec une couleur spécifique.
+	 * </p>
+	 * 
+	 * @param pdfTable  le {@link PdfPTable} à laquelle les en-têtes des colonnes
+	 *                  seront ajoutés
+	 * @param tableView le {@link TableView} à partir duquel les titres des colonnes
+	 *                  seront récupérés
+	 */
+
 	private void addTableHeader(PdfPTable pdfTable, TableView<?> tableView) {
 		for (TableColumn<?, ?> column : tableView.getColumns()) {
 			PdfPCell header = new PdfPCell();
@@ -209,6 +210,15 @@ public class CustomPrintBox extends VBox {
 		}
 	}
 
+	/**
+	 * Ajoute des lignes de données à un tableau PDF en fonction des éléments
+	 * présents dans la tableView. Cette méthode gère deux types d'objets :
+	 * {@code Intern} et {@code Member}. Pour chaque élément, elle extrait les
+	 * informations pertinentes et les ajoute sous forme de cellules au tableau PDF.
+	 * 
+	 * @param pdfTable Le tableau PDF (de type {@code PdfPTable}) auquel les lignes
+	 *                 de données seront ajoutées.
+	 */
 	private void addRows(PdfPTable pdfTable) {
 		for (Object item : tableView.getItems()) {
 
@@ -232,6 +242,19 @@ public class CustomPrintBox extends VBox {
 		}
 	}
 
+	/**
+	 * Crée une cellule PDF avec un contenu textuel et une bordure colorée.
+	 * 
+	 * <p>
+	 * Cette méthode génère une instance de {@link PdfPCell} contenant le texte
+	 * spécifié.
+	 * </p>
+	 * 
+	 * @param content     le texte à afficher dans la cellule PDF
+	 * @param borderColor la couleur de la bordure de la cellule
+	 * @return une nouvelle instance de {@link PdfPCell} avec le contenu et les
+	 *         attributs spécifiés
+	 */
 	private PdfPCell createCell(String content, BaseColor borderColor) {
 		PdfPCell cell = new PdfPCell(new Phrase(content));
 		cell.setBorderColor(borderColor);

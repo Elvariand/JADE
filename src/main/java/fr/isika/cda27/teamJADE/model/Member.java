@@ -14,7 +14,9 @@ public class Member {
 	private boolean admin; // 60 octets
 
 	/**
-	 * @param alias      Le pseudonyme du Membre
+	 * Crée l'objet Membre utilisateur
+	 * 
+	 * @param alias      Le nom d'utilisateur du Membre
 	 * @param password   Le mot de passe du Membre
 	 * @param familyName Le nom de famille du Membre
 	 * @param name       Le prénom du Membre
@@ -33,7 +35,9 @@ public class Member {
 	}
 
 	/**
-	 * @param alias      Le pseudonyme du Membre
+	 * Crée l'objet Membre administrateur
+	 * 
+	 * @param alias      Le nom d'utilisateur du Membre
 	 * @param password   Le mot de passe du Membre
 	 * @param familyName Le nom de famille du Membre
 	 * @param name       Le prénom du Membre
@@ -51,35 +55,35 @@ public class Member {
 	}
 
 	/**
-	 * @return the alias
+	 * @return Le nom d'utilisateur
 	 */
 	public String getAlias() {
 		return alias;
 	}
 
 	/**
-	 * @param alias the alias to set
+	 * @param alias Le nom d'utilisateur à définir
 	 */
 	public void setAlias(String alias) {
 		this.alias = alias;
 	}
 
 	/**
-	 * @return the password
+	 * @return Le mot de passe
 	 */
 	public String getPassword() {
 		return password;
 	}
 
 	/**
-	 * @param password the password to set
+	 * @param password Le mot de passe à définir
 	 */
 	public void setPassword(String password) {
 		this.password = password;
 	}
 
 	/**
-	 * @return the familyName
+	 * @return Le nom de famille
 	 */
 
 	public String getFamilyName() {
@@ -87,49 +91,56 @@ public class Member {
 	}
 
 	/**
-	 * @param familyName the familyName to set
+	 * @param familyName Le nom de famille à définir
 	 */
 	public void setFamilyName(String familyName) {
 		this.familyName = familyName;
 	}
 
 	/**
-	 * @return the name
+	 * @return Le prénom
 	 */
 	public String getName() {
 		return name;
 	}
 
 	/**
-	 * @param name the name to set
+	 * @param name Le prénom à définir
 	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
 	/**
-	 * @return the email
+	 * @return L'adresse mail
 	 */
 	public String getEmail() {
 		return email;
 	}
 
 	/**
-	 * @param email the email to set
+	 * @param email L'adresse mail à définir
 	 */
 	public void setEmail(String email) {
 		this.email = email;
 	}
 
 	/**
-	 * @return the admin
+	 * Vérifie si l'utilisateur est un administrateur.
+	 * 
+	 * @return {@code true} si l'utilisateur est un administrateur, {@code false}
+	 *         sinon.
 	 */
 	public boolean isAdmin() {
 		return admin;
 	}
 
 	/**
-	 * @return the admin
+	 * Retourne une chaîne de caractères représentant le statut d'administrateur de
+	 * l'utilisateur.
+	 * 
+	 * @return Une chaîne de caractères indiquant le statut d'administrateur de
+	 *         l'utilisateur.
 	 */
 	public String getAdmin() {
 		if (this.isAdmin()) {
@@ -140,12 +151,19 @@ public class Member {
 	}
 
 	/**
-	 * @param admin the admin to set
+	 * @param admin L'administrateur à définir
 	 */
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
 	}
 
+	/**
+	 * Retourne une représentation sous forme de chaîne de caractères de l'objet
+	 * {@code Member}.
+	 * 
+	 * @return Une chaîne de caractères représentant l'état de l'objet
+	 *         {@code Member}.
+	 */
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -181,11 +199,27 @@ public class Member {
 		return builder.toString();
 	}
 
+	/**
+	 * Retourne le code de hachage de l'objet {@code Member}.
+	 * 
+	 * Le code de hachage est calculé en fonction des attributs {@code alias} et
+	 * {@code password}. Cette méthode est utilisée pour l'implémentation correcte
+	 * des collections basées sur les hachages, telles que {@code HashSet} et
+	 * {@code HashMap}.
+	 * 
+	 * @return Le code de hachage de l'objet {@code Member}.
+	 */
 	@Override
 	public int hashCode() {
 		return Objects.hash(alias, password);
 	}
 
+	/**
+	 * Détermine si l'objet spécifié est égal à l'objet actuel.
+	 * 
+	 * @param obj L'objet à comparer avec l'objet actuel.
+	 * @return {@code true} si les objets sont égaux, sinon {@code false}.
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -198,10 +232,28 @@ public class Member {
 		return Objects.equals(alias, other.alias) && Objects.equals(password, other.password);
 	}
 
+	/**
+	 * Authentifie un utilisateur en vérifiant si l'alias et le mot de passe fournis
+	 * correspondent aux valeurs stockées dans l'objet.
+	 * 
+	 * @param alias    Le nom d'utilisateur à vérifier. Ne doit pas être
+	 *                 {@code null}.
+	 * @param password Le mot de passe à vérifier. Ne doit pas être {@code null}.
+	 * @return {@code true} si l'alias et le mot de passe correspondent aux valeurs
+	 *         stockées, sinon {@code false}.
+	 */
 	public boolean authenticate(String alias, String password) {
 		return this.alias.equals(alias) && this.password.equals(password);
 	}
 
+	/**
+	 * Obtient le nom d'utilisateur avec une longueur fixe en ajoutant des espaces
+	 * ou en le tronquant.
+	 * 
+	 * @return Le nom d'utilisateur ajusté avec une longueur fixe. Le nom
+	 *         d'utilisateur est soit étendu avec des espaces, soit tronqué pour
+	 *         correspondre à {@code MAX_CHAR_ALIAS}.
+	 */
 	public String getAliasLong() {
 		String aliasLong = this.alias;
 		if (aliasLong.length() < MAX_CHAR_ALIAS) {
@@ -215,6 +267,14 @@ public class Member {
 		return aliasLong;
 	}
 
+	/**
+	 * Obtient le mot de passe avec une longueur fixe en ajoutant des espaces ou en
+	 * le tronquant.
+	 * 
+	 * @return Le mot de passe ajusté avec une longueur fixe. Le mot de passe est
+	 *         soit étendu avec des espaces, soit tronqué pour correspondre à
+	 *         {@code MAX_CHAR_PASSWORD}.
+	 */
 	public String getPasswordLong() {
 		String passwordLong = this.password;
 		if (passwordLong.length() < MAX_CHAR_PASSWORD) {
@@ -228,6 +288,14 @@ public class Member {
 		return passwordLong;
 	}
 
+	/**
+	 * Obtient le nom de famille du membre avec une longueur fixe en ajoutant des
+	 * espaces ou en le tronquant.
+	 * 
+	 * @return Le nom de famille du membre ajusté avec une longueur fixe. Le nom de
+	 *         famille du membre est soit étendu avec des espaces, soit tronqué pour
+	 *         correspondre à {@code MAX_CHAR_FAMILYNAME}.
+	 */
 	public String getFamilyNameLong() {
 		String familyNameLong = this.familyName;
 		if (familyNameLong.length() < MAX_CHAR_FAMILYNAME) {
@@ -240,7 +308,15 @@ public class Member {
 		}
 		return familyNameLong;
 	}
-	
+
+	/**
+	 * Obtient le prénom du membre avec une longueur fixe en ajoutant des espaces ou
+	 * en le tronquant.
+	 * 
+	 * @return Le prénom du membre ajusté avec une longueur fixe. Le prénom du
+	 *         membre est soit étendu avec des espaces, soit tronqué pour
+	 *         correspondre à {@code MAX_CHAR_NAME}.
+	 */
 	public String getNameLong() {
 		String nameLong = this.name;
 		if (nameLong.length() < MAX_CHAR_NAME) {
@@ -253,6 +329,15 @@ public class Member {
 		}
 		return nameLong;
 	}
+
+	/**
+	 * Obtient l'adresse mail du membre avec une longueur fixe en ajoutant des
+	 * espaces ou en le tronquant.
+	 * 
+	 * @return L'adresse mail du membre ajusté avec une longueur fixe. L'adresse
+	 *         mail du membre est soit étendu avec des espaces, soit tronqué pour
+	 *         correspondre à {@code MAX_CHAR_EMAIL}.
+	 */
 	public String getEmailLong() {
 		String emailLong = this.email;
 		if (emailLong.length() < MAX_CHAR_EMAIL) {

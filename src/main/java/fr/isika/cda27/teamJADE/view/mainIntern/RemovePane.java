@@ -2,7 +2,6 @@ package fr.isika.cda27.teamJADE.view.mainIntern;
 
 import javafx.geometry.Insets;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -12,29 +11,28 @@ import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.MenuVboxValues.*;
 import static fr.isika.cda27.teamJADE.utilz.UtilStaticValues.Colors.*;
 
 public class RemovePane extends RepetitivePane {
-	
 
 	private Label labelError;
-	private String[] gridPaneLabelsList = {"","","","",""};
+	private String[] gridPaneLabelsList = { "", "", "", "", "" };
 
-
+	/**
+	 * Crée le panneau 'Supprimer'
+	 */
 	public RemovePane() {
 
 		super();
 		this.titleLabel.setText("Êtes vous sûr(e) de vouloir \nsupprimer le stagiaire suivant ?");
-		
 
 		super.getChildren().remove(super.gridPane);
 		this.gridPane = createFormGridPane(gridPaneLabelsList);
 		super.getChildren().add(1, this.gridPane);
 
-		this.buttonBox.setPrefSize(BTN_BOX_WIDTH,(BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
-		
+		this.buttonBox.setPrefSize(BTN_BOX_WIDTH, (BTN_BOX_HEIGHT - LABEL_ERROR_HEIGHT * 2));
+
 		this.leftButton.setText("Non");
 
 		this.rightButton.setText("Oui");
 		this.rightButton.setDisable(true);
-
 
 		this.labelError = new Label("Veuilez sélectionner un stagiaire à supprimer");
 		labelError.setPrefSize(LABEL_ERROR_WIDTH, LABEL_ERROR_HEIGHT);
@@ -42,40 +40,40 @@ public class RemovePane extends RepetitivePane {
 		labelError.setStyle("-fx-alignment: center;");
 		labelError.setTextFill(GREY_COLOR);
 		labelError.setVisible(false);
-		
+
 		this.getChildren().add(labelError);
 	}
 
 	/**
-	 * @return the labelError
+	 * @return le labelError
 	 */
 	public Label getLabelError() {
 		return labelError;
 	}
 
 	/**
-	 * @param labelError the labelError to set
+	 * @param labelError le labelError à définir
 	 */
 	public void setLabelError(Label labelError) {
 		this.labelError = labelError;
 	}
 
 	/**
-	 * @return the gridPaneLabelsList
+	 * @return le gridPaneLabelsList
 	 */
 	public String[] getGridPaneLabelsList() {
 		return gridPaneLabelsList;
 	}
 
 	/**
-	 * @param gridPaneLabelsList the gridPaneLabelsList to set
+	 * @param gridPaneLabelsList le gridPaneLabelsList à définir
 	 */
 	public void setGridPaneLabelsList(String[] gridPaneLabelsList) {
 		this.gridPaneLabelsList = gridPaneLabelsList;
 	}
 
 	/**
-	 * @param gridPane the gridPane to set
+	 * @param gridPane le gridPane à définir
 	 */
 	public void setGridPane(String[] gridPaneLabelsList) {
 
@@ -90,29 +88,57 @@ public class RemovePane extends RepetitivePane {
 
 	}
 
+	/**
+	 * @return Le texte correspondant au nom de famille, sans le premier caractère
+	 *         et sans espaces superflus.
+	 */
 	public String getTextFamilyName() {
 		return ((Label) gridPane.getChildren().get(1)).getText().substring(1).trim();
-		
+
 	}
 
+	/**
+	 * @return Le texte correspondant au prénom, sans le premier caractère et sans
+	 *         espaces superflus.
+	 */
 	public String getTextFirstName() {
 		return ((Label) gridPane.getChildren().get(3)).getText().substring(1).trim();
-		
+
 	}
 
+	/**
+	 * @return Le texte correspondant au département, sans le premier caractère et
+	 *         sans espaces superflus.
+	 */
 	public String getTextCounty() {
 		return ((Label) gridPane.getChildren().get(5)).getText().substring(1).trim();
-		
+
 	}
 
+	/**
+	 * @return Le texte correspondant à la formation suivie, sans le premier
+	 *         caractère et sans espaces superflus.
+	 */
 	public String getTextCursus() {
 		return ((Label) gridPane.getChildren().get(7)).getText().substring(1).trim();
-		
+
 	}
 
+	/**
+	 * @return Le texte correspondant à l'année d'entrée, sans le premier caractère
+	 *         et sans espaces superflus.
+	 */
 	public String getTextYearIn() {
 		return ((Label) gridPane.getChildren().get(9)).getText().substring(1).trim();
 	}
+
+	/**
+	 * Crée et configure le GridPane utilisé pour afficher un formulaire
+	 * 
+	 * @param gridPaneLabelsList
+	 * @return Un objet {@link GridPane} configuré avec des étiquettes de texte
+	 *         disposées en deux colonnes.
+	 */
 	public GridPane createFormGridPane(String[] gridPaneLabelsList) {
 
 		// GridPane
@@ -120,7 +146,6 @@ public class RemovePane extends RepetitivePane {
 		gridPane.setPrefSize(GRIDPANE_WIDTH, GRIDPANE_HEIGHT);
 		gridPane.setVgap(15);
 		gridPane.setHgap(10);
-
 
 		// première colonne
 		ColumnConstraints col1Constraints = new ColumnConstraints();
@@ -133,7 +158,7 @@ public class RemovePane extends RepetitivePane {
 		gridPane.getColumnConstraints().add(col2Constraints);
 
 		// lignes du GridPane
-		for (int i = 0; i < NBR_OF_LINES/2; i++) {
+		for (int i = 0; i < NBR_OF_LINES / 2; i++) {
 			RowConstraints rowConstraints = new RowConstraints();
 			rowConstraints.setPrefHeight(50);
 			gridPane.getRowConstraints().add(rowConstraints);

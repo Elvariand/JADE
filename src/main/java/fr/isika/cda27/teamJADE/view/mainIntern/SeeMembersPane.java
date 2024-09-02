@@ -1,7 +1,6 @@
 package fr.isika.cda27.teamJADE.view.mainIntern;
 
 import fr.isika.cda27.teamJADE.model.Member;
-import fr.isika.cda27.teamJADE.view.login.CustomLoginScene;
 import fr.isika.cda27.teamJADE.view.mainMember.MembersMainScene;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,6 +10,11 @@ public class SeeMembersPane extends RepetitivePane {
 
 	Member connectedMember;
 
+	/**
+	 * Crée le panneau de confirmation pour afficher la liste des membres.
+	 * 
+	 * @param connectedMember
+	 */
 	public SeeMembersPane(Member connectedMember) {
 		super();
 		this.connectedMember = connectedMember;
