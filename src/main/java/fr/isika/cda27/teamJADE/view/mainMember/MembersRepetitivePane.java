@@ -135,17 +135,17 @@ public class MembersRepetitivePane extends RepetitivePane {
 	}
 
 	public String getTextName() {
-		return ((TextField) gridPane.getChildren().get(3)).getText();
+		return ((TextField) gridPane.getChildren().get(4)).getText();
 
 	}
 
 	public String getTextAlias() {
-		return ((TextField) gridPane.getChildren().get(5)).getText();
+		return ((TextField) gridPane.getChildren().get(7)).getText();
 
 	}
 
 	public String getTextEmail() {
-		return ((TextField) gridPane.getChildren().get(7)).getText();
+		return ((TextField) gridPane.getChildren().get(10)).getText();
 
 	}
 
