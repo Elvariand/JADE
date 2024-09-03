@@ -117,7 +117,6 @@ public abstract class TreeNodeDao<T> {
 			while (read > 0) {
 				// Si l'objet est déjà présent
 				if (object.equals(this.readObjectFromBinary(cursorPosition))) {
-					System.out.println("L'objet est déjà présent dans la base de données");
 					return;
 				}
 				read = readTwinFromBinary(cursorPosition);
@@ -403,7 +402,6 @@ public abstract class TreeNodeDao<T> {
 					// On remplace dans le parent de l'objet qu'on efface, le fils gauche ou le
 					// fils droit suivant duquel il est issu, par la valeur de position du substitut
 					// que l'on a trouvé
-					System.out.println("Valeur substitut : " + (int) substitute / getNodeSize());
 					this.writeIntInBinary((int) substitute / getNodeSize(),
 							isFromLeft ? parentCursorPosition + getObjectSize()
 									: parentCursorPosition + getObjectSize() + INDEX_SIZE);

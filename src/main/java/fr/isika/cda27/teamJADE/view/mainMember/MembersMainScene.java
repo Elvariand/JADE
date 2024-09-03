@@ -911,7 +911,7 @@ public class MembersMainScene extends AnchorPane {
 		column4.setCellValueFactory(new PropertyValueFactory<>("email"));
 		column4.setPrefWidth(columnWidth);
 
-		TableColumn<Member, String> column5 = new TableColumn<>("Status");
+		TableColumn<Member, String> column5 = new TableColumn<>("Statut");
 		column5.setCellValueFactory(cellData -> {
 			boolean isAdmin = cellData.getValue().isAdmin();
 			return new SimpleStringProperty(isAdmin ? "administrateur" : "non administrateur");
