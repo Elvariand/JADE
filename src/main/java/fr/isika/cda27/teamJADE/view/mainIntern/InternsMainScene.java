@@ -221,8 +221,8 @@ public class InternsMainScene extends AnchorPane {
 		 * cliqué en orange. Et de faire apparaite la croix du menu et disparaitre la
 		 * fleche.
 		 */
-		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, removeBtn, updateBtn,
-				seeMemberBtn, quitBtn);
+		List<StackPaneMenubar> listMenuBtn = Arrays.asList(closeBtn, scopeBtn, addBtn, printBtn, quitBtn, removeBtn, updateBtn,
+				seeMemberBtn);
 
 		/*
 		 * On configure les actions pour chaque bouton en donnant en argument : 1) le
