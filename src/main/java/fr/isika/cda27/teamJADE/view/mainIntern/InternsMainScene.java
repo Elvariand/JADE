@@ -916,7 +916,7 @@ public class InternsMainScene extends AnchorPane {
 		TableView<Intern> tableView = new TableView<>(filteredInterns);
 
 		// On met les colones
-		double columnWidth = 1000 / 5;
+		double columnWidth = 1005 / 5;
 
 		TableColumn<Intern, String> column1 = new TableColumn<>("Nom de famille");
 		column1.setCellValueFactory(new PropertyValueFactory<>("familyName"));

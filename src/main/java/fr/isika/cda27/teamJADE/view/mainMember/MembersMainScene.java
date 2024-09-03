@@ -91,7 +91,7 @@ public class MembersMainScene extends AnchorPane {
 
 		stackPaneHelp.getButton().setOnAction(event -> {
 			Stage stage = ((Stage) MembersMainScene.this.getScene().getWindow());
-			Scene scene = new Scene(new HelpSceneAdmin(new InternsMainScene(connectedMember)));
+			Scene scene = new Scene(new HelpSceneAdmin(new MembersMainScene(connectedMember)));
 			scene.getStylesheets().add(getClass().getResource("/styles.css").toExternalForm());
 			stage.setScene(scene);
 		});
